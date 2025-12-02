@@ -1,972 +1,937 @@
-import React, { useState, useEffect } from 'react';
-import { Play, Pause, RotateCcw, Zap, Layers, TrendingDown } from 'lucide-react';
-
-export default function LoRAVisualization() {
-  const [activeTab, setActiveTab] = useState('full');
-  const [isAnimating, setIsAnimating] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [highlightedCells, setHighlightedCells] = useState(new Set());
-
-  useEffect(() => {
-    let interval;
-    if (isAnimating) {
-      interval = setInterval(() => {
-        setProgress(prev => {
-          if (prev >= 100) {
-            setIsAnimating(false);
-            return 100;
-          }
-          return prev + 2;
-        });
-        
-        // Randomly highlight cells during animation
-        const newHighlighted = new Set();
-        const numCells = activeTab === 'full' ? 20 : 8;
-        for (let i = 0; i < numCells; i++) {
-          newHighlighted.add(Math.floor(Math.random() * 64));
-        }
-        setHighlightedCells(newHighlighted);
-      }, 100);
-    }
-    return () => clearInterval(interval);
-  }, [isAnimating, activeTab]);
-
-  const reset = () => {
-    setIsAnimating(false);
-    setProgress(0);
-    setHighlightedCells(new Set());
-  };
-
-  const NeuralNetwork = ({ showAdapter = false, title, subtitle }) => {
-    const layers = [5, 4, 4, 5]; // Input, hidden, hidden, output
-    
-    const getNodePosition = (layerIdx, nodeIdx, totalNodes) => {
-      const x = (layerIdx * 200) + 50;
-      const spacing = 80;
-      const startY = 200 - (totalNodes * spacing) / 2;
-      const y = startY + (nodeIdx * spacing);
-      return { x, y };
-    };
-
-    const renderConnections = () => {
-      const connections = [];
-      let connectionId = 0;
-
-      for (let layerIdx = 0; layerIdx < layers.length - 1; layerIdx++) {
-        const currentLayerSize = layers[layerIdx];
-        const nextLayerSize = layers[layerIdx + 1];
-
-        for (let i = 0; i < currentLayerSize; i++) {
-          for (let j = 0; j < nextLayerSize; j++) {
-            const start = getNodePosition(layerIdx, i, currentLayerSize);
-            const end = getNodePosition(layerIdx + 1, j, nextLayerSize);
-            
-            const isHighlighted = highlightedCells.has(connectionId % 30);
-            connectionId++;
-
-            connections.push(
-              <line
-                key={`conn-${layerIdx}-${i}-${j}`}
-                x1={start.x}
-                y1={start.y}
-                x2={end.x}
-                y2={end.y}
-                className={`connection ${isHighlighted && isAnimating ? 'highlight' : ''}`}
-                strokeWidth={showAdapter ? 1.5 : 2}
-                opacity={showAdapter ? 0.3 : 0.6}
-              />
-            );
-          }
-        }
-      }
-      return connections;
-    };
-
-    const renderAdapterPath = () => {
-      if (!showAdapter) return null;
-
-      // Adapter path through middle layers
-      const adapters = [];
-      const layerIdx = 1; // Middle layer
-      
-      // Show small adapter nodes
-      const adapterNodes = [
-        { x: 150, y: 150, label: 'A' },
-        { x: 150, y: 250, label: 'B' }
-      ];
-
-      // Connections from main network to adapter
-      const mainNodes = [
-        getNodePosition(1, 1, layers[1]),
-        getNodePosition(1, 2, layers[1])
-      ];
-
-      adapterNodes.forEach((adapter, idx) => {
-        // Adapter node
-        adapters.push(
-          <g key={`adapter-${idx}`}>
-            <circle
-              cx={adapter.x}
-              cy={adapter.y}
-              r={20}
-              className={`adapter-node ${isAnimating ? 'highlight' : ''}`}
-            />
-            <text
-              x={adapter.x}
-              y={adapter.y + 5}
-              textAnchor="middle"
-              className="adapter-label"
-            >
-              {adapter.label}
-            </text>
-          </g>
-        );
-
-        // Connections to adapter
-        mainNodes.forEach((node) => {
-          adapters.push(
-            <line
-              key={`adapter-conn-${idx}-${node.x}`}
-              x1={node.x}
-              y1={node.y}
-              x2={adapter.x}
-              y2={adapter.y}
-              className={`adapter-connection ${isAnimating ? 'highlight' : ''}`}
-              strokeWidth={2}
-            />
-          );
-        });
-      });
-
-      return adapters;
-    };
-
-    const renderNodes = () => {
-      const nodes = [];
-      layers.forEach((layerSize, layerIdx) => {
-        for (let nodeIdx = 0; nodeIdx < layerSize; nodeIdx++) {
-          const { x, y } = getNodePosition(layerIdx, nodeIdx, layerSize);
-          const isInputOutput = layerIdx === 0 || layerIdx === layers.length - 1;
-          
-          nodes.push(
-            <circle
-              key={`node-${layerIdx}-${nodeIdx}`}
-              cx={x}
-              cy={y}
-              r={isInputOutput ? 12 : 10}
-              className={`neuron ${isInputOutput ? 'io-neuron' : ''}`}
-            />
-          );
-        }
-      });
-      return nodes;
-    };
-
-    return (
-      <div className="network-container">
-        <div className="network-header">
-          <h3>{title}</h3>
-          <p>{subtitle}</p>
-        </div>
-        <svg width="700" height="400" className="network-svg">
-          <defs>
-            <linearGradient id="connectionGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#06b6d4" />
-              <stop offset="100%" stopColor="#8b5cf6" />
-            </linearGradient>
-            <filter id="glow">
-              <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-              <feMerge>
-                <feMergeNode in="coloredBlur"/>
-                <feMergeNode in="SourceGraphic"/>
-              </feMerge>
-            </filter>
-          </defs>
-          
-          {renderConnections()}
-          {renderAdapterPath()}
-          {renderNodes()}
-
-          {/* Layer labels */}
-          <text x="50" y="30" className="layer-label">Input</text>
-          <text x="250" y="30" className="layer-label">Hidden</text>
-          <text x="450" y="30" className="layer-label">Hidden</text>
-          <text x="650" y="30" className="layer-label">Output</text>
-        </svg>
-      </div>
-    );
-  };
-
-  const LoRAComparison = () => {
-    return (
-      <div className="lora-comparison">
-        <div className="comparison-item">
-          <NeuralNetwork 
-            showAdapter={false}
-            title="Tradycyjny Fine-tuning"
-            subtitle="Wszystkie wagi są aktualizowane"
-          />
-          <div className="method-badge traditional">
-            <span className="badge-icon">⚡</span>
-            <div>
-              <strong>Pełna aktualizacja</strong>
-              <p>Miliony parametrów</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="comparison-divider">vs</div>
-
-        <div className="comparison-item">
-          <NeuralNetwork 
-            showAdapter={true}
-            title="LoRA Fine-tuning"
-            subtitle="Tylko adaptery A i B są trenowane"
-          />
-          <div className="method-badge lora">
-            <Zap size={20} />
-            <div>
-              <strong>Adapter path</strong>
-              <p>Oryginalne wagi zamrożone</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  const stats = {
-    full: {
-      params: '7 miliardów',
-      memory: '28 GB',
-      time: '48 godz',
-      cost: '$$$$'
-    },
-    lora: {
-      params: '4.2 miliona',
-      memory: '1.2 GB',
-      time: '4 godz',
-      cost: '$'
-    }
-  };
-
-  return (
-    <div className="app">
-      <header className="header">
-        <div className="header-content">
-          <Layers className="header-icon" />
-          <div>
-            <h1>LoRA: Parameter-Efficient Fine-Tuning</h1>
-            <p>Jak trenować modele z miliardami parametrów na konsumerskich GPU</p>
-          </div>
-        </div>
-      </header>
-
-      <div className="tabs">
-        <button 
-          className={`tab ${activeTab === 'full' ? 'active' : ''}`}
-          onClick={() => { setActiveTab('full'); reset(); }}
-        >
-          Full Fine-tuning (7B parametrów)
-        </button>
-        <button 
-          className={`tab ${activeTab === 'lora' ? 'active' : ''}`}
-          onClick={() => { setActiveTab('lora'); reset(); }}
-        >
-          LoRA Fine-tuning (4.2M parametrów)
-        </button>
-      </div>
-
-      <div className="content">
-        <div className="visualization-area">
-          <div className="visualization-header">
-            <h2>
-              {activeTab === 'full' 
-                ? 'Wszystkie miliardy parametrów są aktualizowane' 
-                : 'Tylko miliony parametrów adaptera są trenowane'}
-            </h2>
-            <div className="controls">
-              <button 
-                className="control-btn primary"
-                onClick={() => setIsAnimating(!isAnimating)}
-              >
-                {isAnimating ? <Pause size={18} /> : <Play size={18} />}
-                {isAnimating ? 'Pauza' : 'Start'}
-              </button>
-              <button 
-                className="control-btn"
-                onClick={reset}
-              >
-                <RotateCcw size={18} />
-                Reset
-              </button>
-            </div>
-          </div>
-
-          {activeTab === 'full' ? (
-            <div className="full-finetune">
-              <NeuralNetwork 
-                showAdapter={false}
-                title="Model językowy (np. LLaMA-7B)"
-                subtitle="7 miliardów wag w pełnej sieci - wszystkie są aktualizowane"
-              />
-              <div className="warning-box">
-                <span className="warning-icon">⚠️</span>
-                <div>
-                  <strong>Problem:</strong> Aktualizujemy wszystkie 7 miliardów wag w modelu
-                  <br />
-                  Wymaga kart datacenter GPU (A100/H100) i bardzo dużo czasu
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className="lora-mode">
-              <NeuralNetwork 
-                showAdapter={true}
-                title="LLaMA-7B z adapterem LoRA (rank=16)"
-                subtitle="7 miliardów wag zamrożone, ~4.2 miliona parametrów adaptera trenowane"
-              />
-              <div className="success-box">
-                <Zap size={24} />
-                <div>
-                  <strong>LoRA:</strong> Małe adaptery niskorangowe dodają nową ścieżkę
-                  <br />
-                  99.94% mniej parametrów do trenowania! Możesz użyć konsumerskiej karty RTX 3090/4090
-                </div>
-              </div>
-            </div>
-          )}
-
-          <div className="progress-bar">
-            <div 
-              className="progress-fill"
-              style={{ width: `${progress}%` }}
-            />
-            <span className="progress-text">
-              {progress === 100 ? 'Trening zakończony!' : `Trening: ${progress}%`}
-            </span>
-          </div>
-        </div>
-
-        <div className="comparison-panel">
-          <h3>Porównanie metod</h3>
-          
-          <div className="stats-grid">
-            <div className="stat-card">
-              <div className="stat-icon">🔢</div>
-              <div className="stat-label">Parametry do treningu</div>
-              <div className="stat-value full">{stats.full.params}</div>
-              <div className="stat-value lora">{stats.lora.params}</div>
-              <div className="stat-badge">
-                <TrendingDown size={14} />
-                <span>99.94% mniej</span>
-              </div>
-            </div>
-
-            <div className="stat-card">
-              <div className="stat-icon">💾</div>
-              <div className="stat-label">Pamięć GPU</div>
-              <div className="stat-value full">{stats.full.memory}</div>
-              <div className="stat-value lora">{stats.lora.memory}</div>
-              <div className="stat-badge">
-                <TrendingDown size={14} />
-                <span>95% mniej</span>
-              </div>
-            </div>
-
-            <div className="stat-card">
-              <div className="stat-icon">⏱️</div>
-              <div className="stat-label">Czas treningu</div>
-              <div className="stat-value full">{stats.full.time}</div>
-              <div className="stat-value lora">{stats.lora.time}</div>
-              <div className="stat-badge">
-                <TrendingDown size={14} />
-                <span>12x szybciej</span>
-              </div>
-            </div>
-
-            <div className="stat-card">
-              <div className="stat-icon">💰</div>
-              <div className="stat-label">Koszt</div>
-              <div className="stat-value full">{stats.full.cost}</div>
-              <div className="stat-value lora">{stats.lora.cost}</div>
-              <div className="stat-badge">
-                <TrendingDown size={14} />
-                <span>Znacznie taniej</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="info-box">
-            <h4>Jak to działa?</h4>
-            <ul>
-              <li><strong>Zamrożony model bazowy:</strong> Wszystkie 7 miliardów wag oryginalnego modelu pozostaje nietknięte</li>
-              <li><strong>Adaptery niskorangowe:</strong> Dodajemy małe macierze A (d×r) i B (r×d), gdzie rank r=8,16,32,64</li>
-              <li><strong>Drastyczna redukcja:</strong> Zamiast trenować 7B parametrów, trenujemy tylko ~4M (0.06%!)</li>
-              <li><strong>Matematyka:</strong> W′ = W + αBA/r, gdzie W to oryginalne wagi, α to współczynnik skalowania</li>
-              <li><strong>Wymiana adapterów:</strong> Jeden model bazowy + wiele zestawów adapterów dla różnych zadań (tłumaczenia, kodowanie, medycyna)</li>
-            </ul>
-          </div>
-
-          <div className="tip-box">
-            <span className="tip-icon">💡</span>
-            <div>
-              <strong>Praktyczny przykład:</strong> LLaMA-7B wymaga normalnie 28GB pamięci VRAM (A100), 
-              ale z LoRA możesz go fine-tunować na RTX 3090 (24GB) lub nawet RTX 4090 (24GB). 
-              Adapter LoRA zajmuje tylko ~17MB na dysku!
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <style>{`
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LoRA: Parameter-Efficient Fine-Tuning</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=DM+Sans:wght@400;500;700&display=swap');
 
         * {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            color: #e2e8f0;
+            font-family: 'DM Sans', sans-serif;
+            padding: 2rem;
         }
 
         .app {
-          min-height: 100vh;
-          background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
-          color: #e2e8f0;
-          font-family: 'DM Sans', sans-serif;
-          padding: 2rem;
+            max-width: 1800px;
+            margin: 0 auto;
         }
 
         .header {
-          margin-bottom: 2rem;
-          padding: 2rem;
-          background: rgba(255, 255, 255, 0.05);
-          border-radius: 16px;
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          backdrop-filter: blur(10px);
+            margin-bottom: 2rem;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
         }
 
         .header-content {
-          display: flex;
-          align-items: center;
-          gap: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
         }
 
         .header-icon {
-          width: 48px;
-          height: 48px;
-          color: #06b6d4;
-          filter: drop-shadow(0 0 20px rgba(6, 182, 212, 0.5));
+            width: 48px;
+            height: 48px;
+            color: #06b6d4;
+            filter: drop-shadow(0 0 20px rgba(6, 182, 212, 0.5));
         }
 
         .header h1 {
-          font-family: 'Outfit', sans-serif;
-          font-size: 2rem;
-          font-weight: 700;
-          background: linear-gradient(90deg, #06b6d4, #8b5cf6);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          margin-bottom: 0.5rem;
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, #06b6d4, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
         }
 
         .header p {
-          color: #94a3b8;
-          font-size: 1rem;
+            color: #94a3b8;
+            font-size: 1rem;
         }
 
         .tabs {
-          display: flex;
-          gap: 1rem;
-          margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
         }
 
         .tab {
-          flex: 1;
-          padding: 1rem 2rem;
-          background: rgba(255, 255, 255, 0.05);
-          border: 2px solid rgba(255, 255, 255, 0.1);
-          border-radius: 12px;
-          color: #cbd5e1;
-          font-family: 'Outfit', sans-serif;
-          font-size: 1rem;
-          font-weight: 600;
-          cursor: pointer;
-          transition: all 0.3s ease;
+            flex: 1;
+            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #cbd5e1;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
         .tab:hover {
-          background: rgba(255, 255, 255, 0.08);
-          border-color: rgba(6, 182, 212, 0.5);
-          transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(6, 182, 212, 0.5);
+            transform: translateY(-2px);
         }
 
         .tab.active {
-          background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(139, 92, 246, 0.2));
-          border-color: #06b6d4;
-          color: #fff;
-          box-shadow: 0 8px 32px rgba(6, 182, 212, 0.3);
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(139, 92, 246, 0.2));
+            border-color: #06b6d4;
+            color: #fff;
+            box-shadow: 0 8px 32px rgba(6, 182, 212, 0.3);
         }
 
         .content {
-          display: grid;
-          grid-template-columns: 1.5fr 1fr;
-          gap: 2rem;
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 2rem;
         }
 
         .visualization-area {
-          background: rgba(255, 255, 255, 0.05);
-          border-radius: 16px;
-          padding: 2rem;
-          border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .visualization-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
         }
 
         .visualization-header h2 {
-          font-family: 'Outfit', sans-serif;
-          font-size: 1.5rem;
-          font-weight: 600;
-          color: #06b6d4;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #06b6d4;
         }
 
         .controls {
-          display: flex;
-          gap: 0.75rem;
+            display: flex;
+            gap: 0.75rem;
         }
 
         .control-btn {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-          padding: 0.75rem 1.25rem;
-          background: rgba(255, 255, 255, 0.05);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: 8px;
-          color: #e2e8f0;
-          font-family: 'DM Sans', sans-serif;
-          font-size: 0.9rem;
-          cursor: pointer;
-          transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #e2e8f0;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
         }
 
         .control-btn:hover {
-          background: rgba(255, 255, 255, 0.1);
-          transform: translateY(-1px);
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-1px);
         }
 
         .control-btn.primary {
-          background: linear-gradient(135deg, #06b6d4, #0891b2);
-          border: none;
-          color: white;
-          font-weight: 600;
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
+            border: none;
+            color: white;
+            font-weight: 600;
         }
 
         .control-btn.primary:hover {
-          background: linear-gradient(135deg, #0891b2, #0e7490);
-          box-shadow: 0 4px 16px rgba(6, 182, 212, 0.4);
-        }
-
-        .matrix-container {
-          margin-bottom: 2rem;
-        }
-
-        .matrix-header {
-          margin-bottom: 1rem;
-        }
-
-        .matrix-header h3 {
-          font-family: 'Outfit', sans-serif;
-          font-size: 1.1rem;
-          font-weight: 600;
-          color: #f1f5f9;
-          margin-bottom: 0.25rem;
-        }
-
-        .matrix-header p {
-          font-size: 0.85rem;
-          color: #94a3b8;
+            background: linear-gradient(135deg, #0891b2, #0e7490);
+            box-shadow: 0 4px 16px rgba(6, 182, 212, 0.4);
         }
 
         .network-container {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
         }
 
         .network-header {
-          text-align: center;
-          margin-bottom: 1.5rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
         }
 
         .network-header h3 {
-          font-family: 'Outfit', sans-serif;
-          font-size: 1.2rem;
-          font-weight: 600;
-          color: #f1f5f9;
-          margin-bottom: 0.5rem;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-bottom: 0.5rem;
         }
 
         .network-header p {
-          font-size: 0.9rem;
-          color: #94a3b8;
+            font-size: 0.9rem;
+            color: #94a3b8;
         }
 
         .network-svg {
-          background: rgba(0, 0, 0, 0.2);
-          border-radius: 12px;
-          border: 1px solid rgba(255, 255, 255, 0.05);
-          padding: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 1rem;
         }
 
         .connection {
-          stroke: #475569;
-          transition: all 0.3s ease;
+            stroke: #475569;
+            transition: all 0.3s ease;
         }
 
         .connection.highlight {
-          stroke: url(#connectionGradient);
-          stroke-width: 3;
-          filter: url(#glow);
-          animation: pulse 1s ease-in-out infinite;
+            stroke: url(#connectionGradient);
+            stroke-width: 3;
+            filter: url(#glow);
+            animation: pulse 1s ease-in-out infinite;
         }
 
         .neuron {
-          fill: #334155;
-          stroke: #64748b;
-          stroke-width: 2;
-          transition: all 0.3s ease;
+            fill: #334155;
+            stroke: #64748b;
+            stroke-width: 2;
+            transition: all 0.3s ease;
         }
 
         .neuron.io-neuron {
-          fill: #1e293b;
-          stroke: #06b6d4;
-          stroke-width: 2.5;
+            fill: #1e293b;
+            stroke: #06b6d4;
+            stroke-width: 2.5;
         }
 
         .adapter-node {
-          fill: rgba(139, 92, 246, 0.2);
-          stroke: #8b5cf6;
-          stroke-width: 3;
-          filter: url(#glow);
+            fill: rgba(139, 92, 246, 0.2);
+            stroke: #8b5cf6;
+            stroke-width: 3;
+            filter: url(#glow);
         }
 
         .adapter-node.highlight {
-          fill: rgba(139, 92, 246, 0.4);
-          animation: pulse 1s ease-in-out infinite;
+            fill: rgba(139, 92, 246, 0.4);
+            animation: pulse 1s ease-in-out infinite;
         }
 
         .adapter-connection {
-          stroke: #8b5cf6;
-          stroke-width: 2;
-          stroke-dasharray: 5, 5;
+            stroke: #8b5cf6;
+            stroke-width: 2;
+            stroke-dasharray: 5, 5;
         }
 
         .adapter-connection.highlight {
-          stroke: #a78bfa;
-          stroke-width: 3;
-          filter: url(#glow);
-          animation: pulse 1s ease-in-out infinite;
+            stroke: #a78bfa;
+            stroke-width: 3;
+            filter: url(#glow);
+            animation: pulse 1s ease-in-out infinite;
         }
 
         .adapter-label {
-          fill: #c4b5fd;
-          font-family: 'Outfit', sans-serif;
-          font-size: 14px;
-          font-weight: 700;
+            fill: #c4b5fd;
+            font-family: 'Outfit', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
         }
 
         .layer-label {
-          fill: #94a3b8;
-          font-family: 'DM Sans', sans-serif;
-          font-size: 12px;
-          font-weight: 600;
-          text-anchor: middle;
+            fill: #94a3b8;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            text-anchor: middle;
         }
 
-        .full-finetune, .lora-mode {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          width: 100%;
-        }
-
-        .method-badge {
-          display: flex;
-          align-items: center;
-          gap: 1rem;
-          padding: 1rem 1.5rem;
-          border-radius: 12px;
-          margin-top: 1.5rem;
-        }
-
-        .method-badge.traditional {
-          background: rgba(248, 113, 113, 0.1);
-          border: 1px solid rgba(248, 113, 113, 0.3);
-          color: #fca5a5;
-        }
-
-        .method-badge.lora {
-          background: rgba(139, 92, 246, 0.1);
-          border: 1px solid rgba(139, 92, 246, 0.3);
-          color: #c4b5fd;
-        }
-
-        .method-badge .badge-icon {
-          font-size: 1.5rem;
-        }
-
-        .method-badge strong {
-          display: block;
-          font-size: 1rem;
-          margin-bottom: 0.25rem;
-        }
-
-        .method-badge p {
-          font-size: 0.85rem;
-          opacity: 0.8;
-          margin: 0;
+        .success-box, .warning-box {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
         }
 
         .success-box {
-          display: flex;
-          align-items: center;
-          gap: 1rem;
-          padding: 1rem;
-          background: rgba(139, 92, 246, 0.1);
-          border: 1px solid rgba(139, 92, 246, 0.3);
-          border-radius: 8px;
-          color: #c4b5fd;
-          margin-top: 1rem;
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            color: #c4b5fd;
         }
 
         .warning-box {
-          display: flex;
-          align-items: center;
-          gap: 1rem;
-          padding: 1rem;
-          background: rgba(245, 158, 11, 0.1);
-          border: 1px solid rgba(245, 158, 11, 0.3);
-          border-radius: 8px;
-          color: #fbbf24;
-          margin-top: 1rem;
-        }
-
-        .warning-icon {
-          font-size: 1.5rem;
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            color: #fbbf24;
         }
 
         @keyframes pulse {
-          0%, 100% { 
-            opacity: 1;
-            filter: url(#glow) brightness(1);
-          }
-          50% { 
-            opacity: 0.7;
-            filter: url(#glow) brightness(1.3);
-          }
-        }
-
-        @keyframes fadeIn {
-          from { opacity: 0; transform: scale(0.8); }
-          to { opacity: 1; transform: scale(1); }
+            0%, 100% {
+                opacity: 1;
+                filter: url(#glow) brightness(1);
+            }
+            50% {
+                opacity: 0.7;
+                filter: url(#glow) brightness(1.3);
+            }
         }
 
         .progress-bar {
-          position: relative;
-          height: 40px;
-          background: rgba(0, 0, 0, 0.2);
-          border-radius: 20px;
-          overflow: hidden;
-          margin-top: 2rem;
-          border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
+            overflow: hidden;
+            margin-top: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .progress-fill {
-          height: 100%;
-          background: linear-gradient(90deg, #06b6d4, #8b5cf6);
-          transition: width 0.3s ease;
-          box-shadow: 0 0 20px rgba(6, 182, 212, 0.5);
+            height: 100%;
+            background: linear-gradient(90deg, #06b6d4, #8b5cf6);
+            transition: width 0.3s ease;
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.5);
+            width: 0%;
         }
 
         .progress-text {
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          font-weight: 600;
-          color: white;
-          text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: 600;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
         }
 
         .comparison-panel {
-          display: flex;
-          flex-direction: column;
-          gap: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
         }
 
         .comparison-panel h3 {
-          font-family: 'Outfit', sans-serif;
-          font-size: 1.5rem;
-          font-weight: 600;
-          color: #f1f5f9;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #f1f5f9;
         }
 
         .stats-grid {
-          display: grid;
-          gap: 1rem;
+            display: grid;
+            gap: 1rem;
         }
 
         .stat-card {
-          background: rgba(255, 255, 255, 0.05);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: 12px;
-          padding: 1.25rem;
-          transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.25rem;
+            transition: all 0.3s ease;
         }
 
         .stat-card:hover {
-          background: rgba(255, 255, 255, 0.08);
-          transform: translateX(4px);
-          border-color: rgba(6, 182, 212, 0.3);
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateX(4px);
+            border-color: rgba(6, 182, 212, 0.3);
         }
 
         .stat-icon {
-          font-size: 1.5rem;
-          margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
         }
 
         .stat-label {
-          font-size: 0.85rem;
-          color: #94a3b8;
-          margin-bottom: 0.75rem;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-bottom: 0.75rem;
         }
 
         .stat-value {
-          font-family: 'Outfit', sans-serif;
-          font-size: 1.25rem;
-          font-weight: 700;
-          margin-bottom: 0.25rem;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
         }
 
         .stat-value.full {
-          color: #f87171;
+            color: #f87171;
         }
 
         .stat-value.lora {
-          color: #34d399;
+            color: #34d399;
         }
 
         .stat-badge {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.25rem;
-          padding: 0.25rem 0.75rem;
-          background: rgba(16, 185, 129, 0.1);
-          border: 1px solid rgba(16, 185, 129, 0.3);
-          border-radius: 12px;
-          color: #34d399;
-          font-size: 0.75rem;
-          font-weight: 600;
-          margin-top: 0.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.75rem;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 12px;
+            color: #34d399;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
         }
 
         .info-box, .tip-box {
-          background: rgba(255, 255, 255, 0.05);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: 12px;
-          padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
         }
 
         .info-box h4 {
-          font-family: 'Outfit', sans-serif;
-          font-size: 1.1rem;
-          font-weight: 600;
-          color: #06b6d4;
-          margin-bottom: 1rem;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #06b6d4;
+            margin-bottom: 1rem;
         }
 
         .info-box ul {
-          list-style: none;
-          display: flex;
-          flex-direction: column;
-          gap: 0.75rem;
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
         }
 
         .info-box li {
-          padding-left: 1.5rem;
-          position: relative;
-          color: #cbd5e1;
-          line-height: 1.6;
+            padding-left: 1.5rem;
+            position: relative;
+            color: #cbd5e1;
+            line-height: 1.6;
         }
 
         .info-box li::before {
-          content: '→';
-          position: absolute;
-          left: 0;
-          color: #06b6d4;
-          font-weight: bold;
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: #06b6d4;
+            font-weight: bold;
         }
 
         .info-box strong {
-          color: #f1f5f9;
+            color: #f1f5f9;
         }
 
         .tip-box {
-          display: flex;
-          gap: 1rem;
-          background: rgba(139, 92, 246, 0.1);
-          border-color: rgba(139, 92, 246, 0.3);
+            display: flex;
+            gap: 1rem;
+            background: rgba(139, 92, 246, 0.1);
+            border-color: rgba(139, 92, 246, 0.3);
         }
 
         .tip-icon {
-          font-size: 1.5rem;
+            font-size: 1.5rem;
         }
 
         .tip-box strong {
-          color: #c4b5fd;
+            color: #c4b5fd;
+        }
+
+        .hidden {
+            display: none;
         }
 
         @media (max-width: 1200px) {
-          .content {
-            grid-template-columns: 1fr;
-          }
+            .content {
+                grid-template-columns: 1fr;
+            }
 
-          .network-svg {
-            width: 100%;
-            height: auto;
-          }
+            .network-svg {
+                width: 100%;
+                height: auto;
+            }
         }
 
         @media (max-width: 768px) {
-          .app {
-            padding: 1rem;
-          }
+            body {
+                padding: 1rem;
+            }
 
-          .header h1 {
-            font-size: 1.5rem;
-          }
+            .header h1 {
+                font-size: 1.5rem;
+            }
 
-          .tabs {
-            flex-direction: column;
-          }
+            .tabs {
+                flex-direction: column;
+            }
 
-          .visualization-header {
-            flex-direction: column;
-            gap: 1rem;
-            align-items: flex-start;
-          }
+            .visualization-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
 
-          .network-svg {
-            width: 100%;
-            overflow-x: auto;
-          }
+            .network-svg {
+                width: 100%;
+                overflow-x: auto;
+            }
         }
-      `}</style>
+    </style>
+</head>
+<body>
+    <div class="app">
+        <header class="header">
+            <div class="header-content">
+                <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7"/>
+                    <rect x="14" y="3" width="7" height="7"/>
+                    <rect x="14" y="14" width="7" height="7"/>
+                    <rect x="3" y="14" width="7" height="7"/>
+                </svg>
+                <div>
+                    <h1>LoRA: Parameter-Efficient Fine-Tuning</h1>
+                    <p>Jak trenować modele z miliardami parametrów na konsumerskich GPU</p>
+                </div>
+            </div>
+        </header>
+
+        <div class="tabs">
+            <button class="tab active" data-tab="full">
+                Full Fine-tuning (7B parametrów)
+            </button>
+            <button class="tab" data-tab="lora">
+                LoRA Fine-tuning (4.2M parametrów)
+            </button>
+        </div>
+
+        <div class="content">
+            <div class="visualization-area">
+                <div class="visualization-header">
+                    <h2 id="viz-title">
+                        Wszystkie miliardy parametrów są aktualizowane
+                    </h2>
+                    <div class="controls">
+                        <button class="control-btn primary" id="playBtn">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                <polygon points="5 3 19 12 5 21 5 3"/>
+                            </svg>
+                            Start
+                        </button>
+                        <button class="control-btn" id="resetBtn">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="1 4 1 10 7 10"/>
+                                <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+                            </svg>
+                            Reset
+                        </button>
+                    </div>
+                </div>
+
+                <div id="full-view" class="full-finetune">
+                    <div class="network-container">
+                        <div class="network-header">
+                            <h3>Model językowy (np. LLaMA-7B)</h3>
+                            <p>7 miliardów wag w pełnej sieci - wszystkie są aktualizowane</p>
+                        </div>
+                        <svg width="700" height="400" class="network-svg" id="fullSvg"></svg>
+                    </div>
+                    <div class="warning-box">
+                        <span style="font-size: 1.5rem;">⚠️</span>
+                        <div>
+                            <strong>Problem:</strong> Aktualizujemy wszystkie 7 miliardów wag w modelu
+                            <br />
+                            Wymaga kart datacenter GPU (A100/H100) i bardzo dużo czasu
+                        </div>
+                    </div>
+                </div>
+
+                <div id="lora-view" class="lora-mode hidden">
+                    <div class="network-container">
+                        <div class="network-header">
+                            <h3>LLaMA-7B z adapterem LoRA (rank=16)</h3>
+                            <p>7 miliardów wag zamrożone, ~4.2 miliona parametrów adaptera trenowane</p>
+                        </div>
+                        <svg width="700" height="400" class="network-svg" id="loraSvg"></svg>
+                    </div>
+                    <div class="success-box">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                        </svg>
+                        <div>
+                            <strong>LoRA:</strong> Małe adaptery niskorangowe dodają nową ścieżkę
+                            <br />
+                            99.94% mniej parametrów do trenowania! Możesz użyć konsumerskiej karty RTX 3090/4090
+                        </div>
+                    </div>
+                </div>
+
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                    <span class="progress-text" id="progressText">Trening: 0%</span>
+                </div>
+            </div>
+
+            <div class="comparison-panel">
+                <h3>Porównanie metod</h3>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">🔢</div>
+                        <div class="stat-label">Parametry do treningu</div>
+                        <div class="stat-value full">7 miliardów</div>
+                        <div class="stat-value lora">4.2 miliona</div>
+                        <div class="stat-badge">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+                            </svg>
+                            <span>99.94% mniej</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">💾</div>
+                        <div class="stat-label">Pamięć GPU</div>
+                        <div class="stat-value full">28 GB</div>
+                        <div class="stat-value lora">1.2 GB</div>
+                        <div class="stat-badge">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+                            </svg>
+                            <span>95% mniej</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">⏱️</div>
+                        <div class="stat-label">Czas treningu</div>
+                        <div class="stat-value full">48 godz</div>
+                        <div class="stat-value lora">4 godz</div>
+                        <div class="stat-badge">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+                            </svg>
+                            <span>12x szybciej</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-label">Koszt</div>
+                        <div class="stat-value full">$$$$</div>
+                        <div class="stat-value lora">$</div>
+                        <div class="stat-badge">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+                            </svg>
+                            <span>Znacznie taniej</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <h4>Jak to działa?</h4>
+                    <ul>
+                        <li><strong>Zamrożony model bazowy:</strong> Wszystkie 7 miliardów wag oryginalnego modelu pozostaje nietknięte</li>
+                        <li><strong>Adaptery niskorangowe:</strong> Dodajemy małe macierze A (d×r) i B (r×d), gdzie rank r=8,16,32,64</li>
+                        <li><strong>Drastyczna redukcja:</strong> Zamiast trenować 7B parametrów, trenujemy tylko ~4M (0.06%!)</li>
+                        <li><strong>Matematyka:</strong> W′ = W + αBA/r, gdzie W to oryginalne wagi, α to współczynnik skalowania</li>
+                        <li><strong>Wymiana adapterów:</strong> Jeden model bazowy + wiele zestawów adapterów dla różnych zadań (tłumaczenia, kodowanie, medycyna)</li>
+                    </ul>
+                </div>
+
+                <div class="tip-box">
+                    <span class="tip-icon">💡</span>
+                    <div>
+                        <strong>Praktyczny przykład:</strong> LLaMA-7B wymaga normalnie 28GB pamięci VRAM (A100),
+                        ale z LoRA możesz go fine-tunować na RTX 3090 (24GB) lub nawet RTX 4090 (24GB).
+                        Adapter LoRA zajmuje tylko ~17MB na dysku!
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  );
-}
+
+    <script>
+        // State management
+        let activeTab = 'full';
+        let isAnimating = false;
+        let progress = 0;
+        let highlightedCells = new Set();
+        let animationInterval = null;
+
+        // Elements
+        const tabs = document.querySelectorAll('.tab');
+        const playBtn = document.getElementById('playBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const fullView = document.getElementById('full-view');
+        const loraView = document.getElementById('lora-view');
+        const vizTitle = document.getElementById('viz-title');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        const fullSvg = document.getElementById('fullSvg');
+        const loraSvg = document.getElementById('loraSvg');
+
+        // Neural network configuration
+        const layers = [5, 4, 4, 5];
+
+        function getNodePosition(layerIdx, nodeIdx, totalNodes) {
+            const x = (layerIdx * 200) + 50;
+            const spacing = 80;
+            const startY = 200 - (totalNodes * spacing) / 2;
+            const y = startY + (nodeIdx * spacing);
+            return { x, y };
+        }
+
+        function createSVGElement(tag, attrs) {
+            const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+            for (let key in attrs) {
+                el.setAttribute(key, attrs[key]);
+            }
+            return el;
+        }
+
+        function renderNetwork(svg, showAdapter) {
+            svg.innerHTML = '';
+
+            // Add defs
+            const defs = createSVGElement('defs', {});
+
+            const gradient = createSVGElement('linearGradient', {
+                id: 'connectionGradient',
+                x1: '0%',
+                y1: '0%',
+                x2: '100%',
+                y2: '0%'
+            });
+            const stop1 = createSVGElement('stop', { offset: '0%', 'stop-color': '#06b6d4' });
+            const stop2 = createSVGElement('stop', { offset: '100%', 'stop-color': '#8b5cf6' });
+            gradient.appendChild(stop1);
+            gradient.appendChild(stop2);
+
+            const filter = createSVGElement('filter', { id: 'glow' });
+            const blur = createSVGElement('feGaussianBlur', { stdDeviation: '3', result: 'coloredBlur' });
+            const merge = createSVGElement('feMerge', {});
+            const mergeNode1 = createSVGElement('feMergeNode', { in: 'coloredBlur' });
+            const mergeNode2 = createSVGElement('feMergeNode', { in: 'SourceGraphic' });
+            merge.appendChild(mergeNode1);
+            merge.appendChild(mergeNode2);
+            filter.appendChild(blur);
+            filter.appendChild(merge);
+
+            defs.appendChild(gradient);
+            defs.appendChild(filter);
+            svg.appendChild(defs);
+
+            // Render connections
+            let connectionId = 0;
+            for (let layerIdx = 0; layerIdx < layers.length - 1; layerIdx++) {
+                const currentLayerSize = layers[layerIdx];
+                const nextLayerSize = layers[layerIdx + 1];
+
+                for (let i = 0; i < currentLayerSize; i++) {
+                    for (let j = 0; j < nextLayerSize; j++) {
+                        const start = getNodePosition(layerIdx, i, currentLayerSize);
+                        const end = getNodePosition(layerIdx + 1, j, nextLayerSize);
+
+                        const isHighlighted = highlightedCells.has(connectionId % 30);
+                        connectionId++;
+
+                        const line = createSVGElement('line', {
+                            x1: start.x,
+                            y1: start.y,
+                            x2: end.x,
+                            y2: end.y,
+                            class: `connection ${isHighlighted && isAnimating ? 'highlight' : ''}`,
+                            'stroke-width': showAdapter ? 1.5 : 2,
+                            opacity: showAdapter ? 0.3 : 0.6
+                        });
+                        svg.appendChild(line);
+                    }
+                }
+            }
+
+            // Render adapter path if needed
+            if (showAdapter) {
+                const adapterNodes = [
+                    { x: 150, y: 150, label: 'A' },
+                    { x: 150, y: 250, label: 'B' }
+                ];
+
+                const mainNodes = [
+                    getNodePosition(1, 1, layers[1]),
+                    getNodePosition(1, 2, layers[1])
+                ];
+
+                adapterNodes.forEach((adapter, idx) => {
+                    // Connections to adapter
+                    mainNodes.forEach((node) => {
+                        const line = createSVGElement('line', {
+                            x1: node.x,
+                            y1: node.y,
+                            x2: adapter.x,
+                            y2: adapter.y,
+                            class: `adapter-connection ${isAnimating ? 'highlight' : ''}`,
+                            'stroke-width': 2
+                        });
+                        svg.appendChild(line);
+                    });
+
+                    // Adapter node
+                    const g = createSVGElement('g', {});
+                    const circle = createSVGElement('circle', {
+                        cx: adapter.x,
+                        cy: adapter.y,
+                        r: 20,
+                        class: `adapter-node ${isAnimating ? 'highlight' : ''}`
+                    });
+                    const text = createSVGElement('text', {
+                        x: adapter.x,
+                        y: adapter.y + 5,
+                        'text-anchor': 'middle',
+                        class: 'adapter-label'
+                    });
+                    text.textContent = adapter.label;
+                    g.appendChild(circle);
+                    g.appendChild(text);
+                    svg.appendChild(g);
+                });
+            }
+
+            // Render nodes
+            layers.forEach((layerSize, layerIdx) => {
+                for (let nodeIdx = 0; nodeIdx < layerSize; nodeIdx++) {
+                    const { x, y } = getNodePosition(layerIdx, nodeIdx, layerSize);
+                    const isInputOutput = layerIdx === 0 || layerIdx === layers.length - 1;
+
+                    const circle = createSVGElement('circle', {
+                        cx: x,
+                        cy: y,
+                        r: isInputOutput ? 12 : 10,
+                        class: `neuron ${isInputOutput ? 'io-neuron' : ''}`
+                    });
+                    svg.appendChild(circle);
+                }
+            });
+
+            // Layer labels
+            const labels = [
+                { x: 50, y: 30, text: 'Input' },
+                { x: 250, y: 30, text: 'Hidden' },
+                { x: 450, y: 30, text: 'Hidden' },
+                { x: 650, y: 30, text: 'Output' }
+            ];
+
+            labels.forEach(label => {
+                const text = createSVGElement('text', {
+                    x: label.x,
+                    y: label.y,
+                    class: 'layer-label'
+                });
+                text.textContent = label.text;
+                svg.appendChild(text);
+            });
+        }
+
+        function updateVisualization() {
+            if (activeTab === 'full') {
+                fullView.classList.remove('hidden');
+                loraView.classList.add('hidden');
+                vizTitle.textContent = 'Wszystkie miliardy parametrów są aktualizowane';
+                renderNetwork(fullSvg, false);
+            } else {
+                fullView.classList.add('hidden');
+                loraView.classList.remove('hidden');
+                vizTitle.textContent = 'Tylko miliony parametrów adaptera są trenowane';
+                renderNetwork(loraSvg, true);
+            }
+        }
+
+        function startAnimation() {
+            isAnimating = true;
+            playBtn.innerHTML = `
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <rect x="6" y="4" width="4" height="16"/>
+                    <rect x="14" y="4" width="4" height="16"/>
+                </svg>
+                Pauza
+            `;
+
+            animationInterval = setInterval(() => {
+                progress += 2;
+                if (progress >= 100) {
+                    progress = 100;
+                    stopAnimation();
+                }
+
+                progressFill.style.width = progress + '%';
+                progressText.textContent = progress === 100 ? 'Trening zakończony!' : `Trening: ${progress}%`;
+
+                // Update highlighted cells
+                highlightedCells = new Set();
+                const numCells = activeTab === 'full' ? 20 : 8;
+                for (let i = 0; i < numCells; i++) {
+                    highlightedCells.add(Math.floor(Math.random() * 64));
+                }
+
+                updateVisualization();
+            }, 100);
+        }
+
+        function stopAnimation() {
+            isAnimating = false;
+            if (animationInterval) {
+                clearInterval(animationInterval);
+                animationInterval = null;
+            }
+            playBtn.innerHTML = `
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <polygon points="5 3 19 12 5 21 5 3"/>
+                </svg>
+                Start
+            `;
+        }
+
+        function reset() {
+            stopAnimation();
+            progress = 0;
+            highlightedCells = new Set();
+            progressFill.style.width = '0%';
+            progressText.textContent = 'Trening: 0%';
+            updateVisualization();
+        }
+
+        // Event listeners
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                activeTab = tab.dataset.tab;
+                reset();
+            });
+        });
+
+        playBtn.addEventListener('click', () => {
+            if (isAnimating) {
+                stopAnimation();
+            } else {
+                startAnimation();
+            }
+        });
+
+        resetBtn.addEventListener('click', reset);
+
+        // Initialize
+        updateVisualization();
+    </script>
+</body>
+</html>
