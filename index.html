@@ -252,6 +252,11 @@
             background: var(--gray-50);
             border-radius: 16px;
             border: 1px solid var(--gray-200);
+            width: 100%;
+            max-width: 700px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
         }
 
         .connection {
@@ -684,7 +689,7 @@
                             <h3>Model językowy (np. LLaMA-7B)</h3>
                             <p>7 miliardów wag w pełnej sieci - wszystkie są aktualizowane</p>
                         </div>
-                        <svg width="700" height="400" class="network-svg" id="fullSvg"></svg>
+                        <svg viewBox="0 0 640 440" preserveAspectRatio="xMidYMid meet" class="network-svg" id="fullSvg"></svg>
                     </div>
                     <div class="info-badge warning">
                         <span class="info-badge-icon">⚠️</span>
@@ -701,7 +706,7 @@
                             <h3>LLaMA-7B z adapterem LoRA (rank=16)</h3>
                             <p>7 miliardów wag zamrożone, ~4.2 miliona parametrów adaptera trenowane</p>
                         </div>
-                        <svg width="700" height="400" class="network-svg" id="loraSvg"></svg>
+                        <svg viewBox="0 0 640 440" preserveAspectRatio="xMidYMid meet" class="network-svg" id="loraSvg"></svg>
                     </div>
                     <div class="info-badge success">
                         <span class="info-badge-icon">✨</span>
@@ -844,9 +849,9 @@
         const layers = [5, 4, 4, 5];
 
         function getNodePosition(layerIdx, nodeIdx, totalNodes) {
-            const x = (layerIdx * 200) + 50;
-            const spacing = 80;
-            const startY = 200 - (totalNodes * spacing) / 2;
+            const x = (layerIdx * 170) + 60;
+            const spacing = 60;
+            const startY = 220 - (totalNodes * spacing) / 2;
             const y = startY + (nodeIdx * spacing);
             return { x, y };
         }
@@ -922,8 +927,8 @@
             // Render adapter path if needed
             if (showAdapter) {
                 const adapterNodes = [
-                    { x: 150, y: 150, label: 'A' },
-                    { x: 150, y: 250, label: 'B' }
+                    { x: 145, y: 190, label: 'A' },
+                    { x: 145, y: 250, label: 'B' }
                 ];
 
                 const mainNodes = [
@@ -984,10 +989,10 @@
 
             // Layer labels
             const labels = [
-                { x: 50, y: 30, text: 'Input' },
-                { x: 250, y: 30, text: 'Hidden' },
-                { x: 450, y: 30, text: 'Hidden' },
-                { x: 650, y: 30, text: 'Output' }
+                { x: 60, y: 35, text: 'Input' },
+                { x: 230, y: 35, text: 'Hidden' },
+                { x: 400, y: 35, text: 'Hidden' },
+                { x: 570, y: 35, text: 'Output' }
             ];
 
             labels.forEach(label => {
