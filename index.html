@@ -8,476 +8,262 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
-            --primary: #6366f1;
-            --primary-light: #818cf8;
-            --primary-dark: #4f46e5;
-            --secondary: #8b5cf6;
-            --secondary-light: #a78bfa;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
+            --accent: #6366f1;
+            --accent-hover: #4f46e5;
+            --accent-subtle: #eef2ff;
+            --purple: #8b5cf6;
+            --purple-light: #a78bfa;
+            --purple-subtle: #f5f3ff;
+            --green: #10b981;
+            --green-subtle: #ecfdf5;
+            --amber: #f59e0b;
+            --amber-subtle: #fffbeb;
+            --red: #ef4444;
             --frozen: #94a3b8;
             --frozen-light: #cbd5e1;
-            --gray-50: #f9fafb;
-            --gray-100: #f3f4f6;
-            --gray-200: #e5e7eb;
-            --gray-300: #d1d5db;
-            --gray-400: #9ca3af;
-            --gray-500: #6b7280;
-            --gray-600: #4b5563;
-            --gray-700: #374151;
-            --gray-800: #1f2937;
-            --gray-900: #111827;
-            --white: #ffffff;
-            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --text: #0f172a;
+            --text-secondary: #64748b;
+            --text-tertiary: #94a3b8;
+            --border: #e2e8f0;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --radius: 12px;
+            --radius-sm: 8px;
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #e8eef5 100%);
-            color: var(--gray-800);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
             line-height: 1.6;
             min-height: 100vh;
-            padding: 2rem 1rem;
             -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 1280px;
             margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
         }
 
-        /* Header */
+        /* ── Header ─────────────────────────────────────────────────── */
         .header {
-            background: var(--white);
-            border-radius: 20px;
-            padding: 3rem;
-            margin-bottom: 2rem;
-            box-shadow: var(--shadow-lg);
-            border: 1px solid var(--gray-200);
-            position: relative;
-            overflow: hidden;
+            padding: 2.5rem 0 1.5rem;
         }
 
-        .header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        .header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: -0.025em;
         }
 
-        .header-content {
-            display: flex;
-            align-items: center;
-            gap: 2rem;
+        .header p {
+            font-size: 0.9375rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
         }
 
-        .header-icon {
-            width: 64px;
-            height: 64px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            box-shadow: 0 8px 16px rgba(99, 102, 241, 0.25);
-        }
-
-        .header-icon svg {
-            width: 36px;
-            height: 36px;
-            color: var(--white);
-        }
-
-        .header-text h1 {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: var(--gray-900);
-            margin-bottom: 0.5rem;
-            letter-spacing: -0.02em;
-        }
-
-        .header-text p {
-            font-size: 1.125rem;
-            color: var(--gray-600);
-            font-weight: 400;
-        }
-
-        /* Tabs */
+        /* ── Tabs ───────────────────────────────────────────────────── */
         .tabs {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            background: var(--white);
-            padding: 0.5rem;
-            border-radius: 16px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--gray-200);
+            display: inline-flex;
+            gap: 0.25rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 0.25rem;
+            border-radius: var(--radius);
+            margin-bottom: 1.5rem;
         }
 
         .tab {
-            flex: 1;
-            padding: 1rem 1.5rem;
+            padding: 0.5rem 1.25rem;
             background: transparent;
             border: none;
-            border-radius: 12px;
-            color: var(--gray-600);
-            font-size: 0.95rem;
-            font-weight: 600;
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            font-size: 0.8125rem;
+            font-weight: 500;
             cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
+            transition: all 0.15s ease;
+            white-space: nowrap;
         }
 
-        .tab:hover {
-            background: var(--gray-50);
-            color: var(--gray-900);
-        }
+        .tab:hover { color: var(--text); background: var(--bg); }
 
         .tab.active {
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
-            color: var(--white);
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            background: var(--accent);
+            color: white;
         }
 
-        /* Main Content */
-        .content {
+        /* ── Main grid ──────────────────────────────────────────────── */
+        .main-grid {
             display: grid;
-            grid-template-columns: 1.5fr 1fr;
-            gap: 2rem;
+            grid-template-columns: 1fr 340px;
+            gap: 1.5rem;
+            align-items: start;
         }
 
-        /* Visualization Area */
-        .visualization-area {
-            background: var(--white);
-            border-radius: 20px;
-            padding: 2.5rem;
-            box-shadow: var(--shadow-lg);
-            border: 1px solid var(--gray-200);
+        /* ── Card base ──────────────────────────────────────────────── */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
         }
 
-        .visualization-header {
+        /* ── Visualization card ─────────────────────────────────────── */
+        .viz-card {
+            padding: 1.5rem;
+        }
+
+        .viz-top {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 2rem;
-            gap: 1rem;
+            align-items: center;
+            margin-bottom: 1.25rem;
         }
 
-        .visualization-header h2 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--gray-900);
-            line-height: 1.3;
-            flex: 1;
+        .viz-top h2 {
+            font-size: 0.9375rem;
+            font-weight: 600;
+            color: var(--text);
         }
 
         .controls {
             display: flex;
-            gap: 0.75rem;
-            flex-shrink: 0;
-        }
-
-        .control-btn {
-            display: flex;
-            align-items: center;
             gap: 0.5rem;
-            padding: 0.75rem 1.25rem;
-            border: 1px solid var(--gray-300);
-            border-radius: 10px;
-            background: var(--white);
-            color: var(--gray-700);
-            font-size: 0.875rem;
-            font-weight: 600;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.4375rem 0.875rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            background: var(--surface);
+            color: var(--text-secondary);
+            font-size: 0.8125rem;
+            font-weight: 500;
             cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: var(--shadow-sm);
+            transition: all 0.15s ease;
         }
 
-        .control-btn:hover {
-            background: var(--gray-50);
-            border-color: var(--gray-400);
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-md);
+        .btn:hover { border-color: var(--text-tertiary); color: var(--text); }
+
+        .btn.primary {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
         }
 
-        .control-btn.primary {
-            background: var(--primary);
-            border-color: var(--primary);
-            color: var(--white);
-        }
+        .btn.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
 
-        .control-btn.primary:hover {
-            background: var(--primary-dark);
-            border-color: var(--primary-dark);
-            box-shadow: 0 8px 16px rgba(99, 102, 241, 0.3);
-        }
-
-        /* Network Container */
-        .network-container {
-            margin-bottom: 2rem;
-        }
-
-        .network-header {
+        /* ── Network SVG ────────────────────────────────────────────── */
+        .network-label {
             text-align: center;
-            margin-bottom: 1.5rem;
+            margin-bottom: 0.75rem;
         }
 
-        .network-header h3 {
-            font-size: 1.125rem;
-            font-weight: 700;
-            color: var(--gray-900);
-            margin-bottom: 0.5rem;
+        .network-label h3 {
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: var(--text);
         }
 
-        .network-header p {
-            font-size: 0.875rem;
-            color: var(--gray-600);
+        .network-label p {
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+            margin-top: 0.125rem;
         }
 
         .network-svg {
-            background: var(--gray-50);
-            border-radius: 16px;
-            border: 1px solid var(--gray-200);
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
             width: 100%;
-            max-width: 700px;
-            height: auto;
             display: block;
-            margin: 0 auto;
         }
 
-        /* Connections */
-        .connection {
-            stroke: var(--gray-300);
-            stroke-width: 2;
-            opacity: 0.6;
-        }
+        .connection { stroke: #d1d5db; stroke-width: 1.5; opacity: 0.5; }
+        .connection.frozen { stroke: var(--frozen-light); stroke-width: 1; opacity: 0.25; }
+        .connection.highlight { stroke: url(#connectionGradient); stroke-width: 2.5; filter: url(#glow); opacity: 1; animation: pulse 1.5s ease-in-out infinite; }
+        .connection.adapter { stroke: var(--purple-light); stroke-width: 1.5; opacity: 0.4; }
+        .connection.adapter.highlight { stroke: url(#adapterGradient); stroke-width: 2.5; filter: url(#adapterGlow); opacity: 1; animation: pulse 1.5s ease-in-out infinite; }
 
-        .connection.frozen {
-            stroke: var(--frozen-light);
-            stroke-width: 1.5;
-            opacity: 0.35;
-        }
+        .neuron { fill: var(--surface); stroke: #d1d5db; stroke-width: 1.5; }
+        .neuron.io-neuron { fill: var(--accent); stroke: var(--accent-hover); stroke-width: 2; }
+        .neuron.frozen { fill: var(--bg); stroke: var(--frozen-light); opacity: 0.6; }
+        .neuron.adapter-neuron { fill: var(--purple-subtle); stroke: var(--purple); stroke-width: 2; }
+        .neuron.adapter-neuron.highlight { fill: rgba(139, 92, 246, 0.3); filter: url(#adapterGlow); animation: pulse 1.5s ease-in-out infinite; }
 
-        .connection.highlight {
-            stroke: url(#connectionGradient);
-            stroke-width: 3;
-            filter: url(#glow);
-            opacity: 1;
-            animation: pulse 1.5s ease-in-out infinite;
-        }
+        .layer-label { fill: var(--text-tertiary); font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; text-anchor: middle; }
+        .layer-label.adapter-label-text { fill: var(--purple); }
+        .frozen-label { fill: var(--frozen); font-family: 'Inter', sans-serif; font-size: 8px; font-weight: 600; text-anchor: middle; letter-spacing: 0.04em; }
+        .dim-label { fill: var(--text-tertiary); font-family: 'Inter', sans-serif; font-size: 8px; font-weight: 600; text-anchor: middle; }
+        .dim-label.adapter-dim { fill: var(--purple-light); }
 
-        .connection.adapter {
-            stroke: var(--secondary);
-            stroke-width: 2;
-            opacity: 0.5;
-        }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-        .connection.adapter.highlight {
-            stroke: url(#adapterGradient);
-            stroke-width: 3;
-            filter: url(#adapterGlow);
-            opacity: 1;
-            animation: pulse 1.5s ease-in-out infinite;
-        }
-
-        /* Neurons */
-        .neuron {
-            fill: var(--white);
-            stroke: var(--gray-400);
-            stroke-width: 2;
-            transition: fill 0.3s ease, stroke 0.3s ease;
-        }
-
-        .neuron.io-neuron {
-            fill: var(--primary);
-            stroke: var(--primary-dark);
-            stroke-width: 2.5;
-        }
-
-        .neuron.frozen {
-            fill: var(--gray-100);
-            stroke: var(--frozen);
-            stroke-width: 2;
-            opacity: 0.7;
-        }
-
-        .neuron.adapter-neuron {
-            fill: rgba(139, 92, 246, 0.2);
-            stroke: var(--secondary);
-            stroke-width: 3;
-        }
-
-        .neuron.adapter-neuron.highlight {
-            fill: rgba(139, 92, 246, 0.4);
-            filter: url(#adapterGlow);
-            animation: pulse 1.5s ease-in-out infinite;
-        }
-
-        /* Labels */
-        .layer-label {
-            fill: var(--gray-500);
-            font-family: 'Inter', sans-serif;
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            text-anchor: middle;
-        }
-
-        .layer-label.adapter-label-text {
-            fill: var(--secondary);
-            font-weight: 700;
-        }
-
-        .frozen-label {
-            fill: var(--frozen);
-            font-family: 'Inter', sans-serif;
-            font-size: 9px;
-            font-weight: 600;
-            text-anchor: middle;
-            letter-spacing: 0.03em;
-        }
-
-        .dim-label {
-            fill: var(--gray-400);
-            font-family: 'Inter', sans-serif;
-            font-size: 9px;
-            font-weight: 600;
-            text-anchor: middle;
-        }
-
-        .dim-label.adapter-dim {
-            fill: var(--secondary-light);
-        }
-
-        /* Legend */
+        /* ── Legend ──────────────────────────────────────────────────── */
         .legend {
             display: flex;
-            gap: 1.5rem;
+            gap: 1rem;
             justify-content: center;
-            margin-top: 1rem;
+            margin-top: 0.75rem;
             flex-wrap: wrap;
         }
 
         .legend-item {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            font-size: 0.75rem;
-            color: var(--gray-600);
-            font-weight: 500;
+            gap: 0.375rem;
+            font-size: 0.6875rem;
+            color: var(--text-tertiary);
         }
 
-        .legend-swatch {
-            width: 24px;
-            height: 4px;
-            border-radius: 2px;
-        }
+        .legend-swatch { width: 16px; height: 3px; border-radius: 2px; }
+        .legend-swatch.active { background: var(--accent); }
+        .legend-swatch.frozen { background: var(--frozen-light); }
+        .legend-swatch.adapter { background: var(--purple); }
+        .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+        .legend-dot.adapter { background: var(--purple-subtle); border: 1.5px solid var(--purple); }
 
-        .legend-swatch.active {
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-        }
-
-        .legend-swatch.frozen {
-            background: var(--frozen-light);
-        }
-
-        .legend-swatch.adapter {
-            background: linear-gradient(90deg, var(--secondary), var(--secondary-light));
-        }
-
-        .legend-circle {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-        }
-
-        .legend-circle.adapter {
-            background: rgba(139, 92, 246, 0.25);
-            border: 2px solid var(--secondary);
-        }
-
-        /* Info Boxes */
+        /* ── Info badge ─────────────────────────────────────────────── */
         .info-badge {
             display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1.25rem;
-            border-radius: 12px;
-            font-size: 0.875rem;
-            line-height: 1.6;
+            gap: 0.75rem;
+            padding: 0.875rem 1rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.8125rem;
+            line-height: 1.5;
+            margin-top: 1rem;
         }
 
-        .info-badge.warning {
-            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-            border: 1px solid #fcd34d;
-            color: #92400e;
-        }
+        .info-badge.warning { background: var(--amber-subtle); color: #92400e; border: 1px solid #fde68a; }
+        .info-badge.success { background: var(--green-subtle); color: #065f46; border: 1px solid #a7f3d0; }
+        .info-badge strong { font-weight: 600; }
+        .info-badge-icon { flex-shrink: 0; font-size: 1rem; }
 
-        .info-badge.success {
-            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-            border: 1px solid #6ee7b7;
-            color: #065f46;
-        }
-
-        .info-badge-icon {
-            font-size: 1.5rem;
-            flex-shrink: 0;
-        }
-
-        .info-badge strong {
-            font-weight: 700;
-        }
-
-        /* Progress Bar */
+        /* ── Progress bar ───────────────────────────────────────────── */
         .progress-bar {
             position: relative;
-            height: 48px;
-            background: var(--gray-100);
-            border-radius: 12px;
+            height: 36px;
+            background: var(--bg);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            margin-top: 1rem;
             overflow: hidden;
-            border: 1px solid var(--gray-200);
         }
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--accent);
+            transition: width 0.2s ease;
             width: 0%;
-            position: relative;
-        }
-
-        .progress-fill::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            animation: shimmer 2s infinite;
-        }
-
-        @keyframes shimmer {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
         }
 
         .progress-text {
@@ -485,489 +271,313 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-weight: 700;
-            color: var(--gray-700);
-            font-size: 0.875rem;
+            font-weight: 600;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
             letter-spacing: 0.02em;
         }
 
-        /* Comparison Panel */
-        .comparison-panel {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-
-        .panel-section {
-            background: var(--white);
-            border-radius: 16px;
-            padding: 2rem;
-            box-shadow: var(--shadow-lg);
-            border: 1px solid var(--gray-200);
-        }
-
-        .panel-section h3 {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--gray-900);
-            margin-bottom: 1.5rem;
-        }
-
-        /* Stats Grid */
-        .stats-grid {
-            display: grid;
-            gap: 1rem;
-        }
-
-        .stat-card {
-            padding: 1.25rem;
-            border-radius: 12px;
-            background: var(--gray-50);
-            border: 1px solid var(--gray-200);
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .stat-card:hover {
-            background: var(--white);
-            border-color: var(--primary);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .stat-header {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
+        /* ── Stats panel ────────────────────────────────────────────── */
+        .stats-panel h3 {
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
             margin-bottom: 1rem;
         }
 
-        .stat-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
+        .stat-row {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.25rem;
-            background: var(--white);
-            border: 1px solid var(--gray-200);
-        }
-
-        .stat-label {
-            font-size: 0.8125rem;
-            color: var(--gray-600);
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .stat-values {
-            display: flex;
-            justify-content: space-between;
             align-items: baseline;
-            margin-bottom: 0.75rem;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border);
         }
 
-        .stat-value {
-            font-size: 1.5rem;
-            font-weight: 800;
-            letter-spacing: -0.02em;
+        .stat-row:last-child { border-bottom: none; }
+
+        .stat-name {
+            font-size: 0.8125rem;
+            color: var(--text-secondary);
         }
 
-        .stat-value.full {
-            color: var(--danger);
+        .stat-values-row {
+            display: flex;
+            align-items: baseline;
+            gap: 0.5rem;
         }
 
-        .stat-value.lora {
-            color: var(--success);
-        }
-
-        .stat-arrow {
-            font-size: 1.25rem;
-            color: var(--gray-400);
-        }
-
-        .stat-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.375rem;
-            padding: 0.375rem 0.75rem;
-            background: linear-gradient(135deg, #d1fae5, #a7f3d0);
-            border-radius: 8px;
-            color: #065f46;
-            font-size: 0.75rem;
+        .stat-val {
+            font-size: 0.9375rem;
             font-weight: 700;
-            letter-spacing: 0.02em;
+            font-variant-numeric: tabular-nums;
         }
 
-        .stat-note {
-            font-size: 0.7rem;
-            color: var(--gray-500);
-            margin-top: 0.375rem;
-            line-height: 1.4;
+        .stat-val.full { color: var(--red); }
+        .stat-val.lora { color: var(--green); }
+        .stat-arrow { color: var(--text-tertiary); font-size: 0.75rem; }
+
+        .stat-tag {
+            display: inline-block;
+            padding: 0.125rem 0.5rem;
+            background: var(--green-subtle);
+            border-radius: 4px;
+            color: var(--green);
+            font-size: 0.625rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            margin-left: 0.5rem;
         }
 
-        /* Info Box */
+        .stat-footnote {
+            font-size: 0.6875rem;
+            color: var(--text-tertiary);
+            padding-top: 0.25rem;
+        }
+
+        /* ── Full-width bottom sections ─────────────────────────────── */
+        .bottom-sections {
+            margin-top: 1.5rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .bottom-section h3 {
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 1rem;
+        }
+
+        /* ── Info list ──────────────────────────────────────────────── */
         .info-list {
             list-style: none;
             display: flex;
             flex-direction: column;
-            gap: 1rem;
+            gap: 0.625rem;
         }
 
         .info-list li {
-            display: flex;
-            gap: 0.75rem;
-            font-size: 0.875rem;
+            font-size: 0.8125rem;
             line-height: 1.6;
-            color: var(--gray-700);
+            color: var(--text-secondary);
+            padding-left: 1rem;
+            position: relative;
         }
 
         .info-list li::before {
-            content: '\2192';
-            color: var(--primary);
-            font-weight: 700;
-            flex-shrink: 0;
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.55em;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--accent);
         }
 
-        .info-list strong {
-            color: var(--gray-900);
-            font-weight: 700;
-        }
+        .info-list strong { color: var(--text); font-weight: 600; }
 
         .info-list code {
-            background: var(--gray-100);
-            padding: 0.125rem 0.375rem;
-            border-radius: 4px;
-            font-size: 0.8125rem;
+            background: var(--bg);
+            padding: 0.0625rem 0.3125rem;
+            border-radius: 3px;
+            font-size: 0.75rem;
             font-family: 'SF Mono', 'Fira Code', monospace;
-            color: var(--primary-dark);
+            color: var(--accent);
         }
 
-        /* Tip Box */
+        /* ── Tip box ────────────────────────────────────────────────── */
         .tip-box {
-            background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%);
-            border: 1px solid #c4b5fd;
-            border-radius: 12px;
-            padding: 1.5rem;
-            display: flex;
-            gap: 1rem;
-        }
-
-        .tip-icon {
-            font-size: 1.5rem;
-            flex-shrink: 0;
-        }
-
-        .tip-content {
-            font-size: 0.875rem;
+            background: var(--purple-subtle);
+            border: 1px solid #e9e5ff;
+            border-radius: var(--radius-sm);
+            padding: 1rem 1.25rem;
+            font-size: 0.8125rem;
             line-height: 1.6;
             color: #5b21b6;
         }
 
-        .tip-content strong {
-            font-weight: 700;
-            color: #4c1d95;
-        }
+        .tip-box strong { font-weight: 600; color: #4c1d95; }
 
-        /* Animations */
-        @keyframes pulse {
-            0%, 100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.5;
-            }
-        }
+        .hidden { display: none; }
 
-        .hidden {
-            display: none;
-        }
-
-        /* Responsive */
+        /* ── Responsive ─────────────────────────────────────────────── */
         @media (max-width: 1024px) {
-            .content {
-                grid-template-columns: 1fr;
-            }
-
-            .header-content {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .header-text h1 {
-                font-size: 2rem;
-            }
+            .main-grid { grid-template-columns: 1fr; }
+            .bottom-sections { grid-template-columns: 1fr; }
         }
 
-        @media (max-width: 768px) {
-            body {
-                padding: 1rem;
-            }
-
-            .header {
-                padding: 2rem;
-            }
-
-            .header-text h1 {
-                font-size: 1.75rem;
-            }
-
-            .tabs {
-                flex-direction: column;
-            }
-
-            .visualization-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .controls {
-                width: 100%;
-            }
-
-            .control-btn {
-                flex: 1;
-            }
-
-            .network-svg {
-                width: 100%;
-                height: auto;
-            }
-
-            .legend {
-                gap: 0.75rem;
-            }
+        @media (max-width: 640px) {
+            .container { padding: 1rem 1rem 3rem; }
+            .header h1 { font-size: 1.375rem; }
+            .tabs { width: 100%; }
+            .tab { flex: 1; text-align: center; font-size: 0.75rem; padding: 0.5rem; }
+            .viz-top { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+            .controls { width: 100%; }
+            .btn { flex: 1; justify-content: center; }
         }
     </style>
 </head>
 <body>
     <div class="container">
+
         <header class="header">
-            <div class="header-content">
-                <div class="header-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-                        <path d="M2 17l10 5 10-5"/>
-                        <path d="M2 12l10 5 10-5"/>
-                    </svg>
-                </div>
-                <div class="header-text">
-                    <h1>LoRA: Parameter-Efficient Fine-Tuning</h1>
-                    <p>Jak efektywnie dostrajać duże modele językowe bez potrzeby trenowania wszystkich wag</p>
-                </div>
-            </div>
+            <h1>LoRA: Parameter-Efficient Fine-Tuning</h1>
+            <p>Jak efektywnie dostrajać duże modele językowe bez potrzeby trenowania wszystkich wag</p>
         </header>
 
         <div class="tabs">
-            <button class="tab active" data-tab="full">
-                Full Fine-tuning (wszystkie 7B parametrów)
-            </button>
-            <button class="tab" data-tab="lora">
-                LoRA Fine-tuning (tylko ~4.2M parametrów adaptera)
-            </button>
+            <button class="tab active" data-tab="full">Full Fine-tuning</button>
+            <button class="tab" data-tab="lora">LoRA Fine-tuning</button>
         </div>
 
-        <div class="content">
-            <div class="visualization-area">
-                <div class="visualization-header">
-                    <h2 id="viz-title">
-                        Wszystkie miliardy parametrów są aktualizowane
-                    </h2>
+        <!-- ── Top grid: visualization + stats ────────────────────── -->
+        <div class="main-grid">
+
+            <div class="card viz-card">
+                <div class="viz-top">
+                    <h2 id="viz-title">Trenowanie wszystkich parametrów</h2>
                     <div class="controls">
-                        <button class="control-btn primary" id="playBtn">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                                <polygon points="5 3 19 12 5 21 5 3"/>
-                            </svg>
+                        <button class="btn primary" id="playBtn">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                             Start
                         </button>
-                        <button class="control-btn" id="resetBtn">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <polyline points="1 4 1 10 7 10"/>
-                                <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
-                            </svg>
+                        <button class="btn" id="resetBtn">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
                             Reset
                         </button>
                     </div>
                 </div>
 
-                <div id="full-view" class="full-finetune">
-                    <div class="network-container">
-                        <div class="network-header">
-                            <h3>Model językowy (np. LLaMA-7B)</h3>
-                            <p>7 miliardów wag w pełnej sieci &mdash; każda jest aktualizowana w każdym kroku treningu</p>
-                        </div>
-                        <svg viewBox="0 0 640 400" preserveAspectRatio="xMidYMid meet" class="network-svg" id="fullSvg"></svg>
-                        <div class="legend" id="fullLegend">
-                            <div class="legend-item">
-                                <span class="legend-swatch active"></span>
-                                Aktywnie trenowane wagi
-                            </div>
-                        </div>
+                <div id="full-view">
+                    <div class="network-label">
+                        <h3>LLaMA-7B</h3>
+                        <p>7 miliardów wag &mdash; każda aktualizowana w każdym kroku</p>
+                    </div>
+                    <svg viewBox="0 0 640 380" preserveAspectRatio="xMidYMid meet" class="network-svg" id="fullSvg"></svg>
+                    <div class="legend">
+                        <div class="legend-item"><span class="legend-swatch active"></span> Trenowane wagi</div>
                     </div>
                     <div class="info-badge warning">
                         <span class="info-badge-icon">&#9888;&#65039;</span>
-                        <div>
-                            <strong>Problem:</strong> Aktualizujemy wszystkie 7 miliardów wag w modelu.
-                            Wymaga wielu kart GPU klasy datacenter (A100/H100), ogromnej ilości pamięci VRAM
-                            (ponad 120 GB na stany optymalizatora w FP32) i bardzo dużo czasu.
-                        </div>
+                        <div><strong>Problem:</strong> Aktualizujemy wszystkie 7B wag. Wymaga wielu kart A100/H100, &gt;120 GB VRAM i bardzo dużo czasu.</div>
                     </div>
                 </div>
 
-                <div id="lora-view" class="lora-mode hidden">
-                    <div class="network-container">
-                        <div class="network-header">
-                            <h3>LLaMA-7B z warstwą LoRA (rank=2)</h3>
-                            <p>Warstwa niskorangowa (fioletowa) &mdash; jedyna trenowana część sieci. Reszta zamrożona (szara).</p>
-                        </div>
-                        <svg viewBox="0 0 640 400" preserveAspectRatio="xMidYMid meet" class="network-svg" id="loraSvg"></svg>
-                        <div class="legend" id="loraLegend">
-                            <div class="legend-item">
-                                <span class="legend-swatch frozen"></span>
-                                Zamrożone wagi (bez zmian)
-                            </div>
-                            <div class="legend-item">
-                                <span class="legend-circle adapter"></span>
-                                Warstwa LoRA (bottleneck)
-                            </div>
-                            <div class="legend-item">
-                                <span class="legend-swatch adapter"></span>
-                                Trenowane wagi adaptera
-                            </div>
-                        </div>
+                <div id="lora-view" class="hidden">
+                    <div class="network-label">
+                        <h3>LLaMA-7B + LoRA (r=2)</h3>
+                        <p>Zamrożona sieć bazowa (szara) + trenowana warstwa adaptera (fioletowa)</p>
+                    </div>
+                    <svg viewBox="0 0 640 380" preserveAspectRatio="xMidYMid meet" class="network-svg" id="loraSvg"></svg>
+                    <div class="legend">
+                        <div class="legend-item"><span class="legend-swatch frozen"></span> Zamrożone</div>
+                        <div class="legend-item"><span class="legend-dot adapter"></span> LoRA bottleneck</div>
+                        <div class="legend-item"><span class="legend-swatch adapter"></span> Trenowane</div>
                     </div>
                     <div class="info-badge success">
                         <span class="info-badge-icon">&#10024;</span>
-                        <div>
-                            <strong>LoRA:</strong> Niskorangowa warstwa (A&middot;B) jest wstawiona jako wąski bottleneck
-                            &mdash; tylko jej wagi są trenowane. Zamrożony model bazowy + mała warstwa adaptera = 99.94% mniej parametrów!
-                        </div>
+                        <div><strong>LoRA:</strong> Niskorangowy bottleneck (A&middot;B) &mdash; jedyna trenowana warstwa. 99.94% mniej parametrów!</div>
                     </div>
                 </div>
 
-                <div class="progress-bar" style="margin-top: 2rem;">
+                <div class="progress-bar">
                     <div class="progress-fill" id="progressFill"></div>
                     <span class="progress-text" id="progressText">Trening: 0%</span>
                 </div>
             </div>
 
-            <div class="comparison-panel">
-                <div class="panel-section">
-                    <h3>Porównanie metod</h3>
+            <div class="card stats-panel">
+                <h3>Porównanie</h3>
 
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-header">
-                                <div class="stat-icon">&#128290;</div>
-                                <div class="stat-label">Trenowane parametry</div>
-                            </div>
-                            <div class="stat-values">
-                                <div class="stat-value full">7B</div>
-                                <div class="stat-arrow">&rarr;</div>
-                                <div class="stat-value lora">4.2M</div>
-                            </div>
-                            <div class="stat-badge">
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
-                                </svg>
-                                99.94% MNIEJ
-                            </div>
-                        </div>
-
-                        <div class="stat-card">
-                            <div class="stat-header">
-                                <div class="stat-icon">&#128190;</div>
-                                <div class="stat-label">Pamięć GPU (VRAM)</div>
-                            </div>
-                            <div class="stat-values">
-                                <div class="stat-value full">&gt;120GB</div>
-                                <div class="stat-arrow">&rarr;</div>
-                                <div class="stat-value lora">~18GB</div>
-                            </div>
-                            <div class="stat-badge">
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
-                                </svg>
-                                ~85% MNIEJ
-                            </div>
-                            <div class="stat-note">Full FT: wagi FP32 + optymalizator + gradienty. LoRA (FP16): model bazowy + adapter.</div>
-                        </div>
-
-                        <div class="stat-card">
-                            <div class="stat-header">
-                                <div class="stat-icon">&#9201;&#65039;</div>
-                                <div class="stat-label">Czas treningu</div>
-                            </div>
-                            <div class="stat-values">
-                                <div class="stat-value full">~48h</div>
-                                <div class="stat-arrow">&rarr;</div>
-                                <div class="stat-value lora">~4h</div>
-                            </div>
-                            <div class="stat-badge">
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
-                                </svg>
-                                ~12X SZYBCIEJ
-                            </div>
-                            <div class="stat-note">Zależne od datasetu, sprzętu i zadania &mdash; wartości orientacyjne.</div>
-                        </div>
-
-                        <div class="stat-card">
-                            <div class="stat-header">
-                                <div class="stat-icon">&#128176;</div>
-                                <div class="stat-label">Koszt</div>
-                            </div>
-                            <div class="stat-values">
-                                <div class="stat-value full">$$$$</div>
-                                <div class="stat-arrow">&rarr;</div>
-                                <div class="stat-value lora">$</div>
-                            </div>
-                            <div class="stat-badge">
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
-                                </svg>
-                                ZNACZNIE TANIEJ
-                            </div>
-                        </div>
+                <div class="stat-row">
+                    <span class="stat-name">Parametry</span>
+                    <div class="stat-values-row">
+                        <span class="stat-val full">7B</span>
+                        <span class="stat-arrow">&rarr;</span>
+                        <span class="stat-val lora">4.2M</span>
+                        <span class="stat-tag">-99.9%</span>
                     </div>
                 </div>
 
-                <div class="panel-section">
-                    <h3>Jak to działa?</h3>
-                    <ul class="info-list">
-                        <li><strong>Zamrożony model bazowy:</strong> Wszystkie 7B wag oryginalnego modelu pozostaje nietknięte &mdash; nie liczymy dla nich gradientów</li>
-                        <li><strong>Adaptery niskorangowe:</strong> Przy wybranych warstwach (zazwyczaj projekcjach <code>Wq</code>, <code>Wk</code>, <code>Wv</code> w blokach attention) dodajemy pary małych macierzy: A&nbsp;(d&times;r) i B&nbsp;(r&times;d)</li>
-                        <li><strong>Rank (ranga):</strong> Hiperparametr r kontroluje pojemność adaptera. Typowe wartości: r=8, 16, 32, 64. Niski rank = mniej parametrów, ale wystarczający dla większości zadań</li>
-                        <li><strong>Matematyka:</strong> <code>W' = W + (&alpha;/r)&middot;B&middot;A</code>, gdzie W to oryginalne (zamrożone) wagi, B&middot;A to niskorangowa korekta, &alpha; to współczynnik skalowania</li>
-                        <li><strong>Wymiana adapterów:</strong> Jeden model bazowy + wiele zestawów adapterów (&sim;17 MB każdy) dla różnych zadań &mdash; bez duplikowania wielogigabajtowego modelu</li>
-                        <li><strong>QLoRA:</strong> Wariant łączący LoRA z 4-bitową kwantyzacją modelu bazowego &mdash; pozwala fine-tunować model 7B na karcie z zaledwie 6-10 GB VRAM</li>
-                    </ul>
+                <div class="stat-row">
+                    <span class="stat-name">VRAM</span>
+                    <div class="stat-values-row">
+                        <span class="stat-val full">&gt;120 GB</span>
+                        <span class="stat-arrow">&rarr;</span>
+                        <span class="stat-val lora">~18 GB</span>
+                        <span class="stat-tag">-85%</span>
+                    </div>
                 </div>
+                <div class="stat-footnote">FP32 + optimizer vs FP16 base + adapter</div>
 
-                <div class="tip-box">
-                    <span class="tip-icon">&#128161;</span>
-                    <div class="tip-content">
-                        <strong>Praktyczny przykład:</strong> Full fine-tuning LLaMA-7B wymaga wielu kart A100 (po 80 GB VRAM)
-                        ze względu na stany optymalizatora. Z LoRA (FP16) zmieścisz się na jednej karcie A100 (40 GB).
-                        Z QLoRA (4-bit) &mdash; nawet na RTX 3090/4090 (24 GB).
-                        Adapter LoRA zajmuje tylko ~17 MB na dysku, więc możesz mieć wiele adapterów do różnych zadań
-                        bez powielania całego modelu.
+                <div class="stat-row">
+                    <span class="stat-name">Czas</span>
+                    <div class="stat-values-row">
+                        <span class="stat-val full">~48h</span>
+                        <span class="stat-arrow">&rarr;</span>
+                        <span class="stat-val lora">~4h</span>
+                        <span class="stat-tag">12x</span>
+                    </div>
+                </div>
+                <div class="stat-footnote">Orientacyjnie &mdash; zależy od sprzętu i datasetu</div>
+
+                <div class="stat-row">
+                    <span class="stat-name">Koszt</span>
+                    <div class="stat-values-row">
+                        <span class="stat-val full">$$$$</span>
+                        <span class="stat-arrow">&rarr;</span>
+                        <span class="stat-val lora">$</span>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- ── Full-width bottom: how it works + tip ──────────────── -->
+        <div class="bottom-sections">
+            <div class="card bottom-section">
+                <h3>Jak to działa?</h3>
+                <ul class="info-list">
+                    <li><strong>Zamrożony model bazowy</strong> &mdash; 7B wag nietknięte, gradienty nie liczone</li>
+                    <li><strong>Adaptery niskorangowe</strong> &mdash; pary macierzy A&nbsp;(d&times;r) i B&nbsp;(r&times;d) przy projekcjach <code>Wq</code>, <code>Wk</code>, <code>Wv</code></li>
+                    <li><strong>Rank (ranga)</strong> &mdash; hiperparametr r kontroluje pojemność adaptera. Typowe: r = 8, 16, 32, 64</li>
+                    <li><strong>Matematyka</strong> &mdash; <code>W' = W + (&alpha;/r) &middot; B &middot; A</code>, gdzie B&middot;A to niskorangowa korekta</li>
+                    <li><strong>Wymiana adapterów</strong> &mdash; jeden model bazowy + wiele adapterów (~17 MB) dla różnych zadań</li>
+                    <li><strong>QLoRA</strong> &mdash; LoRA + 4-bit kwantyzacja = fine-tuning 7B na 6-10 GB VRAM</li>
+                </ul>
+            </div>
+
+            <div class="card bottom-section">
+                <h3>W praktyce</h3>
+                <div class="tip-box">
+                    <strong>Full fine-tuning LLaMA-7B</strong> wymaga wielu kart A100 (80 GB)
+                    ze względu na stany optymalizatora.
+                    <br><br>
+                    <strong>Z LoRA (FP16)</strong> &mdash; jedna karta A100 (40 GB).
+                    <br>
+                    <strong>Z QLoRA (4-bit)</strong> &mdash; RTX 3090/4090 (24 GB).
+                    <br><br>
+                    Adapter zajmuje ~17 MB na dysku &mdash; możesz mieć dziesiątki adapterów do różnych zadań bez powielania modelu.
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <script>
-        // ── State ──────────────────────────────────────────────────────────
+        // ── State ──────────────────────────────────────────────────────
         let activeTab = 'full';
         let isAnimating = false;
         let progress = 0;
         let highlightedCells = new Set();
         let animationInterval = null;
 
-        // ── DOM refs ───────────────────────────────────────────────────────
+        // ── DOM ────────────────────────────────────────────────────────
         const tabs = document.querySelectorAll('.tab');
         const playBtn = document.getElementById('playBtn');
         const resetBtn = document.getElementById('resetBtn');
@@ -979,362 +589,163 @@
         const fullSvg = document.getElementById('fullSvg');
         const loraSvg = document.getElementById('loraSvg');
 
-        // ── Network configs ────────────────────────────────────────────────
-        // Full fine-tuning: standard 4-layer network
-        const fullLayers  = [5, 4, 4, 5];
-        const fullLabels  = ['Embedding', 'Attention', 'FFN', 'Output'];
+        // ── Network configs ────────────────────────────────────────────
+        const fullLayers = [5, 4, 4, 5];
+        const fullLabels = ['Embedding', 'Attention', 'FFN', 'Output'];
 
-        // LoRA: 5-layer network with a narrow bottleneck as the adapter
-        // The 2-node layer IS the LoRA module — visually a "waist" in the net
-        const loraLayers  = [5, 4, 2, 4, 5];
-        const loraLabels  = ['Embedding', 'Attention', 'LoRA (r=2)', 'FFN', 'Output'];
-
-        // Which layer transitions are adapter (trainable) vs frozen
-        // Index i = connection group from layer i → layer i+1
+        const loraLayers = [5, 4, 2, 4, 5];
+        const loraLabels = ['Embedding', 'Attention', 'LoRA (r=2)', 'FFN', 'Output'];
         const loraConnTypes = ['frozen', 'adapter', 'adapter', 'frozen'];
 
-        // ── Positioning ────────────────────────────────────────────────────
-        function getNodePos(layerIdx, nodeIdx, totalNodes, numLayers) {
-            const xPad = 60;
-            const xSpan = 520;                       // usable horizontal space
-            const xStep = xSpan / (numLayers - 1);
-            const x = layerIdx * xStep + xPad;
-
-            const yCenter = 200;
-            const yStep = 60;
-            const startY = yCenter - ((totalNodes - 1) * yStep) / 2;
-            const y = startY + nodeIdx * yStep;
+        // ── Positioning ────────────────────────────────────────────────
+        function pos(layerIdx, nodeIdx, totalNodes, numLayers) {
+            const x = layerIdx * (520 / (numLayers - 1)) + 60;
+            const y = 190 - ((totalNodes - 1) * 56) / 2 + nodeIdx * 56;
             return { x, y };
         }
 
-        // ── SVG helper ─────────────────────────────────────────────────────
-        function svgEl(tag, attrs) {
-            const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
-            for (const k in attrs) el.setAttribute(k, attrs[k]);
-            return el;
+        function el(tag, attrs) {
+            const e = document.createElementNS('http://www.w3.org/2000/svg', tag);
+            for (const k in attrs) e.setAttribute(k, attrs[k]);
+            return e;
         }
 
-        // ── Shared SVG <defs> ──────────────────────────────────────────────
-        function appendDefs(svg) {
-            const defs = svgEl('defs', {});
+        // ── SVG defs ───────────────────────────────────────────────────
+        function defs(svg) {
+            const d = el('defs', {});
+            const g1 = el('linearGradient', { id: 'connectionGradient', x1: '0%', y1: '0%', x2: '100%', y2: '0%' });
+            g1.appendChild(el('stop', { offset: '0%', 'stop-color': '#6366f1' }));
+            g1.appendChild(el('stop', { offset: '100%', 'stop-color': '#8b5cf6' }));
+            d.appendChild(g1);
 
-            // Indigo gradient (full FT highlights)
-            const g1 = svgEl('linearGradient', { id: 'connectionGradient', x1: '0%', y1: '0%', x2: '100%', y2: '0%' });
-            g1.appendChild(svgEl('stop', { offset: '0%', 'stop-color': '#6366f1' }));
-            g1.appendChild(svgEl('stop', { offset: '100%', 'stop-color': '#8b5cf6' }));
-            defs.appendChild(g1);
+            const g2 = el('linearGradient', { id: 'adapterGradient', x1: '0%', y1: '0%', x2: '100%', y2: '0%' });
+            g2.appendChild(el('stop', { offset: '0%', 'stop-color': '#8b5cf6' }));
+            g2.appendChild(el('stop', { offset: '100%', 'stop-color': '#a78bfa' }));
+            d.appendChild(g2);
 
-            // Purple gradient (adapter highlights)
-            const g2 = svgEl('linearGradient', { id: 'adapterGradient', x1: '0%', y1: '0%', x2: '100%', y2: '0%' });
-            g2.appendChild(svgEl('stop', { offset: '0%', 'stop-color': '#8b5cf6' }));
-            g2.appendChild(svgEl('stop', { offset: '100%', 'stop-color': '#a78bfa' }));
-            defs.appendChild(g2);
-
-            // Glow filter (indigo)
-            const f1 = svgEl('filter', { id: 'glow' });
-            f1.appendChild(svgEl('feGaussianBlur', { stdDeviation: '2', result: 'coloredBlur' }));
-            const m1 = svgEl('feMerge', {});
-            m1.appendChild(svgEl('feMergeNode', { in: 'coloredBlur' }));
-            m1.appendChild(svgEl('feMergeNode', { in: 'SourceGraphic' }));
-            f1.appendChild(m1);
-            defs.appendChild(f1);
-
-            // Glow filter (purple, slightly larger)
-            const f2 = svgEl('filter', { id: 'adapterGlow' });
-            f2.appendChild(svgEl('feGaussianBlur', { stdDeviation: '3', result: 'coloredBlur' }));
-            const m2 = svgEl('feMerge', {});
-            m2.appendChild(svgEl('feMergeNode', { in: 'coloredBlur' }));
-            m2.appendChild(svgEl('feMergeNode', { in: 'SourceGraphic' }));
-            f2.appendChild(m2);
-            defs.appendChild(f2);
-
-            svg.appendChild(defs);
+            [['glow', '2'], ['adapterGlow', '3']].forEach(([id, std]) => {
+                const f = el('filter', { id });
+                f.appendChild(el('feGaussianBlur', { stdDeviation: std, result: 'b' }));
+                const m = el('feMerge', {});
+                m.appendChild(el('feMergeNode', { in: 'b' }));
+                m.appendChild(el('feMergeNode', { in: 'SourceGraphic' }));
+                f.appendChild(m);
+                d.appendChild(f);
+            });
+            svg.appendChild(d);
         }
 
-        // ── Render: Full Fine-tuning ───────────────────────────────────────
-        function renderFullNetwork(svg) {
+        // ── Render full FT ─────────────────────────────────────────────
+        function renderFull(svg) {
             svg.innerHTML = '';
-            appendDefs(svg);
-            const layers = fullLayers;
-            const labels = fullLabels;
-            const n = layers.length;
-
-            // Connections
-            let connId = 0;
-            for (let l = 0; l < n - 1; l++) {
-                for (let i = 0; i < layers[l]; i++) {
-                    for (let j = 0; j < layers[l + 1]; j++) {
-                        const from = getNodePos(l, i, layers[l], n);
-                        const to   = getNodePos(l + 1, j, layers[l + 1], n);
-                        const hit  = highlightedCells.has(connId);
-                        connId++;
-                        svg.appendChild(svgEl('line', {
-                            x1: from.x, y1: from.y,
-                            x2: to.x,   y2: to.y,
-                            class: `connection${hit && isAnimating ? ' highlight' : ''}`
-                        }));
-                    }
-                }
-            }
-
-            // Nodes
-            layers.forEach((sz, l) => {
-                for (let i = 0; i < sz; i++) {
-                    const { x, y } = getNodePos(l, i, sz, n);
-                    const isIO = l === 0 || l === n - 1;
-                    svg.appendChild(svgEl('circle', {
-                        cx: x, cy: y,
-                        r: isIO ? 14 : 12,
-                        class: `neuron${isIO ? ' io-neuron' : ''}`
-                    }));
-                }
-            });
-
-            // Labels
-            labels.forEach((txt, l) => {
-                const x = getNodePos(l, 0, layers[l], n).x;
-                const t = svgEl('text', { x, y: 30, class: 'layer-label' });
-                t.textContent = txt;
-                svg.appendChild(t);
-            });
-        }
-
-        // ── Render: LoRA Network ───────────────────────────────────────────
-        function renderLoraNetwork(svg) {
-            svg.innerHTML = '';
-            appendDefs(svg);
-            const layers = loraLayers;
-            const labels = loraLabels;
-            const n = layers.length;
-            const ADAPTER_LAYER = 2;   // index of the LoRA bottleneck layer
-
-            // We need to know which connection IDs are adapter vs frozen
-            // so we can apply highlights only to adapter connections.
-            let connId = 0;
-
-            for (let l = 0; l < n - 1; l++) {
-                const type = loraConnTypes[l]; // 'frozen' | 'adapter'
-                for (let i = 0; i < layers[l]; i++) {
-                    for (let j = 0; j < layers[l + 1]; j++) {
-                        const from = getNodePos(l, i, layers[l], n);
-                        const to   = getNodePos(l + 1, j, layers[l + 1], n);
-                        const hit  = highlightedCells.has(connId);
-                        connId++;
-
-                        if (type === 'frozen') {
-                            svg.appendChild(svgEl('line', {
-                                x1: from.x, y1: from.y,
-                                x2: to.x,   y2: to.y,
-                                class: 'connection frozen'
-                            }));
-                        } else {
-                            // Adapter connection — animatable
-                            svg.appendChild(svgEl('line', {
-                                x1: from.x, y1: from.y,
-                                x2: to.x,   y2: to.y,
-                                class: `connection adapter${hit && isAnimating ? ' highlight' : ''}`
-                            }));
-                        }
-                    }
-                }
-            }
-
-            // Nodes
-            layers.forEach((sz, l) => {
-                for (let i = 0; i < sz; i++) {
-                    const { x, y } = getNodePos(l, i, sz, n);
-                    const isIO = l === 0 || l === n - 1;
-                    const isAdapter = l === ADAPTER_LAYER;
-                    const isFrozen = !isIO && !isAdapter;
-
-                    let cls = 'neuron';
-                    if (isIO)       cls += ' io-neuron';
-                    else if (isAdapter) cls += ' adapter-neuron' + (isAnimating ? ' highlight' : '');
-                    else if (isFrozen)  cls += ' frozen';
-
-                    svg.appendChild(svgEl('circle', {
-                        cx: x, cy: y,
-                        r: isAdapter ? 16 : (isIO ? 14 : 12),
-                        class: cls
-                    }));
-                }
-            });
-
-            // Layer labels
-            labels.forEach((txt, l) => {
-                const x = getNodePos(l, 0, layers[l], n).x;
-                const isAdapter = l === ADAPTER_LAYER;
-                const t = svgEl('text', {
-                    x, y: 30,
-                    class: 'layer-label' + (isAdapter ? ' adapter-label-text' : '')
-                });
-                t.textContent = txt;
-                svg.appendChild(t);
-            });
-
-            // Dimension annotations on adapter connections
-            // A matrix: layer 1 → 2 (d → r)
-            {
-                const fromX = getNodePos(1, 0, layers[1], n).x;
-                const toX   = getNodePos(2, 0, layers[2], n).x;
-                const midX  = (fromX + toX) / 2;
-                const t = svgEl('text', { x: midX, y: 370, class: 'dim-label adapter-dim' });
-                t.textContent = 'A (d\u2192r)';
-                svg.appendChild(t);
-            }
-            // B matrix: layer 2 → 3 (r → d)
-            {
-                const fromX = getNodePos(2, 0, layers[2], n).x;
-                const toX   = getNodePos(3, 0, layers[3], n).x;
-                const midX  = (fromX + toX) / 2;
-                const t = svgEl('text', { x: midX, y: 370, class: 'dim-label adapter-dim' });
-                t.textContent = 'B (r\u2192d)';
-                svg.appendChild(t);
-            }
-
-            // Frozen labels under frozen hidden layers (1 and 3)
-            [1, 3].forEach(l => {
-                const x = getNodePos(l, 0, layers[l], n).x;
-                const lastY = getNodePos(l, layers[l] - 1, layers[l], n).y;
-                const t = svgEl('text', { x, y: lastY + 32, class: 'frozen-label' });
-                t.textContent = 'ZAMROŻONE';
-                svg.appendChild(t);
-            });
-        }
-
-        // ── Count total connections for a given layer config ───────────────
-        function countConnections(layers) {
-            let total = 0;
-            for (let l = 0; l < layers.length - 1; l++) {
-                total += layers[l] * layers[l + 1];
-            }
-            return total;
-        }
-
-        // For LoRA: compute the range of connection IDs that are adapter type
-        function getAdapterConnRange() {
-            // Connection groups: 0→1 (frozen), 1→2 (adapter), 2→3 (adapter), 3→4 (frozen)
+            defs(svg);
+            const L = fullLayers, n = L.length;
             let id = 0;
-            const ranges = [];
-            for (let l = 0; l < loraLayers.length - 1; l++) {
-                const count = loraLayers[l] * loraLayers[l + 1];
-                if (loraConnTypes[l] === 'adapter') {
-                    ranges.push({ start: id, end: id + count });
+            for (let l = 0; l < n - 1; l++)
+                for (let i = 0; i < L[l]; i++)
+                    for (let j = 0; j < L[l + 1]; j++) {
+                        const a = pos(l, i, L[l], n), b = pos(l + 1, j, L[l + 1], n);
+                        svg.appendChild(el('line', { x1: a.x, y1: a.y, x2: b.x, y2: b.y, class: `connection${highlightedCells.has(id) && isAnimating ? ' highlight' : ''}` }));
+                        id++;
+                    }
+            L.forEach((sz, l) => { for (let i = 0; i < sz; i++) { const p = pos(l, i, sz, n); svg.appendChild(el('circle', { cx: p.x, cy: p.y, r: (l === 0 || l === n - 1) ? 13 : 11, class: `neuron${(l === 0 || l === n - 1) ? ' io-neuron' : ''}` })); } });
+            fullLabels.forEach((t, l) => { const x = pos(l, 0, L[l], n).x; const txt = el('text', { x, y: 28, class: 'layer-label' }); txt.textContent = t; svg.appendChild(txt); });
+        }
+
+        // ── Render LoRA ────────────────────────────────────────────────
+        function renderLora(svg) {
+            svg.innerHTML = '';
+            defs(svg);
+            const L = loraLayers, n = L.length, AL = 2;
+            let id = 0;
+            for (let l = 0; l < n - 1; l++) {
+                const tp = loraConnTypes[l];
+                for (let i = 0; i < L[l]; i++)
+                    for (let j = 0; j < L[l + 1]; j++) {
+                        const a = pos(l, i, L[l], n), b = pos(l + 1, j, L[l + 1], n);
+                        const hit = highlightedCells.has(id); id++;
+                        if (tp === 'frozen') svg.appendChild(el('line', { x1: a.x, y1: a.y, x2: b.x, y2: b.y, class: 'connection frozen' }));
+                        else svg.appendChild(el('line', { x1: a.x, y1: a.y, x2: b.x, y2: b.y, class: `connection adapter${hit && isAnimating ? ' highlight' : ''}` }));
+                    }
+            }
+            L.forEach((sz, l) => {
+                for (let i = 0; i < sz; i++) {
+                    const p = pos(l, i, sz, n), io = l === 0 || l === n - 1, ad = l === AL;
+                    let c = 'neuron';
+                    if (io) c += ' io-neuron';
+                    else if (ad) c += ' adapter-neuron' + (isAnimating ? ' highlight' : '');
+                    else c += ' frozen';
+                    svg.appendChild(el('circle', { cx: p.x, cy: p.y, r: ad ? 15 : (io ? 13 : 11), class: c }));
                 }
-                id += count;
-            }
-            return ranges;
+            });
+            loraLabels.forEach((t, l) => { const x = pos(l, 0, L[l], n).x; const txt = el('text', { x, y: 28, class: 'layer-label' + (l === AL ? ' adapter-label-text' : '') }); txt.textContent = t; svg.appendChild(txt); });
+            // Dimension labels
+            [[1, 2, 'A (d\u2192r)'], [2, 3, 'B (r\u2192d)']].forEach(([f, t, label]) => {
+                const mx = (pos(f, 0, L[f], n).x + pos(t, 0, L[t], n).x) / 2;
+                const txt = el('text', { x: mx, y: 355, class: 'dim-label adapter-dim' }); txt.textContent = label; svg.appendChild(txt);
+            });
+            [1, 3].forEach(l => { const x = pos(l, 0, L[l], n).x, ly = pos(l, L[l] - 1, L[l], n).y; const t = el('text', { x, y: ly + 28, class: 'frozen-label' }); t.textContent = 'FROZEN'; svg.appendChild(t); });
         }
 
-        const fullTotalConns = countConnections(fullLayers);
-        const adapterRanges  = getAdapterConnRange();
-        const adapterConnIds = [];
-        adapterRanges.forEach(r => {
-            for (let i = r.start; i < r.end; i++) adapterConnIds.push(i);
-        });
+        // ── Precompute adapter connection IDs ──────────────────────────
+        function countConns(layers) { let t = 0; for (let l = 0; l < layers.length - 1; l++) t += layers[l] * layers[l + 1]; return t; }
+        const fullTotal = countConns(fullLayers);
+        const adapterIds = [];
+        { let id = 0; for (let l = 0; l < loraLayers.length - 1; l++) { const c = loraLayers[l] * loraLayers[l + 1]; if (loraConnTypes[l] === 'adapter') for (let i = id; i < id + c; i++) adapterIds.push(i); id += c; } }
 
-        // ── Update visualization ───────────────────────────────────────────
-        function updateVisualization() {
+        // ── Update ─────────────────────────────────────────────────────
+        function update() {
             if (activeTab === 'full') {
-                fullView.classList.remove('hidden');
-                loraView.classList.add('hidden');
-                vizTitle.textContent = 'Wszystkie miliardy parametrów są aktualizowane';
-                renderFullNetwork(fullSvg);
+                fullView.classList.remove('hidden'); loraView.classList.add('hidden');
+                vizTitle.textContent = 'Trenowanie wszystkich parametrów';
+                renderFull(fullSvg);
             } else {
-                fullView.classList.add('hidden');
-                loraView.classList.remove('hidden');
-                vizTitle.textContent = 'Tylko miliony parametrów adaptera są trenowane';
-                renderLoraNetwork(loraSvg);
+                fullView.classList.add('hidden'); loraView.classList.remove('hidden');
+                vizTitle.textContent = 'Trenowanie tylko adaptera LoRA';
+                renderLora(loraSvg);
             }
         }
 
-        // ── Animation ──────────────────────────────────────────────────────
-        function startAnimation() {
+        // ── Animation ──────────────────────────────────────────────────
+        function start() {
             isAnimating = true;
-            playBtn.innerHTML = `
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <rect x="6" y="4" width="4" height="16"/>
-                    <rect x="14" y="4" width="4" height="16"/>
-                </svg>
-                Pauza
-            `;
-
+            playBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Pauza';
             animationInterval = setInterval(() => {
-                // LoRA trains faster
                 const step = activeTab === 'lora' ? 4 : 2;
                 progress += step;
-                if (progress >= 100) {
-                    progress = 100;
-                    stopAnimation();
-                }
-
+                if (progress >= 100) { progress = 100; stop(); }
                 progressFill.style.width = progress + '%';
-                progressText.textContent =
-                    progress === 100 ? 'Trening zakończony!' : `Trening: ${progress}%`;
-
-                // Build the set of highlighted connection IDs
+                progressText.textContent = progress === 100 ? 'Trening zakończony!' : `Trening: ${progress}%`;
                 highlightedCells = new Set();
-
-                if (activeTab === 'full') {
-                    // Full FT: randomly highlight ~25 connections across all layers
-                    for (let i = 0; i < 25; i++) {
-                        highlightedCells.add(Math.floor(Math.random() * fullTotalConns));
-                    }
-                } else {
-                    // LoRA: randomly highlight ~8 of the adapter connections
-                    // (same animation style, but only adapter weights are eligible)
-                    for (let i = 0; i < 8; i++) {
-                        const idx = adapterConnIds[Math.floor(Math.random() * adapterConnIds.length)];
-                        highlightedCells.add(idx);
-                    }
-                }
-
-                updateVisualization();
+                if (activeTab === 'full') { for (let i = 0; i < 25; i++) highlightedCells.add(Math.floor(Math.random() * fullTotal)); }
+                else { for (let i = 0; i < 8; i++) highlightedCells.add(adapterIds[Math.floor(Math.random() * adapterIds.length)]); }
+                update();
             }, 100);
         }
 
-        function stopAnimation() {
+        function stop() {
             isAnimating = false;
-            if (animationInterval) {
-                clearInterval(animationInterval);
-                animationInterval = null;
-            }
-            playBtn.innerHTML = `
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <polygon points="5 3 19 12 5 21 5 3"/>
-                </svg>
-                Start
-            `;
+            if (animationInterval) { clearInterval(animationInterval); animationInterval = null; }
+            playBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> Start';
         }
 
         function reset() {
-            stopAnimation();
-            progress = 0;
-            highlightedCells = new Set();
+            stop(); progress = 0; highlightedCells = new Set();
             progressFill.style.width = '0%';
             progressText.textContent = 'Trening: 0%';
-            updateVisualization();
+            update();
         }
 
-        // ── Event listeners ────────────────────────────────────────────────
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                tabs.forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                activeTab = tab.dataset.tab;
-                reset();
-            });
-        });
-
-        playBtn.addEventListener('click', () => {
-            if (isAnimating) stopAnimation();
-            else startAnimation();
-        });
-
+        // ── Events ─────────────────────────────────────────────────────
+        tabs.forEach(tab => tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            activeTab = tab.dataset.tab;
+            reset();
+        }));
+        playBtn.addEventListener('click', () => isAnimating ? stop() : start());
         resetBtn.addEventListener('click', reset);
-
-        // ── Init ───────────────────────────────────────────────────────────
-        updateVisualization();
+        update();
     </script>
 </body>
 </html>
