@@ -19,6 +19,7 @@
             --primary-light: #818cf8;
             --primary-dark: #4f46e5;
             --secondary: #8b5cf6;
+            --secondary-light: #a78bfa;
             --success: #10b981;
             --warning: #f59e0b;
             --danger: #ef4444;
@@ -261,13 +262,16 @@
             margin: 0 auto;
         }
 
+        /* Connections */
         .connection {
             stroke: var(--gray-300);
-            transition: all 0.3s ease;
+            stroke-width: 2;
+            opacity: 0.6;
         }
 
         .connection.frozen {
             stroke: var(--frozen-light);
+            stroke-width: 1.5;
             opacity: 0.35;
         }
 
@@ -275,14 +279,30 @@
             stroke: url(#connectionGradient);
             stroke-width: 3;
             filter: url(#glow);
+            opacity: 1;
             animation: pulse 1.5s ease-in-out infinite;
         }
 
+        .connection.adapter {
+            stroke: var(--secondary);
+            stroke-width: 2;
+            opacity: 0.5;
+        }
+
+        .connection.adapter.highlight {
+            stroke: url(#adapterGradient);
+            stroke-width: 3;
+            filter: url(#adapterGlow);
+            opacity: 1;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        /* Neurons */
         .neuron {
             fill: var(--white);
             stroke: var(--gray-400);
             stroke-width: 2;
-            transition: all 0.3s ease;
+            transition: fill 0.3s ease, stroke 0.3s ease;
         }
 
         .neuron.io-neuron {
@@ -298,45 +318,19 @@
             opacity: 0.7;
         }
 
-        .adapter-node {
-            fill: rgba(139, 92, 246, 0.15);
+        .neuron.adapter-neuron {
+            fill: rgba(139, 92, 246, 0.2);
             stroke: var(--secondary);
             stroke-width: 3;
-            filter: url(#glow);
         }
 
-        .adapter-node.highlight {
-            fill: rgba(139, 92, 246, 0.3);
+        .neuron.adapter-neuron.highlight {
+            fill: rgba(139, 92, 246, 0.4);
+            filter: url(#adapterGlow);
             animation: pulse 1.5s ease-in-out infinite;
         }
 
-        .adapter-connection {
-            stroke: var(--secondary);
-            stroke-width: 2.5;
-            stroke-dasharray: 6, 4;
-        }
-
-        .adapter-connection.highlight {
-            stroke: var(--secondary);
-            stroke-width: 3;
-            filter: url(#glow);
-            animation: pulse 1.5s ease-in-out infinite;
-        }
-
-        .adapter-label {
-            fill: var(--secondary);
-            font-family: 'Inter', sans-serif;
-            font-size: 14px;
-            font-weight: 700;
-        }
-
-        .adapter-sublabel {
-            fill: var(--gray-500);
-            font-family: 'Inter', sans-serif;
-            font-size: 9px;
-            font-weight: 600;
-        }
-
+        /* Labels */
         .layer-label {
             fill: var(--gray-500);
             font-family: 'Inter', sans-serif;
@@ -347,6 +341,11 @@
             text-anchor: middle;
         }
 
+        .layer-label.adapter-label-text {
+            fill: var(--secondary);
+            font-weight: 700;
+        }
+
         .frozen-label {
             fill: var(--frozen);
             font-family: 'Inter', sans-serif;
@@ -354,6 +353,18 @@
             font-weight: 600;
             text-anchor: middle;
             letter-spacing: 0.03em;
+        }
+
+        .dim-label {
+            fill: var(--gray-400);
+            font-family: 'Inter', sans-serif;
+            font-size: 9px;
+            font-weight: 600;
+            text-anchor: middle;
+        }
+
+        .dim-label.adapter-dim {
+            fill: var(--secondary-light);
         }
 
         /* Legend */
@@ -389,9 +400,7 @@
         }
 
         .legend-swatch.adapter {
-            background: var(--secondary);
-            height: 4px;
-            border-style: dashed;
+            background: linear-gradient(90deg, var(--secondary), var(--secondary-light));
         }
 
         .legend-circle {
@@ -401,7 +410,7 @@
         }
 
         .legend-circle.adapter {
-            background: rgba(139, 92, 246, 0.2);
+            background: rgba(139, 92, 246, 0.25);
             border: 2px solid var(--secondary);
         }
 
@@ -788,7 +797,7 @@
                             <h3>Model językowy (np. LLaMA-7B)</h3>
                             <p>7 miliardów wag w pełnej sieci &mdash; każda jest aktualizowana w każdym kroku treningu</p>
                         </div>
-                        <svg viewBox="0 0 640 440" preserveAspectRatio="xMidYMid meet" class="network-svg" id="fullSvg"></svg>
+                        <svg viewBox="0 0 640 400" preserveAspectRatio="xMidYMid meet" class="network-svg" id="fullSvg"></svg>
                         <div class="legend" id="fullLegend">
                             <div class="legend-item">
                                 <span class="legend-swatch active"></span>
@@ -809,10 +818,10 @@
                 <div id="lora-view" class="lora-mode hidden">
                     <div class="network-container">
                         <div class="network-header">
-                            <h3>LLaMA-7B z adapterami LoRA (rank=16)</h3>
-                            <p>7 miliardów wag zamrożonych (szare), ~4.2M parametrów adaptera trenowanych (fioletowe)</p>
+                            <h3>LLaMA-7B z warstwą LoRA (rank=2)</h3>
+                            <p>Warstwa niskorangowa (fioletowa) &mdash; jedyna trenowana część sieci. Reszta zamrożona (szara).</p>
                         </div>
-                        <svg viewBox="0 0 640 440" preserveAspectRatio="xMidYMid meet" class="network-svg" id="loraSvg"></svg>
+                        <svg viewBox="0 0 640 400" preserveAspectRatio="xMidYMid meet" class="network-svg" id="loraSvg"></svg>
                         <div class="legend" id="loraLegend">
                             <div class="legend-item">
                                 <span class="legend-swatch frozen"></span>
@@ -820,20 +829,19 @@
                             </div>
                             <div class="legend-item">
                                 <span class="legend-circle adapter"></span>
-                                Adapter LoRA (A, B)
+                                Warstwa LoRA (bottleneck)
                             </div>
                             <div class="legend-item">
                                 <span class="legend-swatch adapter"></span>
-                                Ścieżka adaptera (trenowana)
+                                Trenowane wagi adaptera
                             </div>
                         </div>
                     </div>
                     <div class="info-badge success">
                         <span class="info-badge-icon">&#10024;</span>
                         <div>
-                            <strong>LoRA:</strong> Małe macierze niskorangowe (A i B) tworzą niskowymiarową ścieżkę
-                            równoległą do zamrożonych wag. Trenujemy 99.94% mniej parametrów!
-                            Z kwantyzacją (QLoRA) możesz to uruchomić nawet na karcie RTX 3090/4090.
+                            <strong>LoRA:</strong> Niskorangowa warstwa (A&middot;B) jest wstawiona jako wąski bottleneck
+                            &mdash; tylko jej wagi są trenowane. Zamrożony model bazowy + mała warstwa adaptera = 99.94% mniej parametrów!
                         </div>
                     </div>
                 </div>
@@ -952,14 +960,14 @@
     </div>
 
     <script>
-        // State management
+        // ── State ──────────────────────────────────────────────────────────
         let activeTab = 'full';
         let isAnimating = false;
         let progress = 0;
         let highlightedCells = new Set();
         let animationInterval = null;
 
-        // Elements
+        // ── DOM refs ───────────────────────────────────────────────────────
         const tabs = document.querySelectorAll('.tab');
         const playBtn = document.getElementById('playBtn');
         const resetBtn = document.getElementById('resetBtn');
@@ -971,283 +979,276 @@
         const fullSvg = document.getElementById('fullSvg');
         const loraSvg = document.getElementById('loraSvg');
 
-        // Neural network configuration — layers hint at transformer-like architecture
-        const layers = [5, 4, 4, 5];
-        const layerLabels = ['Embedding', 'Attention', 'FFN', 'Output'];
+        // ── Network configs ────────────────────────────────────────────────
+        // Full fine-tuning: standard 4-layer network
+        const fullLayers  = [5, 4, 4, 5];
+        const fullLabels  = ['Embedding', 'Attention', 'FFN', 'Output'];
 
-        function getNodePosition(layerIdx, nodeIdx, totalNodes) {
-            const x = (layerIdx * 170) + 60;
-            const spacing = 60;
-            const startY = 220 - (totalNodes * spacing) / 2;
-            const y = startY + (nodeIdx * spacing);
+        // LoRA: 5-layer network with a narrow bottleneck as the adapter
+        // The 2-node layer IS the LoRA module — visually a "waist" in the net
+        const loraLayers  = [5, 4, 2, 4, 5];
+        const loraLabels  = ['Embedding', 'Attention', 'LoRA (r=2)', 'FFN', 'Output'];
+
+        // Which layer transitions are adapter (trainable) vs frozen
+        // Index i = connection group from layer i → layer i+1
+        const loraConnTypes = ['frozen', 'adapter', 'adapter', 'frozen'];
+
+        // ── Positioning ────────────────────────────────────────────────────
+        function getNodePos(layerIdx, nodeIdx, totalNodes, numLayers) {
+            const xPad = 60;
+            const xSpan = 520;                       // usable horizontal space
+            const xStep = xSpan / (numLayers - 1);
+            const x = layerIdx * xStep + xPad;
+
+            const yCenter = 200;
+            const yStep = 60;
+            const startY = yCenter - ((totalNodes - 1) * yStep) / 2;
+            const y = startY + nodeIdx * yStep;
             return { x, y };
         }
 
-        function createSVGElement(tag, attrs) {
+        // ── SVG helper ─────────────────────────────────────────────────────
+        function svgEl(tag, attrs) {
             const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
-            for (let key in attrs) {
-                el.setAttribute(key, attrs[key]);
-            }
+            for (const k in attrs) el.setAttribute(k, attrs[k]);
             return el;
         }
 
-        function renderNetwork(svg, showAdapter) {
-            svg.innerHTML = '';
+        // ── Shared SVG <defs> ──────────────────────────────────────────────
+        function appendDefs(svg) {
+            const defs = svgEl('defs', {});
 
-            // Add defs
-            const defs = createSVGElement('defs', {});
+            // Indigo gradient (full FT highlights)
+            const g1 = svgEl('linearGradient', { id: 'connectionGradient', x1: '0%', y1: '0%', x2: '100%', y2: '0%' });
+            g1.appendChild(svgEl('stop', { offset: '0%', 'stop-color': '#6366f1' }));
+            g1.appendChild(svgEl('stop', { offset: '100%', 'stop-color': '#8b5cf6' }));
+            defs.appendChild(g1);
 
-            const gradient = createSVGElement('linearGradient', {
-                id: 'connectionGradient',
-                x1: '0%',
-                y1: '0%',
-                x2: '100%',
-                y2: '0%'
-            });
-            const stop1 = createSVGElement('stop', { offset: '0%', 'stop-color': '#6366f1' });
-            const stop2 = createSVGElement('stop', { offset: '100%', 'stop-color': '#8b5cf6' });
-            gradient.appendChild(stop1);
-            gradient.appendChild(stop2);
+            // Purple gradient (adapter highlights)
+            const g2 = svgEl('linearGradient', { id: 'adapterGradient', x1: '0%', y1: '0%', x2: '100%', y2: '0%' });
+            g2.appendChild(svgEl('stop', { offset: '0%', 'stop-color': '#8b5cf6' }));
+            g2.appendChild(svgEl('stop', { offset: '100%', 'stop-color': '#a78bfa' }));
+            defs.appendChild(g2);
 
-            const filter = createSVGElement('filter', { id: 'glow' });
-            const blur = createSVGElement('feGaussianBlur', { stdDeviation: '2', result: 'coloredBlur' });
-            const merge = createSVGElement('feMerge', {});
-            const mergeNode1 = createSVGElement('feMergeNode', { in: 'coloredBlur' });
-            const mergeNode2 = createSVGElement('feMergeNode', { in: 'SourceGraphic' });
-            merge.appendChild(mergeNode1);
-            merge.appendChild(mergeNode2);
-            filter.appendChild(blur);
-            filter.appendChild(merge);
+            // Glow filter (indigo)
+            const f1 = svgEl('filter', { id: 'glow' });
+            f1.appendChild(svgEl('feGaussianBlur', { stdDeviation: '2', result: 'coloredBlur' }));
+            const m1 = svgEl('feMerge', {});
+            m1.appendChild(svgEl('feMergeNode', { in: 'coloredBlur' }));
+            m1.appendChild(svgEl('feMergeNode', { in: 'SourceGraphic' }));
+            f1.appendChild(m1);
+            defs.appendChild(f1);
 
-            defs.appendChild(gradient);
-            defs.appendChild(filter);
+            // Glow filter (purple, slightly larger)
+            const f2 = svgEl('filter', { id: 'adapterGlow' });
+            f2.appendChild(svgEl('feGaussianBlur', { stdDeviation: '3', result: 'coloredBlur' }));
+            const m2 = svgEl('feMerge', {});
+            m2.appendChild(svgEl('feMergeNode', { in: 'coloredBlur' }));
+            m2.appendChild(svgEl('feMergeNode', { in: 'SourceGraphic' }));
+            f2.appendChild(m2);
+            defs.appendChild(f2);
+
             svg.appendChild(defs);
+        }
 
-            // Render connections
-            let connectionId = 0;
-            for (let layerIdx = 0; layerIdx < layers.length - 1; layerIdx++) {
-                const currentLayerSize = layers[layerIdx];
-                const nextLayerSize = layers[layerIdx + 1];
+        // ── Render: Full Fine-tuning ───────────────────────────────────────
+        function renderFullNetwork(svg) {
+            svg.innerHTML = '';
+            appendDefs(svg);
+            const layers = fullLayers;
+            const labels = fullLabels;
+            const n = layers.length;
 
-                for (let i = 0; i < currentLayerSize; i++) {
-                    for (let j = 0; j < nextLayerSize; j++) {
-                        const start = getNodePosition(layerIdx, i, currentLayerSize);
-                        const end = getNodePosition(layerIdx + 1, j, nextLayerSize);
+            // Connections
+            let connId = 0;
+            for (let l = 0; l < n - 1; l++) {
+                for (let i = 0; i < layers[l]; i++) {
+                    for (let j = 0; j < layers[l + 1]; j++) {
+                        const from = getNodePos(l, i, layers[l], n);
+                        const to   = getNodePos(l + 1, j, layers[l + 1], n);
+                        const hit  = highlightedCells.has(connId);
+                        connId++;
+                        svg.appendChild(svgEl('line', {
+                            x1: from.x, y1: from.y,
+                            x2: to.x,   y2: to.y,
+                            class: `connection${hit && isAnimating ? ' highlight' : ''}`
+                        }));
+                    }
+                }
+            }
 
-                        const isHighlighted = highlightedCells.has(connectionId % 64);
-                        connectionId++;
+            // Nodes
+            layers.forEach((sz, l) => {
+                for (let i = 0; i < sz; i++) {
+                    const { x, y } = getNodePos(l, i, sz, n);
+                    const isIO = l === 0 || l === n - 1;
+                    svg.appendChild(svgEl('circle', {
+                        cx: x, cy: y,
+                        r: isIO ? 14 : 12,
+                        class: `neuron${isIO ? ' io-neuron' : ''}`
+                    }));
+                }
+            });
 
-                        if (showAdapter) {
-                            // In LoRA mode: base connections are frozen (never highlighted)
-                            const line = createSVGElement('line', {
-                                x1: start.x,
-                                y1: start.y,
-                                x2: end.x,
-                                y2: end.y,
-                                class: 'connection frozen',
-                                'stroke-width': 1.5,
-                                opacity: 0.35
-                            });
-                            svg.appendChild(line);
+            // Labels
+            labels.forEach((txt, l) => {
+                const x = getNodePos(l, 0, layers[l], n).x;
+                const t = svgEl('text', { x, y: 30, class: 'layer-label' });
+                t.textContent = txt;
+                svg.appendChild(t);
+            });
+        }
+
+        // ── Render: LoRA Network ───────────────────────────────────────────
+        function renderLoraNetwork(svg) {
+            svg.innerHTML = '';
+            appendDefs(svg);
+            const layers = loraLayers;
+            const labels = loraLabels;
+            const n = layers.length;
+            const ADAPTER_LAYER = 2;   // index of the LoRA bottleneck layer
+
+            // We need to know which connection IDs are adapter vs frozen
+            // so we can apply highlights only to adapter connections.
+            let connId = 0;
+
+            for (let l = 0; l < n - 1; l++) {
+                const type = loraConnTypes[l]; // 'frozen' | 'adapter'
+                for (let i = 0; i < layers[l]; i++) {
+                    for (let j = 0; j < layers[l + 1]; j++) {
+                        const from = getNodePos(l, i, layers[l], n);
+                        const to   = getNodePos(l + 1, j, layers[l + 1], n);
+                        const hit  = highlightedCells.has(connId);
+                        connId++;
+
+                        if (type === 'frozen') {
+                            svg.appendChild(svgEl('line', {
+                                x1: from.x, y1: from.y,
+                                x2: to.x,   y2: to.y,
+                                class: 'connection frozen'
+                            }));
                         } else {
-                            // In full fine-tuning mode: connections can be highlighted
-                            const line = createSVGElement('line', {
-                                x1: start.x,
-                                y1: start.y,
-                                x2: end.x,
-                                y2: end.y,
-                                class: `connection ${isHighlighted && isAnimating ? 'highlight' : ''}`,
-                                'stroke-width': 2,
-                                opacity: 0.6
-                            });
-                            svg.appendChild(line);
+                            // Adapter connection — animatable
+                            svg.appendChild(svgEl('line', {
+                                x1: from.x, y1: from.y,
+                                x2: to.x,   y2: to.y,
+                                class: `connection adapter${hit && isAnimating ? ' highlight' : ''}`
+                            }));
                         }
                     }
                 }
             }
 
-            // Render adapter path if needed (LoRA)
-            // Shows A (down-projection d->r) and B (up-projection r->d) as a sequential bypass
-            if (showAdapter) {
-                // Adapter pair between layer 0->1 (Embedding -> Attention)
-                renderAdapterPair(svg, 0, 1, 100, 'A', 'B', 'd\u2192r', 'r\u2192d');
-                // Adapter pair between layer 1->2 (Attention -> FFN)
-                renderAdapterPair(svg, 1, 2, 270, 'A', 'B', 'd\u2192r', 'r\u2192d');
-            }
+            // Nodes
+            layers.forEach((sz, l) => {
+                for (let i = 0; i < sz; i++) {
+                    const { x, y } = getNodePos(l, i, sz, n);
+                    const isIO = l === 0 || l === n - 1;
+                    const isAdapter = l === ADAPTER_LAYER;
+                    const isFrozen = !isIO && !isAdapter;
 
-            // Render nodes
-            layers.forEach((layerSize, layerIdx) => {
-                for (let nodeIdx = 0; nodeIdx < layerSize; nodeIdx++) {
-                    const { x, y } = getNodePosition(layerIdx, nodeIdx, layerSize);
-                    const isInputOutput = layerIdx === 0 || layerIdx === layers.length - 1;
+                    let cls = 'neuron';
+                    if (isIO)       cls += ' io-neuron';
+                    else if (isAdapter) cls += ' adapter-neuron' + (isAnimating ? ' highlight' : '');
+                    else if (isFrozen)  cls += ' frozen';
 
-                    let className = 'neuron';
-                    if (isInputOutput) {
-                        className += ' io-neuron';
-                    } else if (showAdapter) {
-                        className += ' frozen';
-                    }
-
-                    const circle = createSVGElement('circle', {
-                        cx: x,
-                        cy: y,
-                        r: isInputOutput ? 14 : 12,
-                        class: className
-                    });
-                    svg.appendChild(circle);
+                    svg.appendChild(svgEl('circle', {
+                        cx: x, cy: y,
+                        r: isAdapter ? 16 : (isIO ? 14 : 12),
+                        class: cls
+                    }));
                 }
             });
 
-            // Layer labels (transformer-like names)
-            layerLabels.forEach((labelText, idx) => {
-                const x = (idx * 170) + 60;
-                const text = createSVGElement('text', {
-                    x: x,
-                    y: 35,
-                    class: 'layer-label'
+            // Layer labels
+            labels.forEach((txt, l) => {
+                const x = getNodePos(l, 0, layers[l], n).x;
+                const isAdapter = l === ADAPTER_LAYER;
+                const t = svgEl('text', {
+                    x, y: 30,
+                    class: 'layer-label' + (isAdapter ? ' adapter-label-text' : '')
                 });
-                text.textContent = labelText;
-                svg.appendChild(text);
+                t.textContent = txt;
+                svg.appendChild(t);
             });
 
-            // Frozen label in LoRA mode
-            if (showAdapter) {
-                for (let layerIdx = 0; layerIdx < layers.length; layerIdx++) {
-                    const x = (layerIdx * 170) + 60;
-                    const lastNodeY = getNodePosition(layerIdx, layers[layerIdx] - 1, layers[layerIdx]).y;
-                    const text = createSVGElement('text', {
-                        x: x,
-                        y: lastNodeY + 35,
-                        class: 'frozen-label'
-                    });
-                    text.textContent = layerIdx === 0 || layerIdx === layers.length - 1 ? '' : 'ZAMROŻONE';
-                    svg.appendChild(text);
-                }
+            // Dimension annotations on adapter connections
+            // A matrix: layer 1 → 2 (d → r)
+            {
+                const fromX = getNodePos(1, 0, layers[1], n).x;
+                const toX   = getNodePos(2, 0, layers[2], n).x;
+                const midX  = (fromX + toX) / 2;
+                const t = svgEl('text', { x: midX, y: 370, class: 'dim-label adapter-dim' });
+                t.textContent = 'A (d\u2192r)';
+                svg.appendChild(t);
             }
+            // B matrix: layer 2 → 3 (r → d)
+            {
+                const fromX = getNodePos(2, 0, layers[2], n).x;
+                const toX   = getNodePos(3, 0, layers[3], n).x;
+                const midX  = (fromX + toX) / 2;
+                const t = svgEl('text', { x: midX, y: 370, class: 'dim-label adapter-dim' });
+                t.textContent = 'B (r\u2192d)';
+                svg.appendChild(t);
+            }
+
+            // Frozen labels under frozen hidden layers (1 and 3)
+            [1, 3].forEach(l => {
+                const x = getNodePos(l, 0, layers[l], n).x;
+                const lastY = getNodePos(l, layers[l] - 1, layers[l], n).y;
+                const t = svgEl('text', { x, y: lastY + 32, class: 'frozen-label' });
+                t.textContent = 'ZAMROŻONE';
+                svg.appendChild(t);
+            });
         }
 
-        function renderAdapterPair(svg, fromLayer, toLayer, adapterX, labelA, labelB, subA, subB) {
-            // Position A (down-projection) and B (up-projection) vertically between layers
-            const fromPos1 = getNodePosition(fromLayer, 1, layers[fromLayer]);
-            const fromPos2 = getNodePosition(fromLayer, 2, layers[fromLayer]);
-            const toPos1 = getNodePosition(toLayer, 1, layers[toLayer]);
-            const toPos2 = getNodePosition(toLayer, 2, layers[toLayer]);
-
-            const midX = (fromPos1.x + toPos1.x) / 2;
-
-            const adapterA = { x: midX, y: 360 };
-            const adapterB = { x: midX, y: 410 };
-
-            // Connection: from-layer nodes -> A
-            [fromPos1, fromPos2].forEach((node) => {
-                const line = createSVGElement('line', {
-                    x1: node.x,
-                    y1: node.y,
-                    x2: adapterA.x,
-                    y2: adapterA.y,
-                    class: `adapter-connection ${isAnimating ? 'highlight' : ''}`,
-                    'stroke-width': 2.5
-                });
-                svg.appendChild(line);
-            });
-
-            // Connection: A -> B (the low-rank bottleneck)
-            const abLine = createSVGElement('line', {
-                x1: adapterA.x,
-                y1: adapterA.y,
-                x2: adapterB.x,
-                y2: adapterB.y,
-                class: `adapter-connection ${isAnimating ? 'highlight' : ''}`,
-                'stroke-width': 3
-            });
-            svg.appendChild(abLine);
-
-            // Connection: B -> to-layer nodes
-            [toPos1, toPos2].forEach((node) => {
-                const line = createSVGElement('line', {
-                    x1: adapterB.x,
-                    y1: adapterB.y,
-                    x2: node.x,
-                    y2: node.y,
-                    class: `adapter-connection ${isAnimating ? 'highlight' : ''}`,
-                    'stroke-width': 2.5
-                });
-                svg.appendChild(line);
-            });
-
-            // Adapter A node (down-projection)
-            const gA = createSVGElement('g', {});
-            const circleA = createSVGElement('circle', {
-                cx: adapterA.x,
-                cy: adapterA.y,
-                r: 20,
-                class: `adapter-node ${isAnimating ? 'highlight' : ''}`
-            });
-            const textA = createSVGElement('text', {
-                x: adapterA.x,
-                y: adapterA.y + 4,
-                'text-anchor': 'middle',
-                class: 'adapter-label'
-            });
-            textA.textContent = labelA;
-            gA.appendChild(circleA);
-            gA.appendChild(textA);
-
-            // Sub-label for A
-            const subTextA = createSVGElement('text', {
-                x: adapterA.x + 28,
-                y: adapterA.y + 4,
-                'text-anchor': 'start',
-                class: 'adapter-sublabel'
-            });
-            subTextA.textContent = subA;
-            gA.appendChild(subTextA);
-            svg.appendChild(gA);
-
-            // Adapter B node (up-projection)
-            const gB = createSVGElement('g', {});
-            const circleB = createSVGElement('circle', {
-                cx: adapterB.x,
-                cy: adapterB.y,
-                r: 20,
-                class: `adapter-node ${isAnimating ? 'highlight' : ''}`
-            });
-            const textB = createSVGElement('text', {
-                x: adapterB.x,
-                y: adapterB.y + 4,
-                'text-anchor': 'middle',
-                class: 'adapter-label'
-            });
-            textB.textContent = labelB;
-            gB.appendChild(circleB);
-            gB.appendChild(textB);
-
-            // Sub-label for B
-            const subTextB = createSVGElement('text', {
-                x: adapterB.x + 28,
-                y: adapterB.y + 4,
-                'text-anchor': 'start',
-                class: 'adapter-sublabel'
-            });
-            subTextB.textContent = subB;
-            gB.appendChild(subTextB);
-            svg.appendChild(gB);
+        // ── Count total connections for a given layer config ───────────────
+        function countConnections(layers) {
+            let total = 0;
+            for (let l = 0; l < layers.length - 1; l++) {
+                total += layers[l] * layers[l + 1];
+            }
+            return total;
         }
 
+        // For LoRA: compute the range of connection IDs that are adapter type
+        function getAdapterConnRange() {
+            // Connection groups: 0→1 (frozen), 1→2 (adapter), 2→3 (adapter), 3→4 (frozen)
+            let id = 0;
+            const ranges = [];
+            for (let l = 0; l < loraLayers.length - 1; l++) {
+                const count = loraLayers[l] * loraLayers[l + 1];
+                if (loraConnTypes[l] === 'adapter') {
+                    ranges.push({ start: id, end: id + count });
+                }
+                id += count;
+            }
+            return ranges;
+        }
+
+        const fullTotalConns = countConnections(fullLayers);
+        const adapterRanges  = getAdapterConnRange();
+        const adapterConnIds = [];
+        adapterRanges.forEach(r => {
+            for (let i = r.start; i < r.end; i++) adapterConnIds.push(i);
+        });
+
+        // ── Update visualization ───────────────────────────────────────────
         function updateVisualization() {
             if (activeTab === 'full') {
                 fullView.classList.remove('hidden');
                 loraView.classList.add('hidden');
                 vizTitle.textContent = 'Wszystkie miliardy parametrów są aktualizowane';
-                renderNetwork(fullSvg, false);
+                renderFullNetwork(fullSvg);
             } else {
                 fullView.classList.add('hidden');
                 loraView.classList.remove('hidden');
                 vizTitle.textContent = 'Tylko miliony parametrów adaptera są trenowane';
-                renderNetwork(loraSvg, true);
+                renderLoraNetwork(loraSvg);
             }
         }
 
+        // ── Animation ──────────────────────────────────────────────────────
         function startAnimation() {
             isAnimating = true;
             playBtn.innerHTML = `
@@ -1259,7 +1260,7 @@
             `;
 
             animationInterval = setInterval(() => {
-                // LoRA trains faster — larger step increment
+                // LoRA trains faster
                 const step = activeTab === 'lora' ? 4 : 2;
                 progress += step;
                 if (progress >= 100) {
@@ -1268,19 +1269,25 @@
                 }
 
                 progressFill.style.width = progress + '%';
-                progressText.textContent = progress === 100 ? 'Trening zakończony!' : `Trening: ${progress}%`;
+                progressText.textContent =
+                    progress === 100 ? 'Trening zakończony!' : `Trening: ${progress}%`;
 
-                // Update highlighted cells — only used for full fine-tuning mode
+                // Build the set of highlighted connection IDs
                 highlightedCells = new Set();
+
                 if (activeTab === 'full') {
-                    // Full fine-tuning: many connections active (all params updated)
-                    const numCells = 25;
-                    for (let i = 0; i < numCells; i++) {
-                        highlightedCells.add(Math.floor(Math.random() * 64));
+                    // Full FT: randomly highlight ~25 connections across all layers
+                    for (let i = 0; i < 25; i++) {
+                        highlightedCells.add(Math.floor(Math.random() * fullTotalConns));
+                    }
+                } else {
+                    // LoRA: randomly highlight ~8 of the adapter connections
+                    // (same animation style, but only adapter weights are eligible)
+                    for (let i = 0; i < 8; i++) {
+                        const idx = adapterConnIds[Math.floor(Math.random() * adapterConnIds.length)];
+                        highlightedCells.add(idx);
                     }
                 }
-                // LoRA mode: adapter path animation is handled via isAnimating flag,
-                // base connections stay frozen (no highlights)
 
                 updateVisualization();
             }, 100);
@@ -1309,7 +1316,7 @@
             updateVisualization();
         }
 
-        // Event listeners
+        // ── Event listeners ────────────────────────────────────────────────
         tabs.forEach(tab => {
             tab.addEventListener('click', () => {
                 tabs.forEach(t => t.classList.remove('active'));
@@ -1320,16 +1327,13 @@
         });
 
         playBtn.addEventListener('click', () => {
-            if (isAnimating) {
-                stopAnimation();
-            } else {
-                startAnimation();
-            }
+            if (isAnimating) stopAnimation();
+            else startAnimation();
         });
 
         resetBtn.addEventListener('click', reset);
 
-        // Initialize
+        // ── Init ───────────────────────────────────────────────────────────
         updateVisualization();
     </script>
 </body>
