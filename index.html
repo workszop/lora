@@ -300,6 +300,21 @@
         }
         .bubble-note { font-size: 13px; color: var(--ink-3); margin-top: var(--sp-3); }
 
+        /* ── Data section ───────────────────────────────────────────── */
+        .data-what { margin-top: var(--sp-4); font-size: 15px; color: var(--ink-2); min-height: 3.2em; }
+        .data-what strong { color: var(--ink); }
+        .verdicts { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-3); margin-top: var(--sp-4); }
+        .verdict { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-md); padding: var(--sp-4); }
+        .verdict-head { display: flex; justify-content: space-between; align-items: center; gap: var(--sp-2); flex-wrap: wrap; margin-bottom: var(--sp-2); }
+        .verdict-head b { font-family: var(--font-display); font-weight: 600; font-size: 16px; }
+        .verdict p { font-size: 14px; line-height: 1.5; color: var(--ink-2); }
+        .takeaways { list-style: none; display: flex; flex-direction: column; }
+        .takeaways li { padding: 13px 0; border-bottom: 1px solid var(--line); font-size: 14.5px; line-height: 1.55; color: var(--ink-2); }
+        .takeaways li:last-child { border-bottom: none; }
+        .takeaways strong { display: block; color: var(--ink); font-weight: 600; }
+        .sources { font-size: 13px; line-height: 1.5; color: var(--ink-3); margin-top: var(--sp-3); }
+        .sources a { color: var(--teal-ink); }
+
         /* ── Glossary / deep dive ───────────────────────────────────── */
         .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
 
@@ -334,6 +349,7 @@
         /* ── Responsive ─────────────────────────────────────────────── */
         @media (max-width: 960px) {
             .main-grid, .rank-grid, .two-col, .swap-grid { grid-template-columns: 1fr; }
+            .verdicts { grid-template-columns: 1fr; }
             .analogy, .benefits { grid-template-columns: 1fr; }
         }
         @media (max-width: 640px) {
@@ -366,7 +382,7 @@
     <main>
 
         <header class="hero">
-            <p class="edu-overline">Interaktywne demo · 4 min</p>
+            <p class="edu-overline">Interaktywne demo · 5 min</p>
             <h1 class="app-title">LoRA: jak tanio nauczyć AI czegoś nowego</h1>
             <p class="edu-lead">Duże modele językowe umieją wiele, ale nie znają Twojej branży ani Twojego stylu. LoRA pozwala je douczyć bez superkomputera. Zobacz, na czym polega ten trik.</p>
         </header>
@@ -420,7 +436,7 @@
                 </div>
                 <div class="card benefit">
                     <div class="benefit-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></div>
-                    <div><h3>Trochę szybciej</h3><p>Komputer nie liczy poprawek dla zamrożonych wag, więc każdy krok treningu trwa krócej.</p><span class="num">ok. 25% szybciej (GPT-3, praca o LoRA)</span></div>
+                    <div><h3>Trochę szybciej</h3><p>Komputer nie liczy poprawek dla zamrożonych wag, więc każdy krok treningu trwa krócej.</p><span class="num">ok. 1/3 mniej obliczeń na krok</span></div>
                 </div>
                 <div class="card benefit">
                     <div class="benefit-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg></div>
@@ -534,10 +550,10 @@
 
                     <div class="stat-row">
                         <div class="stat-head">
-                            <span class="stat-name">Tempo treningu</span>
-                            <div class="stat-values-row"><span class="stat-val full">1×</span><span class="stat-arrow">→</span><span class="stat-val lora">~1,25×</span></div>
+                            <span class="stat-name">Obliczenia na krok</span>
+                            <div class="stat-values-row"><span class="stat-val full">100%</span><span class="stat-arrow">→</span><span class="stat-val lora">~67%</span></div>
                         </div>
-                        <p class="stat-note">Pomiar autorów LoRA na modelu GPT-3. Główna oszczędność to pamięć, nie czas.</p>
+                        <p class="stat-note"><span class="chip">−33%</span>Analiza Thinking Machines Lab z 2025 r. Główna oszczędność to pamięć, nie czas.</p>
                     </div>
                 </div>
             </div>
@@ -606,10 +622,53 @@
             </div>
         </section>
 
-        <!-- ── 6. Dla dociekliwych ────────────────────────────────── -->
+        <!-- ── 6. Dane ────────────────────────────────────────────── -->
         <section>
             <div class="section-head">
-                <p class="edu-overline">06 · Dla dociekliwych</p>
+                <p class="edu-overline">06 · Dane</p>
+                <h2>Ile przykładów potrzeba?</h2>
+                <p>Model uczy się na przykładach: parach „pytanie i wzorcowa odpowiedź”. Nie ma jednej magicznej liczby, ale badania pokazują, kiedy która metoda radzi sobie lepiej. Przesuń suwak.</p>
+            </div>
+
+            <div class="rank-grid">
+                <div class="card">
+                    <p class="panel-title">Wielkość zbioru danych</p>
+                    <div class="slider-row">
+                        <span class="slider-value" id="dataValue"></span>
+                        <input type="range" id="dataSlider" min="0" max="3" step="1" value="1" aria-label="Liczba przykładów treningowych">
+                    </div>
+                    <div class="slider-scale"><span>100</span><span>1 tys.</span><span>10 tys.</span><span>100 tys.+</span></div>
+                    <p class="data-what" id="dataWhat" aria-live="polite"></p>
+
+                    <div class="verdicts">
+                        <div class="verdict">
+                            <div class="verdict-head"><b>LoRA</b><span class="chip" id="loraChip"></span></div>
+                            <p id="loraVerdict"></p>
+                        </div>
+                        <div class="verdict">
+                            <div class="verdict-head"><b>Pełny fine-tuning</b><span class="chip" id="fullChip"></span></div>
+                            <p id="fullVerdict"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <p class="panel-title">Najważniejsze</p>
+                    <ul class="takeaways">
+                        <li><strong>LoRA nie potrzebuje więcej danych.</strong>W badaniu z 2026 r. na dziewięciu modelach Qwen3 i Llama LoRA zachowała typowo 98% poprawy, jaką daje pełny trening.</li>
+                        <li><strong>Liczy się zadanie, nie metoda.</strong>Zmiana stylu wymaga setek przykładów, nowa wiedza tysięcy. To praktyczne reguły, nie twarde progi.</li>
+                        <li><strong>Jakość ważniejsza niż ilość.</strong>Kilkaset starannych przykładów zwykle uczy lepiej niż tysiące byle jakich.</li>
+                        <li><strong>Granicą jest pojemność adaptera.</strong>Gdy danych jest więcej, niż adapter pomieści, LoRA zaczyna odstawać. Mówi się, że „uczy się mniej, ale mniej zapomina”.</li>
+                    </ul>
+                    <p class="sources">Źródła: <a href="https://thinkingmachines.ai/blog/lora/" target="_blank" rel="noopener">Thinking Machines Lab 2025</a> (pojemność adaptera), <a href="https://arxiv.org/abs/2609.01244" target="_blank" rel="noopener">O’Neill i in. 2026</a> (Qwen3 i Llama), <a href="https://arxiv.org/abs/2405.09673" target="_blank" rel="noopener">Biderman i in. 2024</a> (duże zbiory), <a href="https://developers.openai.com/api/docs/guides/supervised-fine-tuning" target="_blank" rel="noopener">wytyczne OpenAI</a> (minimum 10, efekty zwykle od 50–100 przykładów).</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── 7. Dla dociekliwych ────────────────────────────────── -->
+        <section>
+            <div class="section-head">
+                <p class="edu-overline">07 · Dla dociekliwych</p>
                 <h2>Słowniczek i praktyka</h2>
                 <p>Kliknij pojęcie, żeby zobaczyć proste wyjaśnienie.</p>
             </div>
@@ -631,7 +690,7 @@
                     </details>
                     <details>
                         <summary>Adapter i macierze A, B</summary>
-                        <p>Adapter to para małych tabel liczb: A i B. Po przemnożeniu dają poprawkę dla dużej tabeli wag W. Wzór: <code>W' = W + (α/r) · B · A</code>. Dokleja się je zwykle w warstwach uwagi modelu (<code>Wq</code>, <code>Wv</code>).</p>
+                        <p>Adapter to para małych tabel liczb: A i B. Po przemnożeniu dają poprawkę dla dużej tabeli wag W. Wzór: <code>W' = W + (α/r) · B · A</code>. Najprostszy wariant dokleja je w warstwach uwagi (<code>Wq</code>, <code>Wv</code>) i taki liczymy na tej stronie. Nowsze badania zalecają adaptery we wszystkich warstwach: jakość rośnie, ale adapter jest większy.</p>
                     </details>
                     <details>
                         <summary>Ranga (r)</summary>
@@ -768,8 +827,8 @@
             isAnimating = true;
             playBtn.innerHTML = ICON_PAUSE + ' Pauza';
             animationInterval = setInterval(() => {
-                progress += activeTab === 'lora' ? 2.5 : 2;
-                if (progress >= 100) { progress = 100; stop(); }
+                progress += activeTab === 'lora' ? 3 : 2;
+                if (progress >= 100) { progress = 100; }
                 progressFill.style.width = progress + '%';
                 progressText.textContent = progress === 100
                     ? (activeTab === 'lora' ? 'Gotowe! Trochę szybciej i na dużo tańszym sprzęcie' : 'Trening zakończony. Sprawdź teraz LoRA')
@@ -778,6 +837,7 @@
                 if (activeTab === 'full') { for (let i = 0; i < 25; i++) highlightedCells.add(Math.floor(Math.random() * fullTotal)); }
                 else { for (let i = 0; i < 8; i++) highlightedCells.add(adapterIds[Math.floor(Math.random() * adapterIds.length)]); }
                 update();
+                if (progress === 100) stop();
             }, 100);
         }
 
@@ -877,6 +937,40 @@
         });
         selectAdapter(0);
 
+        // ══ Ile danych ═════════════════════════════════════════════════
+        // Oceny: Thinking Machines Lab 2025 (LoRA Without Regret), O'Neill i in. 2026, Biderman i in. 2024.
+        const VERDICT = { good: ['Dobry wybór', ''], noedge: ['Bez przewagi', 'marigold'], ok: ['Do rozważenia', 'marigold'], weak: ['Słabsza', 'coral'], best: ['Najlepsza jakość', ''] };
+        const DATA = [
+            { n: '~100', what: 'zmiana tonu lub formatu odpowiedzi.',
+              lora: ['good', 'Tak mały zbiór z zapasem mieści się w pojemności adaptera. W takich warunkach LoRA dorównuje pełnemu treningowi.'],
+              full: ['noedge', 'Nie daje lepszego wyniku, a wymaga wielokrotnie droższego sprzętu.'] },
+            { n: '~1 tys.', what: 'własny styl pisania, proste zadania w jednej dziedzinie.',
+              lora: ['good', 'Zbiór wciąż mieści się w pojemności adaptera. Jakość jest zbliżona do pełnego treningu przy ułamku kosztów.'],
+              full: ['noedge', 'Bywa minimalnie lepszy, ale różnica rzadko jest warta dodatkowego sprzętu.'] },
+            { n: '~10 tys.', what: 'specjalizacja w konkretnej dziedzinie, np. prawo lub medycyna.',
+              lora: ['good', 'Nadal zbliżona jakość. Pomaga wyższa ranga i adaptery we wszystkich warstwach modelu, nie tylko w warstwach uwagi.'],
+              full: ['ok', 'Minimalnie lepszy wynik. Ma sens, gdy zadanie jest trudne i liczy się każdy punkt jakości.'] },
+            { n: '100 tys.+', what: 'dużo nowej, trudnej wiedzy, np. programowanie lub matematyka.',
+              lora: ['weak', 'Dane mogą przekroczyć pojemność adaptera. W badaniu z 2024 r. najlepsza LoRA po 20 mld tokenów tekstu ledwie dorównała pełnemu treningowi po 4 mld. Za to mniej zapomina.'],
+              full: ['best', 'Wyciąga z dużych danych najwięcej. Ceną jest drogi sprzęt i większe zapominanie wcześniejszych umiejętności.'] },
+        ];
+
+        function setVerdict(chipId, textId, [kind, text]) {
+            const [label, tone] = VERDICT[kind];
+            $(chipId).textContent = label;
+            $(chipId).className = 'chip' + (tone ? ' ' + tone : '');
+            $(textId).textContent = text;
+        }
+
+        function updateData() {
+            const d = DATA[+$('dataSlider').value];
+            $('dataValue').textContent = d.n;
+            $('dataWhat').innerHTML = '<strong>Orientacyjnie wystarcza na:</strong> ' + d.what;
+            setVerdict('loraChip', 'loraVerdict', d.lora);
+            setVerdict('fullChip', 'fullVerdict', d.full);
+        }
+        $('dataSlider').addEventListener('input', updateData);
+        updateData();
     </script>
 </body>
 </html>
