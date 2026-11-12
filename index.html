@@ -218,7 +218,7 @@
         .stat-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--sp-2); }
         .stat-name { font-size: 14px; font-weight: 600; color: var(--ink); }
         .stat-values-row { display: flex; align-items: baseline; gap: 8px; font-family: var(--font-mono); }
-        .stat-val { font-size: 15px; font-weight: 500; }
+        .stat-val { font-size: 15px; font-weight: 500; white-space: nowrap; }
         .stat-val.full { color: var(--coral-ink); }
         .stat-val.lora { color: var(--teal-ink); }
         .stat-arrow { color: var(--ink-3); font-size: 12px; }
@@ -327,24 +327,6 @@
         .hw-list b { font-family: var(--font-mono); font-weight: 500; font-size: 13px; color: var(--ink); text-align: right; }
         .caveat { margin-top: var(--sp-4); background: var(--marigold-soft); color: var(--marigold-ink); border-radius: var(--r-md); padding: 14px 16px; font-size: 14px; line-height: 1.5; }
 
-        /* ── Quiz ───────────────────────────────────────────────────── */
-        .quiz-q { padding: var(--sp-5) 0; border-bottom: 1px solid var(--line); }
-        .quiz-q:first-of-type { padding-top: 0; }
-        .quiz-q h3 { font-family: var(--font-display); font-weight: 600; font-size: 18px; line-height: 1.3; margin-bottom: var(--sp-3); }
-        .quiz-opts { display: grid; gap: var(--sp-2); }
-        .quiz-opt {
-            text-align: left; padding: 12px 16px; border-radius: var(--r-md);
-            border: 1px solid var(--line-2); background: var(--surface); color: var(--ink);
-            font-size: 15px; cursor: pointer; transition: background-color .15s ease, border-color .15s ease;
-        }
-        .quiz-opt:hover:not(:disabled) { background: var(--paper); border-color: var(--ink-3); }
-        .quiz-opt:disabled { cursor: default; color: var(--ink-3); }
-        .quiz-opt.right { background: var(--success-soft); border-color: var(--success); color: var(--success-ink); font-weight: 600; }
-        .quiz-opt.wrong { background: var(--danger-soft); border-color: var(--danger); color: var(--danger-ink); }
-        .quiz-why { font-size: 14px; color: var(--ink-2); margin-top: var(--sp-3); }
-        .quiz-foot { display: flex; justify-content: space-between; align-items: center; gap: var(--sp-4); padding-top: var(--sp-5); flex-wrap: wrap; }
-        .quiz-score { font-family: var(--font-mono); font-size: 14px; color: var(--ink-2); }
-
         .hidden { display: none; }
 
         footer { text-align: center; font-family: var(--font-mono); font-size: 12px; color: var(--ink-3); padding-top: var(--sp-4); }
@@ -384,7 +366,7 @@
     <main>
 
         <header class="hero">
-            <p class="edu-overline">Interaktywne demo · 5 min</p>
+            <p class="edu-overline">Interaktywne demo · 4 min</p>
             <h1 class="app-title">LoRA: jak tanio nauczyć AI czegoś nowego</h1>
             <p class="edu-lead">Duże modele językowe umieją wiele, ale nie znają Twojej branży ani Twojego stylu. LoRA pozwala je douczyć bez superkomputera. Zobacz, na czym polega ten trik.</p>
         </header>
@@ -402,7 +384,7 @@
                     <span class="chip coral">Problem</span>
                     <h3>Przepisywanie całej encyklopedii</h3>
                     <p>Tradycyjne douczanie (pełny fine-tuning) poprawia każdą liczbę w modelu. To jak przepisanie wszystkich tomów od nowa, żeby dodać jeden rozdział.</p>
-                    <p class="plain">Skutek: drogi sprzęt, dni pracy, ogromne pliki.</p>
+                    <p class="plain">Skutek: drogi sprzęt i ogromne pliki.</p>
                 </div>
                 <div class="card">
                     <span class="chip marigold">Pomysł</span>
@@ -428,21 +410,21 @@
             <div class="section-head">
                 <p class="edu-overline">02 · Korzyści</p>
                 <h2>Co z tego masz?</h2>
-                <p>Liczby dotyczą przykładowego modelu z 7 miliardami parametrów (LLaMA-7B) i są orientacyjne.</p>
+                <p>Liczby dotyczą przykładowego modelu Qwen3-8B (8,2 miliarda parametrów). Zużycie pamięci to szacunki, które zależą od ustawień treningu.</p>
             </div>
 
             <div class="benefits">
                 <div class="card benefit">
                     <div class="benefit-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15 9.5a3 3 0 0 0-3-1.5c-1.7 0-3 .9-3 2s1.3 2 3 2 3 .9 3 2-1.3 2-3 2a3 3 0 0 1-3-1.5M12 6v2m0 8v2"/></svg></div>
-                    <div><h3>Taniej</h3><p>Wystarcza jedna karta graficzna zamiast całej serwerowni.</p><span class="num">pamięć: &gt;120 GB → ~18 GB</span></div>
+                    <div><h3>Taniej</h3><p>Wystarcza jedna karta graficzna zamiast całej serwerowni.</p><span class="num">pamięć: &gt;130 GB → ~20 GB</span></div>
                 </div>
                 <div class="card benefit">
                     <div class="benefit-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></div>
-                    <div><h3>Szybciej</h3><p>Mniej liczb do poprawiania, więc trening trwa godziny, a nie dni.</p><span class="num">czas: ~48 h → ~4 h</span></div>
+                    <div><h3>Trochę szybciej</h3><p>Komputer nie liczy poprawek dla zamrożonych wag, więc każdy krok treningu trwa krócej.</p><span class="num">ok. 25% szybciej (GPT-3, praca o LoRA)</span></div>
                 </div>
                 <div class="card benefit">
                     <div class="benefit-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg></div>
-                    <div><h3>Malutkie pliki</h3><p>Adapter waży tyle co kilka zdjęć. Łatwo go wysłać i przechować.</p><span class="num">~13 GB → ~17 MB</span></div>
+                    <div><h3>Malutkie pliki</h3><p>Adapter waży tyle co kilka zdjęć. Łatwo go wysłać i przechować.</p><span class="num">~16 GB → ~15 MB</span></div>
                 </div>
                 <div class="card benefit">
                     <div class="benefit-icon teal"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3l4 4-4 4"/><path d="M3 7h18"/><path d="M7 21l-4-4 4-4"/><path d="M21 17H3"/></svg></div>
@@ -454,7 +436,7 @@
                 </div>
                 <div class="card benefit">
                     <div class="benefit-icon sky"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg></div>
-                    <div><h3>Na domowym sprzęcie</h3><p>W wersji QLoRA trening mieści się na mocnej karcie do gier.</p><span class="num">6–10 GB pamięci karty</span></div>
+                    <div><h3>Na domowym sprzęcie</h3><p>W wersji QLoRA trening mieści się na mocnej karcie do gier.</p><span class="num">ok. 8–12 GB pamięci karty</span></div>
                 </div>
             </div>
         </section>
@@ -487,8 +469,8 @@
 
                     <div id="full-view">
                         <div class="network-label">
-                            <h4>LLaMA-7B</h4>
-                            <p>7 miliardów wag, każda poprawiana w każdym kroku</p>
+                            <h4>Qwen3-8B</h4>
+                            <p>8,2 miliarda wag, każda poprawiana w każdym kroku</p>
                         </div>
                         <svg viewBox="0 0 640 380" preserveAspectRatio="xMidYMid meet" class="network-svg" id="fullSvg" role="img" aria-label="Sieć neuronowa, w której trenowane są wszystkie połączenia"></svg>
                         <div class="legend">
@@ -496,13 +478,13 @@
                         </div>
                         <div class="info-badge warning">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 20h20z"/><path d="M12 10v4m0 3h.01"/></svg>
-                            <div><strong>Problem:</strong> poprawiamy wszystkie 7 miliardów wag. Potrzeba wielu drogich kart graficznych, ponad 120 GB pamięci i dużo czasu.</div>
+                            <div><strong>Problem:</strong> poprawiamy wszystkie 8,2 miliarda wag. Potrzeba kilku drogich kart graficznych i ponad 130 GB pamięci.</div>
                         </div>
                     </div>
 
                     <div id="lora-view" class="hidden">
                         <div class="network-label">
-                            <h4>LLaMA-7B + LoRA (r = 2)</h4>
+                            <h4>Qwen3-8B + LoRA</h4>
                             <p>Szara sieć jest zamrożona. Uczy się tylko zielony adapter</p>
                         </div>
                         <svg viewBox="0 0 640 380" preserveAspectRatio="xMidYMid meet" class="network-svg" id="loraSvg" role="img" aria-label="Sieć neuronowa z zamrożonymi wagami i małym trenowanym adapterem LoRA"></svg>
@@ -513,7 +495,7 @@
                         </div>
                         <div class="info-badge success">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg>
-                            <div><strong>LoRA:</strong> uczy się tylko wąski adapter (macierze A i B). To 99,94% mniej parametrów do trenowania.</div>
+                            <div><strong>LoRA:</strong> uczy się tylko wąski adapter (macierze A i B). Przy r = 8 to 99,95% mniej parametrów do trenowania.</div>
                         </div>
                     </div>
 
@@ -528,34 +510,34 @@
 
                     <div class="stat-row">
                         <div class="stat-head">
-                            <span class="stat-name">Trenowane parametry</span>
-                            <div class="stat-values-row"><span class="stat-val full">7 mld</span><span class="stat-arrow">→</span><span class="stat-val lora">4,2 mln</span></div>
+                            <span class="stat-name">Parametry</span>
+                            <div class="stat-values-row"><span class="stat-val full">8,2 mld</span><span class="stat-arrow">→</span><span class="stat-val lora">3,8 mln</span></div>
                         </div>
-                        <p class="stat-note"><span class="chip">−99,9%</span>Liczby, które trzeba poprawiać.</p>
+                        <p class="stat-note"><span class="chip">−99,95%</span>Liczby, które trzeba poprawiać (LoRA z r = 8).</p>
                     </div>
 
                     <div class="stat-row">
                         <div class="stat-head">
                             <span class="stat-name">Pamięć karty (VRAM)</span>
-                            <div class="stat-values-row"><span class="stat-val full">&gt;120 GB</span><span class="stat-arrow">→</span><span class="stat-val lora">~18 GB</span></div>
+                            <div class="stat-values-row"><span class="stat-val full">&gt;130 GB</span><span class="stat-arrow">→</span><span class="stat-val lora">~20 GB</span></div>
                         </div>
-                        <p class="stat-note"><span class="chip">−85%</span>Pełna precyzja z optymalizatorem kontra model w FP16 z adapterem.</p>
+                        <p class="stat-note"><span class="chip">−85%</span>Szacunek: pełna precyzja z optymalizatorem AdamW kontra model 16-bitowy z adapterem.</p>
                     </div>
 
                     <div class="stat-row">
                         <div class="stat-head">
-                            <span class="stat-name">Czas treningu</span>
-                            <div class="stat-values-row"><span class="stat-val full">~48 h</span><span class="stat-arrow">→</span><span class="stat-val lora">~4 h</span></div>
+                            <span class="stat-name">Plik po treningu</span>
+                            <div class="stat-values-row"><span class="stat-val full">~16 GB</span><span class="stat-arrow">→</span><span class="stat-val lora">~15 MB</span></div>
                         </div>
-                        <p class="stat-note"><span class="chip">12×</span>Orientacyjnie, zależy od sprzętu i danych.</p>
+                        <p class="stat-note"><span class="chip">−99,9%</span>Cała kopia modelu kontra sam adapter.</p>
                     </div>
 
                     <div class="stat-row">
                         <div class="stat-head">
-                            <span class="stat-name">Koszt</span>
-                            <div class="stat-values-row"><span class="stat-val full">$$$$</span><span class="stat-arrow">→</span><span class="stat-val lora">$</span></div>
+                            <span class="stat-name">Tempo treningu</span>
+                            <div class="stat-values-row"><span class="stat-val full">1×</span><span class="stat-arrow">→</span><span class="stat-val lora">~1,25×</span></div>
                         </div>
-                        <p class="stat-note">Mniej sprzętu i krótszy czas to niższy rachunek.</p>
+                        <p class="stat-note">Pomiar autorów LoRA na modelu GPT-3. Główna oszczędność to pamięć, nie czas.</p>
                     </div>
                 </div>
             </div>
@@ -580,7 +562,7 @@
                     <p class="rank-hint" id="rankHint"></p>
 
                     <div class="matrices" aria-hidden="true">
-                        <div class="mx"><div class="mx-box w"></div><div class="mx-cap">W: zamrożona<br>4096 × 4096</div></div>
+                        <div class="mx"><div class="mx-box w"></div><div class="mx-cap">Wq: zamrożona<br>4096 × 4096</div></div>
                         <span class="mx-op">+</span>
                         <div class="mx"><div class="mx-box b" id="mxB"></div><div class="mx-cap">B</div></div>
                         <span class="mx-op">×</span>
@@ -590,7 +572,7 @@
                 </div>
 
                 <div class="dark-panel">
-                    <p class="eyebrow">Cały adapter dla LLaMA-7B</p>
+                    <p class="eyebrow">Cały adapter dla Qwen3-8B</p>
                     <div class="data-row"><span>Trenowane parametry</span><b class="accent" id="outParams"></b></div>
                     <div class="data-row"><span>Część całego modelu</span><b id="outPct"></b></div>
                     <div class="data-row"><span>Rozmiar pliku adaptera</span><b id="outSize"></b></div>
@@ -612,13 +594,13 @@
                 <div class="swap-grid">
                     <div class="stack">
                         <div class="block slot empty" id="slot"><small>Adapter LoRA</small><b id="slotName"></b></div>
-                        <div class="block base"><small>Model bazowy · zamrożony</small><b>LLaMA-7B · ~13 GB</b></div>
+                        <div class="block base"><small>Model bazowy · zamrożony</small><b>Qwen3-8B · ~16 GB</b></div>
                         <p class="stack-total" id="stackTotal"></p>
                     </div>
                     <div>
                         <p class="bubble-q">Pytanie: „Opisz kawę w dwóch zdaniach.”</p>
                         <div class="bubble" id="bubble" aria-live="polite"></div>
-                        <p class="bubble-note">Odpowiedzi są przykładowe i pokazują ideę. Bez LoRA każda specjalizacja oznaczałaby osobną kopię modelu o wadze ~13 GB.</p>
+                        <p class="bubble-note">Odpowiedzi są przykładowe i pokazują ideę. Bez LoRA każda specjalizacja oznaczałaby osobną kopię modelu o wadze ~16 GB.</p>
                     </div>
                 </div>
             </div>
@@ -637,7 +619,7 @@
                     <p class="panel-title">Słowniczek</p>
                     <details open>
                         <summary>Wagi (parametry)</summary>
-                        <p>Liczby zapisane w modelu. To w nich „mieszka” jego wiedza. LLaMA-7B ma ich około 7 miliardów.</p>
+                        <p>Liczby zapisane w modelu. To w nich „mieszka” jego wiedza. Qwen3-8B ma ich około 8,2 miliarda.</p>
                     </details>
                     <details>
                         <summary>Fine-tuning (douczanie)</summary>
@@ -661,34 +643,19 @@
                     </details>
                     <details>
                         <summary>QLoRA</summary>
-                        <p>LoRA połączona z kwantyzacją, czyli zapisem wag modelu bazowego w oszczędnym, 4-bitowym formacie. Dzięki temu trening modelu 7B mieści się w 6–10 GB VRAM.</p>
+                        <p>LoRA połączona z kwantyzacją, czyli zapisem wag modelu bazowego w oszczędnym, 4-bitowym formacie. Dzięki temu trening modelu tej wielkości mieści się w około 8–12 GB VRAM.</p>
                     </details>
                 </div>
 
                 <div class="card">
                     <p class="panel-title">Jaki sprzęt wystarczy?</p>
                     <ul class="hw-list">
-                        <li><span>Pełny fine-tuning</span><b>kilka kart A100 (80 GB)</b></li>
-                        <li><span>LoRA (FP16)</span><b>jedna karta A100 (40 GB)</b></li>
-                        <li><span>QLoRA (4-bit)</span><b>RTX 3090 / 4090 (24 GB)</b></li>
-                        <li><span>Plik adaptera</span><b>~17 MB</b></li>
+                        <li><span>Pełny fine-tuning</span><b>co najmniej 2 karty 80 GB</b></li>
+                        <li><span>LoRA (16-bit)</span><b>jedna karta 24–48 GB</b></li>
+                        <li><span>QLoRA (4-bit)</span><b>karta do gier 12–16 GB</b></li>
+                        <li><span>Plik adaptera (r = 8)</span><b>~15 MB</b></li>
                     </ul>
                     <div class="caveat"><strong>Uczciwie:</strong> LoRA to kompromis. Przy zadaniach bardzo odległych od tego, co model już umie, pełny fine-tuning może dać lepszą jakość.</div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ── 7. Quiz ────────────────────────────────────────────── -->
-        <section>
-            <div class="section-head">
-                <p class="edu-overline">07 · Sprawdź się</p>
-                <h2>Trzy szybkie pytania</h2>
-            </div>
-            <div class="card">
-                <div id="quiz"></div>
-                <div class="quiz-foot">
-                    <span class="quiz-score" id="quizScore" aria-live="polite"></span>
-                    <button class="btn" id="quizReset">Jeszcze raz</button>
                 </div>
             </div>
         </section>
@@ -720,7 +687,7 @@
         const fullLabels = ['Wejście', 'Uwaga', 'FFN', 'Wyjście'];
 
         const loraLayers = [5, 4, 2, 4, 5];
-        const loraLabels = ['Wejście', 'Uwaga', 'LoRA (r=2)', 'FFN', 'Wyjście'];
+        const loraLabels = ['Wejście', 'Uwaga', 'LoRA', 'FFN', 'Wyjście'];
         const loraConnTypes = ['frozen', 'adapter', 'adapter', 'frozen'];
 
         function pos(layerIdx, nodeIdx, totalNodes, numLayers) {
@@ -801,12 +768,12 @@
             isAnimating = true;
             playBtn.innerHTML = ICON_PAUSE + ' Pauza';
             animationInterval = setInterval(() => {
-                progress += activeTab === 'lora' ? 4 : 2;
+                progress += activeTab === 'lora' ? 2.5 : 2;
                 if (progress >= 100) { progress = 100; stop(); }
                 progressFill.style.width = progress + '%';
                 progressText.textContent = progress === 100
-                    ? (activeTab === 'lora' ? 'Gotowe! Dwa razy szybciej niż obok' : 'Trening zakończony. Sprawdź teraz LoRA')
-                    : `Trening: ${progress}%`;
+                    ? (activeTab === 'lora' ? 'Gotowe! Trochę szybciej i na dużo tańszym sprzęcie' : 'Trening zakończony. Sprawdź teraz LoRA')
+                    : `Trening: ${Math.round(progress)}%`;
                 highlightedCells = new Set();
                 if (activeTab === 'full') { for (let i = 0; i < 25; i++) highlightedCells.add(Math.floor(Math.random() * fullTotal)); }
                 else { for (let i = 0; i < 8; i++) highlightedCells.add(adapterIds[Math.floor(Math.random() * adapterIds.length)]); }
@@ -839,9 +806,9 @@
         reset();
 
         // ══ Suwak rangi ════════════════════════════════════════════════
-        // LLaMA-7B: wymiar d = 4096, 32 warstwy, adaptery przy Wq i Wv.
+        // Qwen3-8B: 36 warstw, adaptery przy Wq (4096 × 4096) i Wv (1024 × 4096).
         const RANKS = [1, 2, 4, 8, 16, 32, 64, 128];
-        const D = 4096, LAYERS = 32, TARGETS = 2, MODEL_PARAMS = 7e9;
+        const D = 4096, D_V = 1024, LAYERS = 36, MODEL_PARAMS = 8190735360;
         const nf = (x, d = 0) => x.toLocaleString('pl-PL', { minimumFractionDigits: d, maximumFractionDigits: d });
 
         function fmtParams(p) {
@@ -859,7 +826,7 @@
         function updateRank() {
             const idx = +$('rankSlider').value, r = RANKS[idx];
             const perMatrix = 2 * D * r;
-            const params = perMatrix * LAYERS * TARGETS;
+            const params = (perMatrix + (D + D_V) * r) * LAYERS;
             const mb = params * 4 / 1e6;                       // FP32: 4 bajty na liczbę
             const pct = params / MODEL_PARAMS * 100;
 
@@ -869,7 +836,7 @@
             $('mxB').style.width = thick + 'px';
             $('mxA').style.height = thick + 'px';
             $('mxCaption').textContent =
-                `Jedna tabela W to ${nf(D * D / 1e6, 1)} mln liczb. Jej adapter (A + B) to tylko ${nf(perMatrix)} liczb. Rysunek nie jest w skali.`;
+                `Jedna tabela Wq to ${nf(D * D / 1e6, 1)} mln liczb. Jej adapter (A + B) to tylko ${nf(perMatrix)} liczb. Rysunek nie jest w skali.`;
 
             $('outParams').textContent = fmtParams(params);
             $('outPct').textContent = nf(pct, pct < 0.1 ? 3 : 2) + '%';
@@ -882,10 +849,10 @@
         // ══ Wymiana adapterów ══════════════════════════════════════════
         const ADAPTERS = [
             { name: 'Bez adaptera', size: 0, text: 'Kawa to napój przygotowywany z palonych ziaren kawowca. Zawiera kofeinę i jest popularna na całym świecie.' },
-            { name: 'Prawnik', size: 17, text: 'Kawa stanowi środek spożywczy w rozumieniu właściwych przepisów prawa żywnościowego. Jej sprzedaż podlega obowiązkom informacyjnym wobec konsumenta, w szczególności w zakresie oznakowania.' },
-            { name: 'Lekarz', size: 17, text: 'Kawa zawiera kofeinę, która pobudza układ nerwowy i może przejściowo podnosić ciśnienie. U zdrowych dorosłych umiarkowane spożycie, czyli 3–4 filiżanki dziennie, uznaje się za bezpieczne.' },
-            { name: 'Obsługa klienta', size: 17, text: 'Dziękujemy za pytanie! Nasza kawa to świeżo palone ziarna, które chętnie zmielimy pod Twój ekspres. Daj znać, jeśli możemy pomóc w wyborze.' },
-            { name: 'Poeta', size: 17, text: 'Czarna jak noc, co świt zapowiada, w filiżance gorąca tajemnica się składa. Jeden łyk, a senność gdzieś znika, jakby ktoś w duszy zapalił płomyka.' },
+            { name: 'Prawnik', size: 15, text: 'Kawa stanowi środek spożywczy w rozumieniu właściwych przepisów prawa żywnościowego. Jej sprzedaż podlega obowiązkom informacyjnym wobec konsumenta, w szczególności w zakresie oznakowania.' },
+            { name: 'Lekarz', size: 15, text: 'Kawa zawiera kofeinę, która pobudza układ nerwowy i może przejściowo podnosić ciśnienie. U zdrowych dorosłych umiarkowane spożycie, czyli 3–4 filiżanki dziennie, uznaje się za bezpieczne.' },
+            { name: 'Obsługa klienta', size: 15, text: 'Dziękujemy za pytanie! Nasza kawa to świeżo palone ziarna, które chętnie zmielimy pod Twój ekspres. Daj znać, jeśli możemy pomóc w wyborze.' },
+            { name: 'Poeta', size: 15, text: 'Czarna jak noc, co świt zapowiada, w filiżance gorąca tajemnica się składa. Jeden łyk, a senność gdzieś znika, jakby ktoś w duszy zapalił płomyka.' },
         ];
 
         function selectAdapter(i) {
@@ -897,7 +864,7 @@
             $('slot').classList.toggle('empty', a.size === 0);
             $('slotName').textContent = a.size ? `${a.name} · ~${a.size} MB` : 'puste gniazdo';
             $('stackTotal').textContent = a.size
-                ? `Na dysku: 1 model + ${ADAPTERS.length - 1} adaptery ≈ 13,07 GB. Bez LoRA: ${ADAPTERS.length - 1} kopie ≈ 52 GB.`
+                ? `Na dysku: 1 model + ${ADAPTERS.length - 1} adaptery ≈ 16,5 GB. Bez LoRA: ${ADAPTERS.length - 1} kopie ≈ 66 GB.`
                 : 'Sam model bazowy: wiedza ogólna, brak specjalizacji.';
             $('bubble').textContent = a.text;
         }
@@ -910,53 +877,6 @@
         });
         selectAdapter(0);
 
-        // ══ Quiz ═══════════════════════════════════════════════════════
-        const QUIZ = [
-            { q: 'Co LoRA robi z oryginalnymi wagami modelu?',
-              opts: ['Poprawia je wszystkie, tylko szybciej', 'Zamraża je i uczy mały, doklejony adapter', 'Usuwa te mniej ważne'],
-              ok: 1, why: 'Oryginał zostaje nietknięty. Uczą się wyłącznie „karteczki”, czyli adapter.' },
-            { q: 'Zwiększasz rangę r z 8 do 64. Co się dzieje?',
-              opts: ['Adapter mieści więcej, ale jest większy i wolniej się uczy', 'Model bazowy robi się mniejszy', 'Nic, ranga to tylko nazwa'],
-              ok: 0, why: 'Ranga to „grubość bloczka karteczek”: więcej miejsca na nową wiedzę, ale większy plik.' },
-            { q: 'Masz jeden model i pięć różnych zadań. Co przechowujesz, używając LoRA?',
-              opts: ['Pięć pełnych kopii modelu', 'Jeden model bazowy i pięć małych adapterów', 'Jeden model, bo adaptery znikają po treningu'],
-              ok: 1, why: 'Model bazowy jest wspólny. Każde zadanie to osobny plik o wadze kilkunastu megabajtów.' },
-        ];
-        let answered = 0, score = 0;
-
-        function renderQuiz() {
-            answered = 0; score = 0;
-            const root = $('quiz'); root.innerHTML = '';
-            QUIZ.forEach((item, qi) => {
-                const box = document.createElement('div'); box.className = 'quiz-q';
-                const h = document.createElement('h3'); h.textContent = `${qi + 1}. ${item.q}`; box.appendChild(h);
-                const opts = document.createElement('div'); opts.className = 'quiz-opts'; box.appendChild(opts);
-                const why = document.createElement('p'); why.className = 'quiz-why hidden'; box.appendChild(why);
-                item.opts.forEach((text, oi) => {
-                    const b = document.createElement('button'); b.className = 'quiz-opt'; b.textContent = text;
-                    b.addEventListener('click', () => {
-                        const good = oi === item.ok;
-                        opts.querySelectorAll('button').forEach((x, k) => { x.disabled = true; if (k === item.ok) x.classList.add('right'); });
-                        if (!good) b.classList.add('wrong');
-                        why.textContent = (good ? 'Dobrze! ' : 'Nie tym razem. ') + item.why;
-                        why.classList.remove('hidden');
-                        answered++; if (good) score++;
-                        updateScore();
-                    });
-                    opts.appendChild(b);
-                });
-                root.appendChild(box);
-            });
-            updateScore();
-        }
-
-        function updateScore() {
-            $('quizScore').textContent = answered < QUIZ.length
-                ? `Odpowiedzi: ${answered} / ${QUIZ.length}`
-                : `Wynik: ${score} / ${QUIZ.length}` + (score === QUIZ.length ? ' · Świetnie, rozumiesz LoRA!' : ' · Wróć do sekcji wyżej i spróbuj ponownie.');
-        }
-        $('quizReset').addEventListener('click', renderQuiz);
-        renderQuiz();
     </script>
 </body>
 </html>
