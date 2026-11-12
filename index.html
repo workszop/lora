@@ -3,601 +3,726 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LoRA: Parameter-Efficient Fine-Tuning</title>
+    <title>LoRA — tanie douczanie modeli AI</title>
+    <meta name="description" content="Interaktywne wyjaśnienie LoRA: czym jest, jakie daje korzyści i jak działa — prostym językiem.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="colors_and_type.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        :root {
-            --accent: #6366f1;
-            --accent-hover: #4f46e5;
-            --accent-subtle: #eef2ff;
-            --purple: #8b5cf6;
-            --purple-light: #a78bfa;
-            --purple-subtle: #f5f3ff;
-            --green: #10b981;
-            --green-subtle: #ecfdf5;
-            --amber: #f59e0b;
-            --amber-subtle: #fffbeb;
-            --red: #ef4444;
-            --frozen: #94a3b8;
-            --frozen-light: #cbd5e1;
-            --text: #0f172a;
-            --text-secondary: #64748b;
-            --text-tertiary: #94a3b8;
-            --border: #e2e8f0;
-            --bg: #f8fafc;
-            --surface: #ffffff;
-            --radius: 12px;
-            --radius-sm: 8px;
-        }
-
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg);
-            color: var(--text);
+            font-family: var(--font-sans);
+            background: var(--paper);
+            color: var(--ink);
             line-height: 1.6;
             min-height: 100vh;
             -webkit-font-smoothing: antialiased;
         }
 
-        .container {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 2rem 1.5rem 4rem;
+        button { font-family: inherit; }
+        button:focus-visible, summary:focus-visible, input:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+
+        /* ── Brand bar ──────────────────────────────────────────────── */
+        .edu-header {
+            position: sticky; top: 0; z-index: 50; width: 100%;
+            background: rgba(251, 247, 240, 0.85);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--line);
+        }
+        .edu-header-inner {
+            max-width: 1100px; margin: 0 auto;
+            padding: 15px 30px; display: flex; align-items: center; gap: 12px;
+        }
+        .edu-logo { width: 32px; height: 32px; display: block; }
+        .edu-wordmark { font-family: var(--font-display); font-weight: 700; font-size: 22px; letter-spacing: -.02em; color: var(--ink); }
+        .edu-tag {
+            font-family: var(--font-mono); font-weight: 500; font-size: 11px;
+            letter-spacing: .14em; text-transform: uppercase; color: var(--teal-ink);
+            background: var(--teal-soft); padding: 4px 9px; border-radius: var(--r-pill);
         }
 
-        /* ── Header ─────────────────────────────────────────────────── */
-        .header {
-            padding: 2.5rem 0 1.5rem;
+        /* ── Shell ──────────────────────────────────────────────────── */
+        main { max-width: 1100px; margin: 0 auto; padding: 34px 30px 70px; }
+
+        .hero { text-align: center; padding: var(--sp-10) 0 var(--sp-12); }
+        .hero .edu-overline { margin-bottom: var(--sp-4); }
+        .app-title {
+            font-family: var(--font-display); font-weight: 800;
+            font-size: clamp(2rem, 4.5vw, 2.85rem); letter-spacing: -.025em;
+            line-height: 1.05; color: var(--ink); margin-bottom: var(--sp-4);
+        }
+        .edu-lead { font-size: 1.0625rem; color: var(--ink-2); max-width: 36rem; margin: 0 auto; }
+
+        section { margin-bottom: var(--sp-16); }
+        .section-head { margin-bottom: var(--sp-6); }
+        .section-head h2 {
+            font-family: var(--font-display); font-weight: 600; font-size: clamp(1.5rem, 3vw, var(--h2));
+            line-height: 1.12; letter-spacing: -.015em; color: var(--ink); margin: var(--sp-2) 0;
+        }
+        .section-head p { color: var(--ink-2); max-width: 44rem; }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: var(--r-lg);
+            padding: var(--sp-6);
+            box-shadow: var(--shadow-sm);
         }
 
-        .header h1 {
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: var(--text);
-            letter-spacing: -0.025em;
+        .chip {
+            display: inline-block;
+            font-family: var(--font-mono); font-size: 11px; text-transform: uppercase;
+            letter-spacing: .08em; padding: 4px 10px; border-radius: var(--r-pill);
+            background: var(--teal-soft); color: var(--teal-ink);
+        }
+        .chip.marigold { background: var(--marigold-soft); color: var(--marigold-ink); }
+        .chip.coral { background: var(--coral-soft); color: var(--coral-ink); }
+        .chip.sky { background: var(--sky-soft); color: var(--sky-ink); }
+
+        /* ── Intro: analogy ─────────────────────────────────────────── */
+        .analogy { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+        .analogy .card h3 {
+            font-family: var(--font-display); font-weight: 600; font-size: 19px;
+            line-height: 1.25; margin: var(--sp-3) 0 var(--sp-2);
+        }
+        .analogy .card p { font-size: 15px; color: var(--ink-2); }
+        .analogy .card p + p { margin-top: var(--sp-2); }
+        .analogy .plain {
+            font-family: var(--font-mono); font-size: 12px; color: var(--ink-3);
+            border-top: 1px solid var(--line); margin-top: var(--sp-4); padding-top: var(--sp-3);
         }
 
-        .header p {
-            font-size: 0.9375rem;
-            color: var(--text-secondary);
-            margin-top: 0.25rem;
+        .oneliner {
+            margin-top: 18px;
+            background: var(--teal-soft); color: var(--teal-ink);
+            border-radius: var(--r-xl); padding: 26px 28px;
+            font-size: 17px; line-height: 1.55;
         }
+        .oneliner strong { font-family: var(--font-display); font-weight: 700; }
+
+        /* ── Benefits ───────────────────────────────────────────────── */
+        .benefits { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+        .benefit { display: flex; gap: var(--sp-4); align-items: flex-start; }
+        .benefit-icon {
+            flex-shrink: 0; width: 44px; height: 44px; border-radius: var(--r-md);
+            display: grid; place-items: center;
+            background: var(--marigold-soft); color: var(--marigold-ink);
+        }
+        .benefit-icon.teal { background: var(--teal-soft); color: var(--teal-ink); }
+        .benefit-icon.sky { background: var(--sky-soft); color: var(--sky-ink); }
+        .benefit h3 { font-family: var(--font-display); font-weight: 600; font-size: 17px; line-height: 1.25; margin-bottom: 4px; }
+        .benefit p { font-size: 14px; line-height: 1.5; color: var(--ink-2); }
+        .benefit .num { font-family: var(--font-mono); font-size: 12px; color: var(--ink-3); margin-top: 6px; display: block; }
 
         /* ── Tabs ───────────────────────────────────────────────────── */
         .tabs {
-            display: inline-flex;
-            gap: 0.25rem;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            padding: 0.25rem;
-            border-radius: var(--radius);
-            margin-bottom: 1.5rem;
+            display: inline-flex; gap: 4px;
+            background: var(--paper-2); border: 1px solid var(--line);
+            padding: 4px; border-radius: var(--r-pill); margin-bottom: var(--sp-5);
         }
-
         .tab {
-            padding: 0.5rem 1.25rem;
-            background: transparent;
-            border: none;
-            border-radius: var(--radius-sm);
-            color: var(--text-secondary);
-            font-size: 0.8125rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.15s ease;
-            white-space: nowrap;
+            padding: 9px 20px; background: transparent; border: none;
+            border-radius: var(--r-pill); color: var(--ink-2);
+            font-size: 14px; font-weight: 600; cursor: pointer;
+            transition: background-color .15s ease, color .15s ease; white-space: nowrap;
         }
+        .tab:hover { color: var(--ink); }
+        .tab.active { background: var(--ink); color: var(--paper); }
 
-        .tab:hover { color: var(--text); background: var(--bg); }
+        /* ── Simulation ─────────────────────────────────────────────── */
+        .main-grid { display: grid; grid-template-columns: 1fr 340px; gap: 18px; align-items: start; }
 
-        .tab.active {
-            background: var(--accent);
-            color: white;
-        }
-
-        /* ── Main grid ──────────────────────────────────────────────── */
-        .main-grid {
-            display: grid;
-            grid-template-columns: 1fr 340px;
-            gap: 1.5rem;
-            align-items: start;
-        }
-
-        /* ── Card base ──────────────────────────────────────────────── */
-        .card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 1.5rem;
-        }
-
-        /* ── Visualization card ─────────────────────────────────────── */
-        .viz-card {
-            padding: 1.5rem;
-        }
-
-        .viz-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.25rem;
-        }
-
-        .viz-top h2 {
-            font-size: 0.9375rem;
-            font-weight: 600;
-            color: var(--text);
-        }
-
-        .controls {
-            display: flex;
-            gap: 0.5rem;
-        }
+        .viz-top { display: flex; justify-content: space-between; align-items: center; gap: var(--sp-4); margin-bottom: var(--sp-5); }
+        .viz-top h3 { font-family: var(--font-display); font-weight: 600; font-size: 19px; }
+        .controls { display: flex; gap: var(--sp-2); }
 
         .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.375rem;
-            padding: 0.4375rem 0.875rem;
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            background: var(--surface);
-            color: var(--text-secondary);
-            font-size: 0.8125rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.15s ease;
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 9px 18px; border: 1px solid var(--line-2);
+            border-radius: var(--r-pill); background: var(--surface); color: var(--ink-2);
+            font-family: var(--font-display); font-size: 14px; font-weight: 600; cursor: pointer;
+            transition: background-color .15s ease, color .15s ease, border-color .15s ease, transform .12s cubic-bezier(.32,.72,.32,1);
         }
+        .btn:hover { color: var(--ink); border-color: var(--ink-3); }
+        .btn:active { transform: scale(.96); }
+        .btn.primary { background: var(--marigold); border-color: var(--marigold); color: var(--on-primary); }
+        .btn.primary:hover { background: var(--marigold-600); border-color: var(--marigold-600); color: var(--on-primary); }
 
-        .btn:hover { border-color: var(--text-tertiary); color: var(--text); }
-
-        .btn.primary {
-            background: var(--accent);
-            border-color: var(--accent);
-            color: white;
-        }
-
-        .btn.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
-
-        /* ── Network SVG ────────────────────────────────────────────── */
-        .network-label {
-            text-align: center;
-            margin-bottom: 0.75rem;
-        }
-
-        .network-label h3 {
-            font-size: 0.8125rem;
-            font-weight: 600;
-            color: var(--text);
-        }
-
-        .network-label p {
-            font-size: 0.75rem;
-            color: var(--text-tertiary);
-            margin-top: 0.125rem;
-        }
+        .network-label { text-align: center; margin-bottom: var(--sp-3); }
+        .network-label h4 { font-family: var(--font-mono); font-weight: 500; font-size: 13px; letter-spacing: .04em; color: var(--ink); }
+        .network-label p { font-size: 13px; color: var(--ink-3); margin-top: 2px; }
 
         .network-svg {
-            background: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            width: 100%;
-            display: block;
+            background: var(--paper); border: 1px solid var(--line);
+            border-radius: var(--r-md); width: 100%; display: block;
         }
 
-        .connection { stroke: #d1d5db; stroke-width: 1.5; opacity: 0.5; }
-        .connection.frozen { stroke: var(--frozen-light); stroke-width: 1; opacity: 0.25; }
-        .connection.highlight { stroke: url(#connectionGradient); stroke-width: 2.5; filter: url(#glow); opacity: 1; animation: pulse 1.5s ease-in-out infinite; }
-        .connection.adapter { stroke: var(--purple-light); stroke-width: 1.5; opacity: 0.4; }
-        .connection.adapter.highlight { stroke: url(#adapterGradient); stroke-width: 2.5; filter: url(#adapterGlow); opacity: 1; animation: pulse 1.5s ease-in-out infinite; }
+        .connection { stroke: var(--line-2); stroke-width: 1.5; opacity: .6; }
+        .connection.frozen { stroke: var(--line-2); stroke-width: 1; opacity: .35; }
+        .connection.highlight { stroke: var(--marigold); stroke-width: 2.5; opacity: 1; animation: pulse 1.5s ease-in-out infinite; }
+        .connection.adapter { stroke: var(--teal); stroke-width: 1.5; opacity: .4; }
+        .connection.adapter.highlight { stroke: var(--teal); stroke-width: 2.75; opacity: 1; animation: pulse 1.5s ease-in-out infinite; }
 
-        .neuron { fill: var(--surface); stroke: #d1d5db; stroke-width: 1.5; }
-        .neuron.io-neuron { fill: var(--accent); stroke: var(--accent-hover); stroke-width: 2; }
-        .neuron.frozen { fill: var(--bg); stroke: var(--frozen-light); opacity: 0.6; }
-        .neuron.adapter-neuron { fill: var(--purple-subtle); stroke: var(--purple); stroke-width: 2; }
-        .neuron.adapter-neuron.highlight { fill: rgba(139, 92, 246, 0.3); filter: url(#adapterGlow); animation: pulse 1.5s ease-in-out infinite; }
+        .neuron { fill: var(--surface); stroke: var(--line-2); stroke-width: 1.5; }
+        .neuron.io-neuron { fill: var(--ink); stroke: var(--ink); stroke-width: 2; }
+        .neuron.frozen { fill: var(--paper-2); stroke: var(--line-2); opacity: .7; }
+        .neuron.adapter-neuron { fill: var(--teal-soft); stroke: var(--teal); stroke-width: 2; }
+        .neuron.adapter-neuron.highlight { fill: var(--teal); animation: pulse 1.5s ease-in-out infinite; }
 
-        .layer-label { fill: var(--text-tertiary); font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; text-anchor: middle; }
-        .layer-label.adapter-label-text { fill: var(--purple); }
-        .frozen-label { fill: var(--frozen); font-family: 'Inter', sans-serif; font-size: 8px; font-weight: 600; text-anchor: middle; letter-spacing: 0.04em; }
-        .dim-label { fill: var(--text-tertiary); font-family: 'Inter', sans-serif; font-size: 8px; font-weight: 600; text-anchor: middle; }
-        .dim-label.adapter-dim { fill: var(--purple-light); }
+        .layer-label { fill: var(--ink-3); font-family: var(--font-mono); font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: .08em; text-anchor: middle; }
+        .layer-label.adapter-label-text { fill: var(--teal-ink); }
+        .frozen-label { fill: var(--ink-3); font-family: var(--font-mono); font-size: 8px; font-weight: 500; text-anchor: middle; letter-spacing: .08em; }
+        .dim-label { fill: var(--teal-ink); font-family: var(--font-mono); font-size: 9px; font-weight: 500; text-anchor: middle; }
 
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .4; } }
+        @media (prefers-reduced-motion: reduce) { .connection.highlight, .neuron.highlight { animation: none !important; } }
 
-        /* ── Legend ──────────────────────────────────────────────────── */
-        .legend {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            margin-top: 0.75rem;
-            flex-wrap: wrap;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 0.375rem;
-            font-size: 0.6875rem;
-            color: var(--text-tertiary);
-        }
-
+        .legend { display: flex; gap: var(--sp-4); justify-content: center; margin-top: var(--sp-3); flex-wrap: wrap; }
+        .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--ink-2); }
         .legend-swatch { width: 16px; height: 3px; border-radius: 2px; }
-        .legend-swatch.active { background: var(--accent); }
-        .legend-swatch.frozen { background: var(--frozen-light); }
-        .legend-swatch.adapter { background: var(--purple); }
-        .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
-        .legend-dot.adapter { background: var(--purple-subtle); border: 1.5px solid var(--purple); }
+        .legend-swatch.active { background: var(--marigold); }
+        .legend-swatch.frozen { background: var(--line-2); }
+        .legend-swatch.adapter { background: var(--teal); }
+        .legend-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--teal-soft); border: 1.5px solid var(--teal); }
 
-        /* ── Info badge ─────────────────────────────────────────────── */
         .info-badge {
-            display: flex;
-            gap: 0.75rem;
-            padding: 0.875rem 1rem;
-            border-radius: var(--radius-sm);
-            font-size: 0.8125rem;
-            line-height: 1.5;
-            margin-top: 1rem;
+            display: flex; gap: var(--sp-3); padding: 14px 16px; border-radius: var(--r-md);
+            font-size: 14px; line-height: 1.5; margin-top: var(--sp-4);
         }
+        .info-badge svg { flex-shrink: 0; margin-top: 2px; }
+        .info-badge.warning { background: var(--warning-soft); color: var(--warning-ink); }
+        .info-badge.success { background: var(--teal-soft); color: var(--teal-ink); }
 
-        .info-badge.warning { background: var(--amber-subtle); color: #92400e; border: 1px solid #fde68a; }
-        .info-badge.success { background: var(--green-subtle); color: #065f46; border: 1px solid #a7f3d0; }
-        .info-badge strong { font-weight: 600; }
-        .info-badge-icon { flex-shrink: 0; font-size: 1rem; }
-
-        /* ── Progress bar ───────────────────────────────────────────── */
         .progress-bar {
-            position: relative;
-            height: 36px;
-            background: var(--bg);
-            border-radius: var(--radius-sm);
-            border: 1px solid var(--border);
-            margin-top: 1rem;
-            overflow: hidden;
+            position: relative; height: 36px; background: var(--paper-2);
+            border-radius: var(--r-pill); border: 1px solid var(--line);
+            margin-top: var(--sp-4); overflow: hidden;
         }
-
-        .progress-fill {
-            height: 100%;
-            background: var(--accent);
-            transition: width 0.2s ease;
-            width: 0%;
-        }
-
+        .progress-fill { height: 100%; background: var(--marigold); transition: width .2s ease; width: 0%; }
+        .progress-fill.lora { background: var(--teal); }
         .progress-text {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-weight: 600;
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            letter-spacing: 0.02em;
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            font-family: var(--font-mono); font-weight: 500; font-size: 12px;
+            color: var(--ink); letter-spacing: .04em; white-space: nowrap;
         }
 
-        /* ── Stats panel ────────────────────────────────────────────── */
-        .stats-panel h3 {
-            font-size: 0.8125rem;
-            font-weight: 600;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            margin-bottom: 1rem;
+        /* ── Stats ──────────────────────────────────────────────────── */
+        .panel-title {
+            font-family: var(--font-mono); font-weight: 500; font-size: 12px;
+            letter-spacing: .14em; text-transform: uppercase; color: var(--marigold-ink);
+            margin-bottom: var(--sp-3);
+        }
+        .stat-row { padding: 14px 0; border-bottom: 1px solid var(--line); }
+        .stat-row:last-child { border-bottom: none; padding-bottom: 0; }
+        .stat-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--sp-2); }
+        .stat-name { font-size: 14px; font-weight: 600; color: var(--ink); }
+        .stat-values-row { display: flex; align-items: baseline; gap: 8px; font-family: var(--font-mono); }
+        .stat-val { font-size: 15px; font-weight: 500; }
+        .stat-val.full { color: var(--coral-ink); }
+        .stat-val.lora { color: var(--teal-ink); }
+        .stat-arrow { color: var(--ink-3); font-size: 12px; }
+        .stat-note { font-size: 13px; line-height: 1.45; color: var(--ink-3); margin-top: 4px; }
+        .stat-note .chip { margin-right: 6px; }
+
+        /* ── Rank playground ────────────────────────────────────────── */
+        .rank-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 18px; align-items: stretch; }
+
+        .slider-row { display: flex; align-items: center; gap: var(--sp-4); margin: var(--sp-4) 0 var(--sp-2); }
+        .slider-value {
+            font-family: var(--font-display); font-weight: 700; font-size: 32px; line-height: 1;
+            min-width: 4.2ch; color: var(--ink);
+        }
+        input[type=range] {
+            -webkit-appearance: none; appearance: none; flex: 1; height: 8px;
+            background: rgba(33,30,26,.12); border-radius: var(--r-pill); cursor: pointer;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none; width: 22px; height: 22px; border-radius: 50%;
+            background: var(--surface); border: 2px solid var(--ink); box-shadow: var(--shadow-sm);
+        }
+        input[type=range]::-moz-range-thumb {
+            width: 18px; height: 18px; border-radius: 50%;
+            background: var(--surface); border: 2px solid var(--ink); box-shadow: var(--shadow-sm);
+        }
+        .slider-scale { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 11px; color: var(--ink-3); }
+        .rank-hint { margin-top: var(--sp-4); font-size: 15px; color: var(--ink-2); min-height: 3.2em; }
+
+        .matrices { display: flex; align-items: center; justify-content: center; gap: var(--sp-4); margin-top: var(--sp-5); flex-wrap: wrap; }
+        .mx { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .mx-box { border-radius: var(--r-xs); transition: width .2s ease, height .2s ease; }
+        .mx-box.w { width: 120px; height: 120px; background: var(--paper-3); border: 1.5px dashed var(--line-2); }
+        .mx-box.b { height: 120px; background: var(--teal); }
+        .mx-box.a { width: 120px; background: var(--teal); }
+        .mx-cap { font-family: var(--font-mono); font-size: 11px; color: var(--ink-3); text-align: center; line-height: 1.4; }
+        .mx-op { font-family: var(--font-display); font-size: 22px; color: var(--ink-3); }
+
+        .dark-panel {
+            background: var(--ink); color: var(--paper);
+            border-radius: var(--r-xl); padding: 24px 28px;
+            display: flex; flex-direction: column; justify-content: center;
+        }
+        .dark-panel .eyebrow {
+            font-family: var(--font-mono); font-size: 12px; letter-spacing: .14em;
+            text-transform: uppercase; color: rgba(251,247,240,.5); margin-bottom: var(--sp-2);
+        }
+        .data-row { display: flex; justify-content: space-between; align-items: baseline; gap: var(--sp-4); padding: 13px 0; border-bottom: 1px solid rgba(251,247,240,.14); }
+        .data-row:last-child { border-bottom: none; }
+        .data-row span { font-size: 14px; color: rgba(251,247,240,.72); }
+        .data-row b { font-family: var(--font-mono); font-weight: 500; font-size: 19px; color: var(--paper); text-align: right; }
+        .data-row b.accent { color: var(--marigold); }
+
+        /* ── Adapter switcher ───────────────────────────────────────── */
+        .adapter-chips { display: flex; gap: var(--sp-2); flex-wrap: wrap; margin-bottom: var(--sp-5); }
+        .adapter-chip {
+            padding: 9px 16px; border-radius: var(--r-pill); border: 1px solid var(--line-2);
+            background: var(--surface); color: var(--ink-2); font-size: 14px; font-weight: 600; cursor: pointer;
+            transition: background-color .15s ease, color .15s ease, border-color .15s ease;
+        }
+        .adapter-chip:hover { color: var(--ink); border-color: var(--ink-3); }
+        .adapter-chip.active { background: var(--teal); border-color: var(--teal); color: var(--on-primary); }
+
+        .swap-grid { display: grid; grid-template-columns: 300px 1fr; gap: var(--sp-6); align-items: center; }
+        .stack { display: flex; flex-direction: column; gap: var(--sp-2); }
+        .block { border-radius: var(--r-md); padding: 14px 16px; }
+        .block small { display: block; font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+        .block b { font-family: var(--font-display); font-weight: 600; font-size: 17px; }
+        .block.base { background: var(--paper-2); border: 1px solid var(--line); padding: 26px 16px; }
+        .block.base small { color: var(--ink-3); }
+        .block.slot { background: var(--teal-soft); color: var(--teal-ink); border: 1.5px solid var(--teal); }
+        .block.slot.empty { background: transparent; color: var(--ink-3); border: 1.5px dashed var(--line-2); }
+        .stack-total { font-family: var(--font-mono); font-size: 12px; color: var(--ink-3); margin-top: 4px; }
+
+        .bubble-q { font-family: var(--font-mono); font-size: 12px; color: var(--ink-3); margin-bottom: var(--sp-2); }
+        .bubble {
+            background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-lg);
+            padding: var(--sp-5); font-size: 16px; line-height: 1.6; color: var(--ink); min-height: 7.5em;
+        }
+        .bubble-note { font-size: 13px; color: var(--ink-3); margin-top: var(--sp-3); }
+
+        /* ── Glossary / deep dive ───────────────────────────────────── */
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+
+        details { border-bottom: 1px solid var(--line); }
+        details:last-child { border-bottom: none; }
+        summary {
+            list-style: none; cursor: pointer; padding: 14px 0; border-radius: var(--r-xs);
+            display: flex; justify-content: space-between; align-items: center; gap: var(--sp-3);
+            font-weight: 600; font-size: 15px; color: var(--ink);
+        }
+        summary::-webkit-details-marker { display: none; }
+        summary::after { content: '+'; font-family: var(--font-mono); font-size: 18px; color: var(--ink-3); }
+        details[open] summary::after { content: '–'; }
+        details p { font-size: 14.5px; line-height: 1.55; color: var(--ink-2); padding-bottom: 14px; }
+
+        code {
+            font-family: var(--font-mono); font-size: .92em; color: var(--ink);
+            background: var(--paper-3); padding: .12em .4em; border-radius: var(--r-xs);
         }
 
-        .stat-row {
-            display: flex;
-            align-items: baseline;
-            justify-content: space-between;
-            padding: 0.75rem 0;
-            border-bottom: 1px solid var(--border);
+        .hw-list { list-style: none; display: flex; flex-direction: column; }
+        .hw-list li { display: flex; justify-content: space-between; gap: var(--sp-4); padding: 13px 0; border-bottom: 1px solid var(--line); font-size: 14.5px; }
+        .hw-list li:last-child { border-bottom: none; }
+        .hw-list span { color: var(--ink-2); }
+        .hw-list b { font-family: var(--font-mono); font-weight: 500; font-size: 13px; color: var(--ink); text-align: right; }
+        .caveat { margin-top: var(--sp-4); background: var(--marigold-soft); color: var(--marigold-ink); border-radius: var(--r-md); padding: 14px 16px; font-size: 14px; line-height: 1.5; }
+
+        /* ── Quiz ───────────────────────────────────────────────────── */
+        .quiz-q { padding: var(--sp-5) 0; border-bottom: 1px solid var(--line); }
+        .quiz-q:first-of-type { padding-top: 0; }
+        .quiz-q h3 { font-family: var(--font-display); font-weight: 600; font-size: 18px; line-height: 1.3; margin-bottom: var(--sp-3); }
+        .quiz-opts { display: grid; gap: var(--sp-2); }
+        .quiz-opt {
+            text-align: left; padding: 12px 16px; border-radius: var(--r-md);
+            border: 1px solid var(--line-2); background: var(--surface); color: var(--ink);
+            font-size: 15px; cursor: pointer; transition: background-color .15s ease, border-color .15s ease;
         }
-
-        .stat-row:last-child { border-bottom: none; }
-
-        .stat-name {
-            font-size: 0.8125rem;
-            color: var(--text-secondary);
-        }
-
-        .stat-values-row {
-            display: flex;
-            align-items: baseline;
-            gap: 0.5rem;
-        }
-
-        .stat-val {
-            font-size: 0.9375rem;
-            font-weight: 700;
-            font-variant-numeric: tabular-nums;
-        }
-
-        .stat-val.full { color: var(--red); }
-        .stat-val.lora { color: var(--green); }
-        .stat-arrow { color: var(--text-tertiary); font-size: 0.75rem; }
-
-        .stat-tag {
-            display: inline-block;
-            padding: 0.125rem 0.5rem;
-            background: var(--green-subtle);
-            border-radius: 4px;
-            color: var(--green);
-            font-size: 0.625rem;
-            font-weight: 700;
-            letter-spacing: 0.04em;
-            margin-left: 0.5rem;
-        }
-
-        .stat-footnote {
-            font-size: 0.6875rem;
-            color: var(--text-tertiary);
-            padding-top: 0.25rem;
-        }
-
-        /* ── Full-width bottom sections ─────────────────────────────── */
-        .bottom-sections {
-            margin-top: 1.5rem;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-        }
-
-        .bottom-section h3 {
-            font-size: 0.8125rem;
-            font-weight: 600;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            margin-bottom: 1rem;
-        }
-
-        /* ── Info list ──────────────────────────────────────────────── */
-        .info-list {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 0.625rem;
-        }
-
-        .info-list li {
-            font-size: 0.8125rem;
-            line-height: 1.6;
-            color: var(--text-secondary);
-            padding-left: 1rem;
-            position: relative;
-        }
-
-        .info-list li::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0.55em;
-            width: 4px;
-            height: 4px;
-            border-radius: 50%;
-            background: var(--accent);
-        }
-
-        .info-list strong { color: var(--text); font-weight: 600; }
-
-        .info-list code {
-            background: var(--bg);
-            padding: 0.0625rem 0.3125rem;
-            border-radius: 3px;
-            font-size: 0.75rem;
-            font-family: 'SF Mono', 'Fira Code', monospace;
-            color: var(--accent);
-        }
-
-        /* ── Tip box ────────────────────────────────────────────────── */
-        .tip-box {
-            background: var(--purple-subtle);
-            border: 1px solid #e9e5ff;
-            border-radius: var(--radius-sm);
-            padding: 1rem 1.25rem;
-            font-size: 0.8125rem;
-            line-height: 1.6;
-            color: #5b21b6;
-        }
-
-        .tip-box strong { font-weight: 600; color: #4c1d95; }
+        .quiz-opt:hover:not(:disabled) { background: var(--paper); border-color: var(--ink-3); }
+        .quiz-opt:disabled { cursor: default; color: var(--ink-3); }
+        .quiz-opt.right { background: var(--success-soft); border-color: var(--success); color: var(--success-ink); font-weight: 600; }
+        .quiz-opt.wrong { background: var(--danger-soft); border-color: var(--danger); color: var(--danger-ink); }
+        .quiz-why { font-size: 14px; color: var(--ink-2); margin-top: var(--sp-3); }
+        .quiz-foot { display: flex; justify-content: space-between; align-items: center; gap: var(--sp-4); padding-top: var(--sp-5); flex-wrap: wrap; }
+        .quiz-score { font-family: var(--font-mono); font-size: 14px; color: var(--ink-2); }
 
         .hidden { display: none; }
 
-        /* ── Responsive ─────────────────────────────────────────────── */
-        @media (max-width: 1024px) {
-            .main-grid { grid-template-columns: 1fr; }
-            .bottom-sections { grid-template-columns: 1fr; }
-        }
+        footer { text-align: center; font-family: var(--font-mono); font-size: 12px; color: var(--ink-3); padding-top: var(--sp-4); }
 
+        /* ── Responsive ─────────────────────────────────────────────── */
+        @media (max-width: 960px) {
+            .main-grid, .rank-grid, .two-col, .swap-grid { grid-template-columns: 1fr; }
+            .analogy, .benefits { grid-template-columns: 1fr; }
+        }
         @media (max-width: 640px) {
-            .container { padding: 1rem 1rem 3rem; }
-            .header h1 { font-size: 1.375rem; }
-            .tabs { width: 100%; }
-            .tab { flex: 1; text-align: center; font-size: 0.75rem; padding: 0.5rem; }
-            .viz-top { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+            .edu-header-inner { padding: 12px 16px; }
+            main { padding: 20px 16px 56px; }
+            .hero { padding: var(--sp-6) 0 var(--sp-10); }
+            section { margin-bottom: var(--sp-12); }
+            .card { padding: var(--sp-5); }
+            .tabs { display: flex; }
+            .tab { flex: 1; padding: 9px 8px; font-size: 13px; }
+            .viz-top { flex-direction: column; align-items: flex-start; }
             .controls { width: 100%; }
             .btn { flex: 1; justify-content: center; }
+            .dark-panel { padding: 20px; }
+            .data-row b { font-size: 16px; }
+            .mx-box.w { width: 90px; height: 90px; }
+            .mx-box.b { height: 90px; }
+            .mx-box.a { width: 90px; }
         }
     </style>
 </head>
-<body>
-    <div class="container">
+<body class="edu">
 
-        <header class="header">
-            <h1>LoRA: Parameter-Efficient Fine-Tuning</h1>
-            <p>Jak efektywnie dostrajać duże modele językowe bez potrzeby trenowania wszystkich wag</p>
+    <header class="edu-header"><div class="edu-header-inner">
+        <img class="edu-logo" alt="edulab" src="edulab-mark-teal.png">
+        <span class="edu-wordmark">edulab</span>
+        <span class="edu-tag">demo lab</span>
+    </div></header>
+
+    <main>
+
+        <header class="hero">
+            <p class="edu-overline">Interaktywne demo · 5 min</p>
+            <h1 class="app-title">LoRA: jak tanio nauczyć AI czegoś nowego</h1>
+            <p class="edu-lead">Duże modele językowe umieją wiele, ale nie znają Twojej branży ani Twojego stylu. LoRA pozwala je douczyć bez superkomputera. Zobacz, na czym polega ten trik.</p>
         </header>
 
-        <div class="tabs">
-            <button class="tab active" data-tab="full">Full Fine-tuning</button>
-            <button class="tab" data-tab="lora">LoRA Fine-tuning</button>
-        </div>
+        <!-- ── 1. Czym jest LoRA ──────────────────────────────────── -->
+        <section>
+            <div class="section-head">
+                <p class="edu-overline">01 · Wprowadzenie</p>
+                <h2>Czym jest LoRA?</h2>
+                <p>Wyobraź sobie model AI jako ogromną encyklopedię. Zamiast słów zawiera miliardy liczb, w których zapisana jest cała jego wiedza.</p>
+            </div>
 
-        <!-- ── Top grid: visualization + stats ────────────────────── -->
-        <div class="main-grid">
-
-            <div class="card viz-card">
-                <div class="viz-top">
-                    <h2 id="viz-title">Trenowanie wszystkich parametrów</h2>
-                    <div class="controls">
-                        <button class="btn primary" id="playBtn">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                            Start
-                        </button>
-                        <button class="btn" id="resetBtn">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
-                            Reset
-                        </button>
-                    </div>
+            <div class="analogy">
+                <div class="card">
+                    <span class="chip coral">Problem</span>
+                    <h3>Przepisywanie całej encyklopedii</h3>
+                    <p>Tradycyjne douczanie (pełny fine-tuning) poprawia każdą liczbę w modelu. To jak przepisanie wszystkich tomów od nowa, żeby dodać jeden rozdział.</p>
+                    <p class="plain">Skutek: drogi sprzęt, dni pracy, ogromne pliki.</p>
                 </div>
-
-                <div id="full-view">
-                    <div class="network-label">
-                        <h3>LLaMA-7B</h3>
-                        <p>7 miliardów wag &mdash; każda aktualizowana w każdym kroku</p>
-                    </div>
-                    <svg viewBox="0 0 640 380" preserveAspectRatio="xMidYMid meet" class="network-svg" id="fullSvg"></svg>
-                    <div class="legend">
-                        <div class="legend-item"><span class="legend-swatch active"></span> Trenowane wagi</div>
-                    </div>
-                    <div class="info-badge warning">
-                        <span class="info-badge-icon">&#9888;&#65039;</span>
-                        <div><strong>Problem:</strong> Aktualizujemy wszystkie 7B wag. Wymaga wielu kart A100/H100, &gt;120 GB VRAM i bardzo dużo czasu.</div>
-                    </div>
+                <div class="card">
+                    <span class="chip marigold">Pomysł</span>
+                    <h3>Karteczki na marginesach</h3>
+                    <p>LoRA zostawia encyklopedię nietkniętą. Nową wiedzę zapisuje na małych karteczkach doklejonych do stron. Model czyta stronę razem z karteczką.</p>
+                    <p class="plain">Karteczki = „adapter”, czyli mały dodatek do modelu.</p>
                 </div>
-
-                <div id="lora-view" class="hidden">
-                    <div class="network-label">
-                        <h3>LLaMA-7B + LoRA (r=2)</h3>
-                        <p>Zamrożona sieć bazowa (szara) + trenowana warstwa adaptera (fioletowa)</p>
-                    </div>
-                    <svg viewBox="0 0 640 380" preserveAspectRatio="xMidYMid meet" class="network-svg" id="loraSvg"></svg>
-                    <div class="legend">
-                        <div class="legend-item"><span class="legend-swatch frozen"></span> Zamrożone</div>
-                        <div class="legend-item"><span class="legend-dot adapter"></span> LoRA bottleneck</div>
-                        <div class="legend-item"><span class="legend-swatch adapter"></span> Trenowane</div>
-                    </div>
-                    <div class="info-badge success">
-                        <span class="info-badge-icon">&#10024;</span>
-                        <div><strong>LoRA:</strong> Niskorangowy bottleneck (A&middot;B) &mdash; jedyna trenowana warstwa. 99.94% mniej parametrów!</div>
-                    </div>
-                </div>
-
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill"></div>
-                    <span class="progress-text" id="progressText">Trening: 0%</span>
+                <div class="card">
+                    <span class="chip">Efekt</span>
+                    <h3>Ta sama wiedza, ułamek pracy</h3>
+                    <p>Uczysz tylko karteczki, a jest ich tysiące razy mniej niż stron. Model zachowuje się niemal tak, jakby przepisano go w całości.</p>
+                    <p class="plain">Zestaw karteczek można w każdej chwili wymienić.</p>
                 </div>
             </div>
 
-            <div class="card stats-panel">
-                <h3>Porównanie</h3>
+            <div class="oneliner">
+                <strong>W jednym zdaniu:</strong> LoRA (Low-Rank Adaptation) to sposób douczania modelu AI, w którym oryginał pozostaje zamrożony, a uczy się tylko mały, dołączany dodatek.
+            </div>
+        </section>
 
-                <div class="stat-row">
-                    <span class="stat-name">Parametry</span>
-                    <div class="stat-values-row">
-                        <span class="stat-val full">7B</span>
-                        <span class="stat-arrow">&rarr;</span>
-                        <span class="stat-val lora">4.2M</span>
-                        <span class="stat-tag">-99.9%</span>
+        <!-- ── 2. Korzyści ────────────────────────────────────────── -->
+        <section>
+            <div class="section-head">
+                <p class="edu-overline">02 · Korzyści</p>
+                <h2>Co z tego masz?</h2>
+                <p>Liczby dotyczą przykładowego modelu z 7 miliardami parametrów (LLaMA-7B) i są orientacyjne.</p>
+            </div>
+
+            <div class="benefits">
+                <div class="card benefit">
+                    <div class="benefit-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15 9.5a3 3 0 0 0-3-1.5c-1.7 0-3 .9-3 2s1.3 2 3 2 3 .9 3 2-1.3 2-3 2a3 3 0 0 1-3-1.5M12 6v2m0 8v2"/></svg></div>
+                    <div><h3>Taniej</h3><p>Wystarcza jedna karta graficzna zamiast całej serwerowni.</p><span class="num">pamięć: &gt;120 GB → ~18 GB</span></div>
+                </div>
+                <div class="card benefit">
+                    <div class="benefit-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></div>
+                    <div><h3>Szybciej</h3><p>Mniej liczb do poprawiania, więc trening trwa godziny, a nie dni.</p><span class="num">czas: ~48 h → ~4 h</span></div>
+                </div>
+                <div class="card benefit">
+                    <div class="benefit-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg></div>
+                    <div><h3>Malutkie pliki</h3><p>Adapter waży tyle co kilka zdjęć. Łatwo go wysłać i przechować.</p><span class="num">~13 GB → ~17 MB</span></div>
+                </div>
+                <div class="card benefit">
+                    <div class="benefit-icon teal"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3l4 4-4 4"/><path d="M3 7h18"/><path d="M7 21l-4-4 4-4"/><path d="M21 17H3"/></svg></div>
+                    <div><h3>Wymienne specjalizacje</h3><p>Jeden model bazowy i wiele adapterów: prawnik, lekarz, obsługa klienta.</p><span class="num">przełączanie w sekundy</span></div>
+                </div>
+                <div class="card benefit">
+                    <div class="benefit-icon teal"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.2 8-8 9-4.800-1-8-4.500-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg></div>
+                    <div><h3>Oryginał jest bezpieczny</h3><p>Model bazowy się nie zmienia. Odepnij adapter i wracasz do punktu wyjścia.</p><span class="num">0 zmienionych wag bazowych</span></div>
+                </div>
+                <div class="card benefit">
+                    <div class="benefit-icon sky"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg></div>
+                    <div><h3>Na domowym sprzęcie</h3><p>W wersji QLoRA trening mieści się na mocnej karcie do gier.</p><span class="num">6–10 GB pamięci karty</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── 3. Symulacja ───────────────────────────────────────── -->
+        <section>
+            <div class="section-head">
+                <p class="edu-overline">03 · Zobacz to</p>
+                <h2>Porównaj oba sposoby treningu</h2>
+                <p>Kółka to „neurony” modelu, linie to połączenia między nimi (wagi). Wybierz metodę, naciśnij Start i obserwuj, które połączenia się uczą.</p>
+            </div>
+
+            <div class="tabs" role="group" aria-label="Metoda treningu">
+                <button class="tab active" data-tab="full" aria-pressed="true">Pełny fine-tuning</button>
+                <button class="tab" data-tab="lora" aria-pressed="false">LoRA</button>
+            </div>
+
+            <div class="main-grid">
+                <div class="card">
+                    <div class="viz-top">
+                        <h3 id="viz-title">Uczą się wszystkie połączenia</h3>
+                        <div class="controls">
+                            <button class="btn primary" id="playBtn"></button>
+                            <button class="btn" id="resetBtn">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+                                Reset
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="full-view">
+                        <div class="network-label">
+                            <h4>LLaMA-7B</h4>
+                            <p>7 miliardów wag, każda poprawiana w każdym kroku</p>
+                        </div>
+                        <svg viewBox="0 0 640 380" preserveAspectRatio="xMidYMid meet" class="network-svg" id="fullSvg" role="img" aria-label="Sieć neuronowa, w której trenowane są wszystkie połączenia"></svg>
+                        <div class="legend">
+                            <div class="legend-item"><span class="legend-swatch active"></span> Trenowane wagi</div>
+                        </div>
+                        <div class="info-badge warning">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 20h20z"/><path d="M12 10v4m0 3h.01"/></svg>
+                            <div><strong>Problem:</strong> poprawiamy wszystkie 7 miliardów wag. Potrzeba wielu drogich kart graficznych, ponad 120 GB pamięci i dużo czasu.</div>
+                        </div>
+                    </div>
+
+                    <div id="lora-view" class="hidden">
+                        <div class="network-label">
+                            <h4>LLaMA-7B + LoRA (r = 2)</h4>
+                            <p>Szara sieć jest zamrożona. Uczy się tylko zielony adapter</p>
+                        </div>
+                        <svg viewBox="0 0 640 380" preserveAspectRatio="xMidYMid meet" class="network-svg" id="loraSvg" role="img" aria-label="Sieć neuronowa z zamrożonymi wagami i małym trenowanym adapterem LoRA"></svg>
+                        <div class="legend">
+                            <div class="legend-item"><span class="legend-swatch frozen"></span> Zamrożone</div>
+                            <div class="legend-item"><span class="legend-dot"></span> Wąskie gardło LoRA</div>
+                            <div class="legend-item"><span class="legend-swatch adapter"></span> Trenowane</div>
+                        </div>
+                        <div class="info-badge success">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg>
+                            <div><strong>LoRA:</strong> uczy się tylko wąski adapter (macierze A i B). To 99,94% mniej parametrów do trenowania.</div>
+                        </div>
+                    </div>
+
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                        <span class="progress-text" id="progressText" aria-live="polite">Trening: 0%</span>
                     </div>
                 </div>
 
-                <div class="stat-row">
-                    <span class="stat-name">VRAM</span>
-                    <div class="stat-values-row">
-                        <span class="stat-val full">&gt;120 GB</span>
-                        <span class="stat-arrow">&rarr;</span>
-                        <span class="stat-val lora">~18 GB</span>
-                        <span class="stat-tag">-85%</span>
-                    </div>
-                </div>
-                <div class="stat-footnote">FP32 + optimizer vs FP16 base + adapter</div>
+                <div class="card">
+                    <p class="panel-title">Pełny → LoRA</p>
 
-                <div class="stat-row">
-                    <span class="stat-name">Czas</span>
-                    <div class="stat-values-row">
-                        <span class="stat-val full">~48h</span>
-                        <span class="stat-arrow">&rarr;</span>
-                        <span class="stat-val lora">~4h</span>
-                        <span class="stat-tag">12x</span>
+                    <div class="stat-row">
+                        <div class="stat-head">
+                            <span class="stat-name">Trenowane parametry</span>
+                            <div class="stat-values-row"><span class="stat-val full">7 mld</span><span class="stat-arrow">→</span><span class="stat-val lora">4,2 mln</span></div>
+                        </div>
+                        <p class="stat-note"><span class="chip">−99,9%</span>Liczby, które trzeba poprawiać.</p>
                     </div>
-                </div>
-                <div class="stat-footnote">Orientacyjnie &mdash; zależy od sprzętu i datasetu</div>
 
-                <div class="stat-row">
-                    <span class="stat-name">Koszt</span>
-                    <div class="stat-values-row">
-                        <span class="stat-val full">$$$$</span>
-                        <span class="stat-arrow">&rarr;</span>
-                        <span class="stat-val lora">$</span>
+                    <div class="stat-row">
+                        <div class="stat-head">
+                            <span class="stat-name">Pamięć karty (VRAM)</span>
+                            <div class="stat-values-row"><span class="stat-val full">&gt;120 GB</span><span class="stat-arrow">→</span><span class="stat-val lora">~18 GB</span></div>
+                        </div>
+                        <p class="stat-note"><span class="chip">−85%</span>Pełna precyzja z optymalizatorem kontra model w FP16 z adapterem.</p>
+                    </div>
+
+                    <div class="stat-row">
+                        <div class="stat-head">
+                            <span class="stat-name">Czas treningu</span>
+                            <div class="stat-values-row"><span class="stat-val full">~48 h</span><span class="stat-arrow">→</span><span class="stat-val lora">~4 h</span></div>
+                        </div>
+                        <p class="stat-note"><span class="chip">12×</span>Orientacyjnie, zależy od sprzętu i danych.</p>
+                    </div>
+
+                    <div class="stat-row">
+                        <div class="stat-head">
+                            <span class="stat-name">Koszt</span>
+                            <div class="stat-values-row"><span class="stat-val full">$$$$</span><span class="stat-arrow">→</span><span class="stat-val lora">$</span></div>
+                        </div>
+                        <p class="stat-note">Mniej sprzętu i krótszy czas to niższy rachunek.</p>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- ── Full-width bottom: how it works + tip ──────────────── -->
-        <div class="bottom-sections">
-            <div class="card bottom-section">
-                <h3>Jak to działa?</h3>
-                <ul class="info-list">
-                    <li><strong>Zamrożony model bazowy</strong> &mdash; 7B wag nietknięte, gradienty nie liczone</li>
-                    <li><strong>Adaptery niskorangowe</strong> &mdash; pary macierzy A&nbsp;(d&times;r) i B&nbsp;(r&times;d) przy projekcjach <code>Wq</code>, <code>Wk</code>, <code>Wv</code></li>
-                    <li><strong>Rank (ranga)</strong> &mdash; hiperparametr r kontroluje pojemność adaptera. Typowe: r = 8, 16, 32, 64</li>
-                    <li><strong>Matematyka</strong> &mdash; <code>W' = W + (&alpha;/r) &middot; B &middot; A</code>, gdzie B&middot;A to niskorangowa korekta</li>
-                    <li><strong>Wymiana adapterów</strong> &mdash; jeden model bazowy + wiele adapterów (~17 MB) dla różnych zadań</li>
-                    <li><strong>QLoRA</strong> &mdash; LoRA + 4-bit kwantyzacja = fine-tuning 7B na 6-10 GB VRAM</li>
-                </ul>
+        <!-- ── 4. Ranga ───────────────────────────────────────────── -->
+        <section>
+            <div class="section-head">
+                <p class="edu-overline">04 · Pobaw się</p>
+                <h2>Jak duży ma być adapter?</h2>
+                <p>Rozmiar adaptera ustawia jedna liczba: ranga <code>r</code>. To jak grubość bloczka karteczek. Przesuń suwak i zobacz, co się zmienia.</p>
             </div>
 
-            <div class="card bottom-section">
-                <h3>W praktyce</h3>
-                <div class="tip-box">
-                    <strong>Full fine-tuning LLaMA-7B</strong> wymaga wielu kart A100 (80 GB)
-                    ze względu na stany optymalizatora.
-                    <br><br>
-                    <strong>Z LoRA (FP16)</strong> &mdash; jedna karta A100 (40 GB).
-                    <br>
-                    <strong>Z QLoRA (4-bit)</strong> &mdash; RTX 3090/4090 (24 GB).
-                    <br><br>
-                    Adapter zajmuje ~17 MB na dysku &mdash; możesz mieć dziesiątki adapterów do różnych zadań bez powielania modelu.
+            <div class="rank-grid">
+                <div class="card">
+                    <p class="panel-title">Ranga adaptera</p>
+                    <div class="slider-row">
+                        <span class="slider-value" id="rankValue">r = 8</span>
+                        <input type="range" id="rankSlider" min="0" max="7" step="1" value="3" aria-label="Ranga adaptera">
+                    </div>
+                    <div class="slider-scale"><span>1</span><span>mały</span><span>typowy</span><span>duży</span><span>128</span></div>
+                    <p class="rank-hint" id="rankHint"></p>
+
+                    <div class="matrices" aria-hidden="true">
+                        <div class="mx"><div class="mx-box w"></div><div class="mx-cap">W: zamrożona<br>4096 × 4096</div></div>
+                        <span class="mx-op">+</span>
+                        <div class="mx"><div class="mx-box b" id="mxB"></div><div class="mx-cap">B</div></div>
+                        <span class="mx-op">×</span>
+                        <div class="mx"><div class="mx-box a" id="mxA"></div><div class="mx-cap">A</div></div>
+                    </div>
+                    <p class="mx-cap" style="margin-top: var(--sp-4)" id="mxCaption"></p>
+                </div>
+
+                <div class="dark-panel">
+                    <p class="eyebrow">Cały adapter dla LLaMA-7B</p>
+                    <div class="data-row"><span>Trenowane parametry</span><b class="accent" id="outParams"></b></div>
+                    <div class="data-row"><span>Część całego modelu</span><b id="outPct"></b></div>
+                    <div class="data-row"><span>Rozmiar pliku adaptera</span><b id="outSize"></b></div>
+                    <div class="data-row"><span>Mniej niż pełny trening</span><b id="outTimes"></b></div>
                 </div>
             </div>
-        </div>
+        </section>
 
-    </div>
+        <!-- ── 5. Wymiana adapterów ───────────────────────────────── -->
+        <section>
+            <div class="section-head">
+                <p class="edu-overline">05 · Wypróbuj</p>
+                <h2>Jeden model, wiele specjalizacji</h2>
+                <p>Adapter działa jak wymienna nakładka. Wybierz specjalizację i zobacz, jak ten sam model odpowiada na to samo pytanie.</p>
+            </div>
+
+            <div class="card">
+                <div class="adapter-chips" id="adapterChips" role="group" aria-label="Wybór adaptera"></div>
+                <div class="swap-grid">
+                    <div class="stack">
+                        <div class="block slot empty" id="slot"><small>Adapter LoRA</small><b id="slotName"></b></div>
+                        <div class="block base"><small>Model bazowy · zamrożony</small><b>LLaMA-7B · ~13 GB</b></div>
+                        <p class="stack-total" id="stackTotal"></p>
+                    </div>
+                    <div>
+                        <p class="bubble-q">Pytanie: „Opisz kawę w dwóch zdaniach.”</p>
+                        <div class="bubble" id="bubble" aria-live="polite"></div>
+                        <p class="bubble-note">Odpowiedzi są przykładowe i pokazują ideę. Bez LoRA każda specjalizacja oznaczałaby osobną kopię modelu o wadze ~13 GB.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── 6. Dla dociekliwych ────────────────────────────────── -->
+        <section>
+            <div class="section-head">
+                <p class="edu-overline">06 · Dla dociekliwych</p>
+                <h2>Słowniczek i praktyka</h2>
+                <p>Kliknij pojęcie, żeby zobaczyć proste wyjaśnienie.</p>
+            </div>
+
+            <div class="two-col">
+                <div class="card">
+                    <p class="panel-title">Słowniczek</p>
+                    <details open>
+                        <summary>Wagi (parametry)</summary>
+                        <p>Liczby zapisane w modelu. To w nich „mieszka” jego wiedza. LLaMA-7B ma ich około 7 miliardów.</p>
+                    </details>
+                    <details>
+                        <summary>Fine-tuning (douczanie)</summary>
+                        <p>Dodatkowy trening gotowego modelu na własnych danych, żeby lepiej radził sobie z konkretnym zadaniem.</p>
+                    </details>
+                    <details>
+                        <summary>Zamrożony model</summary>
+                        <p>Model, którego wag nie zmieniamy podczas treningu. Komputer nie musi liczyć dla nich poprawek, co oszczędza pamięć i czas.</p>
+                    </details>
+                    <details>
+                        <summary>Adapter i macierze A, B</summary>
+                        <p>Adapter to para małych tabel liczb: A i B. Po przemnożeniu dają poprawkę dla dużej tabeli wag W. Wzór: <code>W' = W + (α/r) · B · A</code>. Dokleja się je zwykle w warstwach uwagi modelu (<code>Wq</code>, <code>Wv</code>).</p>
+                    </details>
+                    <details>
+                        <summary>Ranga (r)</summary>
+                        <p>Szerokość adaptera. Im większa, tym więcej nowej wiedzy się zmieści, ale adapter jest większy. Typowe wartości: 8, 16, 32, 64.</p>
+                    </details>
+                    <details>
+                        <summary>VRAM</summary>
+                        <p>Pamięć karty graficznej. To ona zwykle ogranicza, jak duży model da się trenować na danym komputerze.</p>
+                    </details>
+                    <details>
+                        <summary>QLoRA</summary>
+                        <p>LoRA połączona z kwantyzacją, czyli zapisem wag modelu bazowego w oszczędnym, 4-bitowym formacie. Dzięki temu trening modelu 7B mieści się w 6–10 GB VRAM.</p>
+                    </details>
+                </div>
+
+                <div class="card">
+                    <p class="panel-title">Jaki sprzęt wystarczy?</p>
+                    <ul class="hw-list">
+                        <li><span>Pełny fine-tuning</span><b>kilka kart A100 (80 GB)</b></li>
+                        <li><span>LoRA (FP16)</span><b>jedna karta A100 (40 GB)</b></li>
+                        <li><span>QLoRA (4-bit)</span><b>RTX 3090 / 4090 (24 GB)</b></li>
+                        <li><span>Plik adaptera</span><b>~17 MB</b></li>
+                    </ul>
+                    <div class="caveat"><strong>Uczciwie:</strong> LoRA to kompromis. Przy zadaniach bardzo odległych od tego, co model już umie, pełny fine-tuning może dać lepszą jakość.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── 7. Quiz ────────────────────────────────────────────── -->
+        <section>
+            <div class="section-head">
+                <p class="edu-overline">07 · Sprawdź się</p>
+                <h2>Trzy szybkie pytania</h2>
+            </div>
+            <div class="card">
+                <div id="quiz"></div>
+                <div class="quiz-foot">
+                    <span class="quiz-score" id="quizScore" aria-live="polite"></span>
+                    <button class="btn" id="quizReset">Jeszcze raz</button>
+                </div>
+            </div>
+        </section>
+
+        <footer>edulab · demo lab · LoRA</footer>
+    </main>
 
     <script>
-        // ── State ──────────────────────────────────────────────────────
+        const $ = id => document.getElementById(id);
+
+        // ══ Symulacja treningu ═════════════════════════════════════════
         let activeTab = 'full';
         let isAnimating = false;
         let progress = 0;
         let highlightedCells = new Set();
         let animationInterval = null;
 
-        // ── DOM ────────────────────────────────────────────────────────
         const tabs = document.querySelectorAll('.tab');
-        const playBtn = document.getElementById('playBtn');
-        const resetBtn = document.getElementById('resetBtn');
-        const fullView = document.getElementById('full-view');
-        const loraView = document.getElementById('lora-view');
-        const vizTitle = document.getElementById('viz-title');
-        const progressFill = document.getElementById('progressFill');
-        const progressText = document.getElementById('progressText');
-        const fullSvg = document.getElementById('fullSvg');
-        const loraSvg = document.getElementById('loraSvg');
+        const playBtn = $('playBtn'), resetBtn = $('resetBtn');
+        const fullView = $('full-view'), loraView = $('lora-view');
+        const vizTitle = $('viz-title');
+        const progressFill = $('progressFill'), progressText = $('progressText');
+        const fullSvg = $('fullSvg'), loraSvg = $('loraSvg');
 
-        // ── Network configs ────────────────────────────────────────────
+        const ICON_PLAY = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>';
+        const ICON_PAUSE = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';
+
         const fullLayers = [5, 4, 4, 5];
-        const fullLabels = ['Embedding', 'Attention', 'FFN', 'Output'];
+        const fullLabels = ['Wejście', 'Uwaga', 'FFN', 'Wyjście'];
 
         const loraLayers = [5, 4, 2, 4, 5];
-        const loraLabels = ['Embedding', 'Attention', 'LoRA (r=2)', 'FFN', 'Output'];
+        const loraLabels = ['Wejście', 'Uwaga', 'LoRA (r=2)', 'FFN', 'Wyjście'];
         const loraConnTypes = ['frozen', 'adapter', 'adapter', 'frozen'];
 
-        // ── Positioning ────────────────────────────────────────────────
         function pos(layerIdx, nodeIdx, totalNodes, numLayers) {
             const x = layerIdx * (520 / (numLayers - 1)) + 60;
             const y = 190 - ((totalNodes - 1) * 56) / 2 + nodeIdx * 56;
@@ -610,35 +735,8 @@
             return e;
         }
 
-        // ── SVG defs ───────────────────────────────────────────────────
-        function defs(svg) {
-            const d = el('defs', {});
-            const g1 = el('linearGradient', { id: 'connectionGradient', x1: '0%', y1: '0%', x2: '100%', y2: '0%' });
-            g1.appendChild(el('stop', { offset: '0%', 'stop-color': '#6366f1' }));
-            g1.appendChild(el('stop', { offset: '100%', 'stop-color': '#8b5cf6' }));
-            d.appendChild(g1);
-
-            const g2 = el('linearGradient', { id: 'adapterGradient', x1: '0%', y1: '0%', x2: '100%', y2: '0%' });
-            g2.appendChild(el('stop', { offset: '0%', 'stop-color': '#8b5cf6' }));
-            g2.appendChild(el('stop', { offset: '100%', 'stop-color': '#a78bfa' }));
-            d.appendChild(g2);
-
-            [['glow', '2'], ['adapterGlow', '3']].forEach(([id, std]) => {
-                const f = el('filter', { id });
-                f.appendChild(el('feGaussianBlur', { stdDeviation: std, result: 'b' }));
-                const m = el('feMerge', {});
-                m.appendChild(el('feMergeNode', { in: 'b' }));
-                m.appendChild(el('feMergeNode', { in: 'SourceGraphic' }));
-                f.appendChild(m);
-                d.appendChild(f);
-            });
-            svg.appendChild(d);
-        }
-
-        // ── Render full FT ─────────────────────────────────────────────
         function renderFull(svg) {
             svg.innerHTML = '';
-            defs(svg);
             const L = fullLayers, n = L.length;
             let id = 0;
             for (let l = 0; l < n - 1; l++)
@@ -652,10 +750,8 @@
             fullLabels.forEach((t, l) => { const x = pos(l, 0, L[l], n).x; const txt = el('text', { x, y: 28, class: 'layer-label' }); txt.textContent = t; svg.appendChild(txt); });
         }
 
-        // ── Render LoRA ────────────────────────────────────────────────
         function renderLora(svg) {
             svg.innerHTML = '';
-            defs(svg);
             const L = loraLayers, n = L.length, AL = 2;
             let id = 0;
             for (let l = 0; l < n - 1; l++) {
@@ -679,43 +775,38 @@
                 }
             });
             loraLabels.forEach((t, l) => { const x = pos(l, 0, L[l], n).x; const txt = el('text', { x, y: 28, class: 'layer-label' + (l === AL ? ' adapter-label-text' : '') }); txt.textContent = t; svg.appendChild(txt); });
-            // Dimension labels
-            [[1, 2, 'A (d\u2192r)'], [2, 3, 'B (r\u2192d)']].forEach(([f, t, label]) => {
+            [[1, 2, 'A (d→r)'], [2, 3, 'B (r→d)']].forEach(([f, t, label]) => {
                 const mx = (pos(f, 0, L[f], n).x + pos(t, 0, L[t], n).x) / 2;
-                const txt = el('text', { x: mx, y: 355, class: 'dim-label adapter-dim' }); txt.textContent = label; svg.appendChild(txt);
+                const txt = el('text', { x: mx, y: 355, class: 'dim-label' }); txt.textContent = label; svg.appendChild(txt);
             });
-            [1, 3].forEach(l => { const x = pos(l, 0, L[l], n).x, ly = pos(l, L[l] - 1, L[l], n).y; const t = el('text', { x, y: ly + 28, class: 'frozen-label' }); t.textContent = 'FROZEN'; svg.appendChild(t); });
+            [1, 3].forEach(l => { const x = pos(l, 0, L[l], n).x, ly = pos(l, L[l] - 1, L[l], n).y; const t = el('text', { x, y: ly + 28, class: 'frozen-label' }); t.textContent = 'ZAMROŻONE'; svg.appendChild(t); });
         }
 
-        // ── Precompute adapter connection IDs ──────────────────────────
         function countConns(layers) { let t = 0; for (let l = 0; l < layers.length - 1; l++) t += layers[l] * layers[l + 1]; return t; }
         const fullTotal = countConns(fullLayers);
         const adapterIds = [];
         { let id = 0; for (let l = 0; l < loraLayers.length - 1; l++) { const c = loraLayers[l] * loraLayers[l + 1]; if (loraConnTypes[l] === 'adapter') for (let i = id; i < id + c; i++) adapterIds.push(i); id += c; } }
 
-        // ── Update ─────────────────────────────────────────────────────
         function update() {
-            if (activeTab === 'full') {
-                fullView.classList.remove('hidden'); loraView.classList.add('hidden');
-                vizTitle.textContent = 'Trenowanie wszystkich parametrów';
-                renderFull(fullSvg);
-            } else {
-                fullView.classList.add('hidden'); loraView.classList.remove('hidden');
-                vizTitle.textContent = 'Trenowanie tylko adaptera LoRA';
-                renderLora(loraSvg);
-            }
+            const lora = activeTab === 'lora';
+            fullView.classList.toggle('hidden', lora);
+            loraView.classList.toggle('hidden', !lora);
+            progressFill.classList.toggle('lora', lora);
+            vizTitle.textContent = lora ? 'Uczy się tylko adapter LoRA' : 'Uczą się wszystkie połączenia';
+            lora ? renderLora(loraSvg) : renderFull(fullSvg);
         }
 
-        // ── Animation ──────────────────────────────────────────────────
         function start() {
+            if (progress >= 100) { progress = 0; }
             isAnimating = true;
-            playBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Pauza';
+            playBtn.innerHTML = ICON_PAUSE + ' Pauza';
             animationInterval = setInterval(() => {
-                const step = activeTab === 'lora' ? 4 : 2;
-                progress += step;
+                progress += activeTab === 'lora' ? 4 : 2;
                 if (progress >= 100) { progress = 100; stop(); }
                 progressFill.style.width = progress + '%';
-                progressText.textContent = progress === 100 ? 'Trening zakończony!' : `Trening: ${progress}%`;
+                progressText.textContent = progress === 100
+                    ? (activeTab === 'lora' ? 'Gotowe! Dwa razy szybciej niż obok' : 'Trening zakończony. Sprawdź teraz LoRA')
+                    : `Trening: ${progress}%`;
                 highlightedCells = new Set();
                 if (activeTab === 'full') { for (let i = 0; i < 25; i++) highlightedCells.add(Math.floor(Math.random() * fullTotal)); }
                 else { for (let i = 0; i < 8; i++) highlightedCells.add(adapterIds[Math.floor(Math.random() * adapterIds.length)]); }
@@ -726,26 +817,146 @@
         function stop() {
             isAnimating = false;
             if (animationInterval) { clearInterval(animationInterval); animationInterval = null; }
-            playBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> Start';
-        }
-
-        function reset() {
-            stop(); progress = 0; highlightedCells = new Set();
-            progressFill.style.width = '0%';
-            progressText.textContent = 'Trening: 0%';
+            playBtn.innerHTML = ICON_PLAY + ' Start';
             update();
         }
 
-        // ── Events ─────────────────────────────────────────────────────
+        function reset() {
+            progress = 0; highlightedCells = new Set();
+            progressFill.style.width = '0%';
+            progressText.textContent = 'Trening: 0%';
+            stop();
+        }
+
         tabs.forEach(tab => tab.addEventListener('click', () => {
-            tabs.forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
+            tabs.forEach(t => { t.classList.remove('active'); t.setAttribute('aria-pressed', 'false'); });
+            tab.classList.add('active'); tab.setAttribute('aria-pressed', 'true');
             activeTab = tab.dataset.tab;
             reset();
         }));
         playBtn.addEventListener('click', () => isAnimating ? stop() : start());
         resetBtn.addEventListener('click', reset);
-        update();
+        reset();
+
+        // ══ Suwak rangi ════════════════════════════════════════════════
+        // LLaMA-7B: wymiar d = 4096, 32 warstwy, adaptery przy Wq i Wv.
+        const RANKS = [1, 2, 4, 8, 16, 32, 64, 128];
+        const D = 4096, LAYERS = 32, TARGETS = 2, MODEL_PARAMS = 7e9;
+        const nf = (x, d = 0) => x.toLocaleString('pl-PL', { minimumFractionDigits: d, maximumFractionDigits: d });
+
+        function fmtParams(p) {
+            return p >= 1e6 ? nf(p / 1e6, p < 1e7 ? 1 : 0) + ' mln' : nf(Math.round(p / 1e3)) + ' tys.';
+        }
+
+        function rankHint(r) {
+            if (r <= 2) return 'Bardzo cienki adapter. Wystarcza do prostych zmian, np. tonu wypowiedzi.';
+            if (r <= 4) return 'Mały adapter. Dobry na początek i do wąskich zadań.';
+            if (r <= 16) return 'Typowy wybór. Dobry kompromis między pojemnością a rozmiarem.';
+            if (r <= 32) return 'Większa pojemność. Przydaje się przy trudniejszych, bardziej złożonych zadaniach.';
+            return 'Duży adapter. Mieści najwięcej, ale rzadko jest potrzebny i dłużej się uczy.';
+        }
+
+        function updateRank() {
+            const idx = +$('rankSlider').value, r = RANKS[idx];
+            const perMatrix = 2 * D * r;
+            const params = perMatrix * LAYERS * TARGETS;
+            const mb = params * 4 / 1e6;                       // FP32: 4 bajty na liczbę
+            const pct = params / MODEL_PARAMS * 100;
+
+            $('rankValue').textContent = 'r = ' + r;
+            $('rankHint').textContent = rankHint(r);
+            const thick = 6 + idx * 5;
+            $('mxB').style.width = thick + 'px';
+            $('mxA').style.height = thick + 'px';
+            $('mxCaption').textContent =
+                `Jedna tabela W to ${nf(D * D / 1e6, 1)} mln liczb. Jej adapter (A + B) to tylko ${nf(perMatrix)} liczb. Rysunek nie jest w skali.`;
+
+            $('outParams').textContent = fmtParams(params);
+            $('outPct').textContent = nf(pct, pct < 0.1 ? 3 : 2) + '%';
+            $('outSize').textContent = '~' + (mb < 10 ? nf(mb, 1) : nf(Math.round(mb))) + ' MB';
+            $('outTimes').textContent = nf(Math.round(MODEL_PARAMS / params)) + '×';
+        }
+        $('rankSlider').addEventListener('input', updateRank);
+        updateRank();
+
+        // ══ Wymiana adapterów ══════════════════════════════════════════
+        const ADAPTERS = [
+            { name: 'Bez adaptera', size: 0, text: 'Kawa to napój przygotowywany z palonych ziaren kawowca. Zawiera kofeinę i jest popularna na całym świecie.' },
+            { name: 'Prawnik', size: 17, text: 'Kawa stanowi środek spożywczy w rozumieniu właściwych przepisów prawa żywnościowego. Jej sprzedaż podlega obowiązkom informacyjnym wobec konsumenta, w szczególności w zakresie oznakowania.' },
+            { name: 'Lekarz', size: 17, text: 'Kawa zawiera kofeinę, która pobudza układ nerwowy i może przejściowo podnosić ciśnienie. U zdrowych dorosłych umiarkowane spożycie, czyli 3–4 filiżanki dziennie, uznaje się za bezpieczne.' },
+            { name: 'Obsługa klienta', size: 17, text: 'Dziękujemy za pytanie! Nasza kawa to świeżo palone ziarna, które chętnie zmielimy pod Twój ekspres. Daj znać, jeśli możemy pomóc w wyborze.' },
+            { name: 'Poeta', size: 17, text: 'Czarna jak noc, co świt zapowiada, w filiżance gorąca tajemnica się składa. Jeden łyk, a senność gdzieś znika, jakby ktoś w duszy zapalił płomyka.' },
+        ];
+
+        function selectAdapter(i) {
+            const a = ADAPTERS[i];
+            document.querySelectorAll('.adapter-chip').forEach((c, k) => {
+                c.classList.toggle('active', k === i);
+                c.setAttribute('aria-pressed', k === i);
+            });
+            $('slot').classList.toggle('empty', a.size === 0);
+            $('slotName').textContent = a.size ? `${a.name} · ~${a.size} MB` : 'puste gniazdo';
+            $('stackTotal').textContent = a.size
+                ? `Na dysku: 1 model + ${ADAPTERS.length - 1} adaptery ≈ 13,07 GB. Bez LoRA: ${ADAPTERS.length - 1} kopie ≈ 52 GB.`
+                : 'Sam model bazowy: wiedza ogólna, brak specjalizacji.';
+            $('bubble').textContent = a.text;
+        }
+
+        ADAPTERS.forEach((a, i) => {
+            const b = document.createElement('button');
+            b.className = 'adapter-chip'; b.textContent = a.name;
+            b.addEventListener('click', () => selectAdapter(i));
+            $('adapterChips').appendChild(b);
+        });
+        selectAdapter(0);
+
+        // ══ Quiz ═══════════════════════════════════════════════════════
+        const QUIZ = [
+            { q: 'Co LoRA robi z oryginalnymi wagami modelu?',
+              opts: ['Poprawia je wszystkie, tylko szybciej', 'Zamraża je i uczy mały, doklejony adapter', 'Usuwa te mniej ważne'],
+              ok: 1, why: 'Oryginał zostaje nietknięty. Uczą się wyłącznie „karteczki”, czyli adapter.' },
+            { q: 'Zwiększasz rangę r z 8 do 64. Co się dzieje?',
+              opts: ['Adapter mieści więcej, ale jest większy i wolniej się uczy', 'Model bazowy robi się mniejszy', 'Nic, ranga to tylko nazwa'],
+              ok: 0, why: 'Ranga to „grubość bloczka karteczek”: więcej miejsca na nową wiedzę, ale większy plik.' },
+            { q: 'Masz jeden model i pięć różnych zadań. Co przechowujesz, używając LoRA?',
+              opts: ['Pięć pełnych kopii modelu', 'Jeden model bazowy i pięć małych adapterów', 'Jeden model, bo adaptery znikają po treningu'],
+              ok: 1, why: 'Model bazowy jest wspólny. Każde zadanie to osobny plik o wadze kilkunastu megabajtów.' },
+        ];
+        let answered = 0, score = 0;
+
+        function renderQuiz() {
+            answered = 0; score = 0;
+            const root = $('quiz'); root.innerHTML = '';
+            QUIZ.forEach((item, qi) => {
+                const box = document.createElement('div'); box.className = 'quiz-q';
+                const h = document.createElement('h3'); h.textContent = `${qi + 1}. ${item.q}`; box.appendChild(h);
+                const opts = document.createElement('div'); opts.className = 'quiz-opts'; box.appendChild(opts);
+                const why = document.createElement('p'); why.className = 'quiz-why hidden'; box.appendChild(why);
+                item.opts.forEach((text, oi) => {
+                    const b = document.createElement('button'); b.className = 'quiz-opt'; b.textContent = text;
+                    b.addEventListener('click', () => {
+                        const good = oi === item.ok;
+                        opts.querySelectorAll('button').forEach((x, k) => { x.disabled = true; if (k === item.ok) x.classList.add('right'); });
+                        if (!good) b.classList.add('wrong');
+                        why.textContent = (good ? 'Dobrze! ' : 'Nie tym razem. ') + item.why;
+                        why.classList.remove('hidden');
+                        answered++; if (good) score++;
+                        updateScore();
+                    });
+                    opts.appendChild(b);
+                });
+                root.appendChild(box);
+            });
+            updateScore();
+        }
+
+        function updateScore() {
+            $('quizScore').textContent = answered < QUIZ.length
+                ? `Odpowiedzi: ${answered} / ${QUIZ.length}`
+                : `Wynik: ${score} / ${QUIZ.length}` + (score === QUIZ.length ? ' · Świetnie, rozumiesz LoRA!' : ' · Wróć do sekcji wyżej i spróbuj ponownie.');
+        }
+        $('quizReset').addEventListener('click', renderQuiz);
+        renderQuiz();
     </script>
 </body>
 </html>
