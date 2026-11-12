@@ -300,6 +300,21 @@
         }
         .bubble-note { font-size: 13px; color: var(--ink-3); margin-top: var(--sp-3); }
 
+        /* ── Data section ───────────────────────────────────────────── */
+        .data-what { margin-top: var(--sp-4); font-size: 15px; color: var(--ink-2); min-height: 3.2em; }
+        .data-what strong { color: var(--ink); }
+        .verdicts { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-3); margin-top: var(--sp-4); }
+        .verdict { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-md); padding: var(--sp-4); }
+        .verdict-head { display: flex; justify-content: space-between; align-items: center; gap: var(--sp-2); flex-wrap: wrap; margin-bottom: var(--sp-2); }
+        .verdict-head b { font-family: var(--font-display); font-weight: 600; font-size: 16px; }
+        .verdict p { font-size: 14px; line-height: 1.5; color: var(--ink-2); }
+        .takeaways { list-style: none; display: flex; flex-direction: column; }
+        .takeaways li { padding: 13px 0; border-bottom: 1px solid var(--line); font-size: 14.5px; line-height: 1.55; color: var(--ink-2); }
+        .takeaways li:last-child { border-bottom: none; }
+        .takeaways strong { display: block; color: var(--ink); font-weight: 600; }
+        .sources { font-size: 13px; line-height: 1.5; color: var(--ink-3); margin-top: var(--sp-3); }
+        .sources a { color: var(--teal-ink); }
+
         /* ── Glossary / deep dive ───────────────────────────────────── */
         .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
 
@@ -334,6 +349,7 @@
         /* ── Responsive ─────────────────────────────────────────────── */
         @media (max-width: 960px) {
             .main-grid, .rank-grid, .two-col, .swap-grid { grid-template-columns: 1fr; }
+            .verdicts { grid-template-columns: 1fr; }
             .analogy, .benefits { grid-template-columns: 1fr; }
         }
         @media (max-width: 640px) {
@@ -366,7 +382,7 @@
     <main>
 
         <header class="hero">
-            <p class="edu-overline">Interaktywne demo · 4 min</p>
+            <p class="edu-overline">Interaktywne demo · 5 min</p>
             <h1 class="app-title">LoRA: jak tanio nauczyć AI czegoś nowego</h1>
             <p class="edu-lead">Duże modele językowe umieją wiele, ale nie znają Twojej branży ani Twojego stylu. LoRA pozwala je douczyć bez superkomputera. Zobacz, na czym polega ten trik.</p>
         </header>
@@ -606,10 +622,53 @@
             </div>
         </section>
 
-        <!-- ── 6. Dla dociekliwych ────────────────────────────────── -->
+        <!-- ── 6. Dane ────────────────────────────────────────────── -->
         <section>
             <div class="section-head">
-                <p class="edu-overline">06 · Dla dociekliwych</p>
+                <p class="edu-overline">06 · Dane</p>
+                <h2>Ile przykładów potrzeba?</h2>
+                <p>Model uczy się na przykładach: parach „pytanie i wzorcowa odpowiedź”. Nie ma jednej magicznej liczby, ale badania pokazują, kiedy która metoda radzi sobie lepiej. Przesuń suwak.</p>
+            </div>
+
+            <div class="rank-grid">
+                <div class="card">
+                    <p class="panel-title">Wielkość zbioru danych</p>
+                    <div class="slider-row">
+                        <span class="slider-value" id="dataValue"></span>
+                        <input type="range" id="dataSlider" min="0" max="3" step="1" value="1" aria-label="Liczba przykładów treningowych">
+                    </div>
+                    <div class="slider-scale"><span>100</span><span>1 tys.</span><span>10 tys.</span><span>100 tys.+</span></div>
+                    <p class="data-what" id="dataWhat" aria-live="polite"></p>
+
+                    <div class="verdicts">
+                        <div class="verdict">
+                            <div class="verdict-head"><b>LoRA</b><span class="chip" id="loraChip"></span></div>
+                            <p id="loraVerdict"></p>
+                        </div>
+                        <div class="verdict">
+                            <div class="verdict-head"><b>Pełny fine-tuning</b><span class="chip" id="fullChip"></span></div>
+                            <p id="fullVerdict"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <p class="panel-title">Najważniejsze</p>
+                    <ul class="takeaways">
+                        <li><strong>LoRA nie potrzebuje więcej danych.</strong>Przy małych zbiorach dorównuje pełnemu treningowi, a bywa od niego lepsza.</li>
+                        <li><strong>Liczy się zadanie, nie metoda.</strong>Zmiana stylu wymaga setek przykładów, nowa wiedza tysięcy. To praktyczne reguły, nie twarde progi.</li>
+                        <li><strong>Jakość ważniejsza niż ilość.</strong>Kilkaset starannych przykładów zwykle uczy lepiej niż tysiące byle jakich.</li>
+                        <li><strong>Ogromne zbiory to atut pełnego treningu.</strong>LoRA „uczy się mniej, ale mniej zapomina”: gorzej chłonie dużo nowej wiedzy, lepiej zachowuje dotychczasową.</li>
+                    </ul>
+                    <p class="sources">Źródła: <a href="https://arxiv.org/abs/2106.09685" target="_blank" rel="noopener">Hu i in. 2021</a> (test na 100, 1 tys. i 10 tys. przykładów), <a href="https://arxiv.org/abs/2405.09673" target="_blank" rel="noopener">Biderman i in. 2024</a> (duże zbiory), <a href="https://developers.openai.com/api/docs/guides/supervised-fine-tuning" target="_blank" rel="noopener">wytyczne OpenAI</a> (minimum 10, efekty zwykle od 50–100 przykładów).</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── 7. Dla dociekliwych ────────────────────────────────── -->
+        <section>
+            <div class="section-head">
+                <p class="edu-overline">07 · Dla dociekliwych</p>
                 <h2>Słowniczek i praktyka</h2>
                 <p>Kliknij pojęcie, żeby zobaczyć proste wyjaśnienie.</p>
             </div>
@@ -877,6 +936,40 @@
         });
         selectAdapter(0);
 
+        // ══ Ile danych ═════════════════════════════════════════════════
+        // Oceny: Hu i in. 2021 (GPT-3, MNLI-100/1k/10k), Biderman i in. 2024 (100 tys. par, 20 mld tokenów).
+        const VERDICT = { good: ['Dobry wybór', ''], ok: ['Do rozważenia', 'marigold'], risky: ['Ryzykowny', 'coral'], weak: ['Słabsza', 'coral'], best: ['Najlepsza jakość', ''] };
+        const DATA = [
+            { n: '~100', what: 'zmiana tonu lub formatu odpowiedzi.',
+              lora: ['good', 'W teście autorów LoRA na 100 przykładach wypadła nieco lepiej niż pełny trening: 63,8% wobec 60,2% trafnych odpowiedzi.'],
+              full: ['risky', 'Miliardy liczb dopasowują się do garstki przykładów. Łatwo o „wykucie ich na pamięć” i zapomnienie dotychczasowych umiejętności.'] },
+            { n: '~1 tys.', what: 'własny styl pisania, proste zadania w jednej dziedzinie.',
+              lora: ['good', 'W tym samym teście wyniki były porównywalne z pełnym treningiem, a koszt jest wielokrotnie niższy.'],
+              full: ['ok', 'Działa, ale rzadko daje przewagę wartą dodatkowego sprzętu.'] },
+            { n: '~10 tys.', what: 'specjalizacja w konkretnej dziedzinie, np. prawo lub medycyna.',
+              lora: ['good', 'Wciąż porównywalna z pełnym treningiem. Przy trudnych zadaniach pomaga wyższa ranga adaptera.'],
+              full: ['ok', 'Zaczyna mieć sens, gdy zadanie jest trudne i liczy się każdy punkt jakości.'] },
+            { n: '100 tys.+', what: 'dużo nowej, trudnej wiedzy, np. programowanie lub matematyka.',
+              lora: ['weak', 'Uczy się mniej. W badaniu z 2024 r. najlepsza LoRA po 20 mld tokenów tekstu ledwie dorównała pełnemu treningowi po 4 mld. Za to mniej zapomina.'],
+              full: ['best', 'Wyciąga z dużych danych najwięcej. Ceną jest drogi sprzęt i większe zapominanie wcześniejszych umiejętności.'] },
+        ];
+
+        function setVerdict(chipId, textId, [kind, text]) {
+            const [label, tone] = VERDICT[kind];
+            $(chipId).textContent = label;
+            $(chipId).className = 'chip' + (tone ? ' ' + tone : '');
+            $(textId).textContent = text;
+        }
+
+        function updateData() {
+            const d = DATA[+$('dataSlider').value];
+            $('dataValue').textContent = d.n;
+            $('dataWhat').innerHTML = '<strong>Orientacyjnie wystarcza na:</strong> ' + d.what;
+            setVerdict('loraChip', 'loraVerdict', d.lora);
+            setVerdict('fullChip', 'fullVerdict', d.full);
+        }
+        $('dataSlider').addEventListener('input', updateData);
+        updateData();
     </script>
 </body>
 </html>
