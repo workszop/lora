@@ -3,368 +3,268 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LoRA — tanie douczanie modeli AI</title>
-    <meta name="description" content="Interaktywne wyjaśnienie LoRA: czym jest, jakie daje korzyści i jak działa — prostym językiem.">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg?v=202611120917">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=202611120917">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png?v=202611120917">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=202611120917">
+    <meta name="theme-color" content="#FFD500">
+    <title>LoRA – tanie douczanie modeli AI</title>
+    <meta name="description" content="Interaktywne wyjaśnienie LoRA: czym jest, jakie daje korzyści i jak działa – prostym językiem.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap">
     <link rel="stylesheet" href="colors_and_type.css">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@1.57.0/dist/umd/lucide.min.js"
+        integrity="sha384-Qp5jsYqEgOGiWD8YMQ6yXIycASOePxr9mmbt+Ua0Wu1IScYxo0Pxf7o3Kx6NWJID"
+        crossorigin="anonymous" async></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        body {
-            font-family: var(--font-sans);
-            background: var(--paper);
-            color: var(--ink);
-            line-height: 1.6;
-            min-height: 100vh;
-            -webkit-font-smoothing: antialiased;
-        }
-
+        body { font-family: var(--font-sans); background: var(--paper); color: var(--ink); line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; }
         button { font-family: inherit; }
-        button:focus-visible, summary:focus-visible, input:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+        :focus-visible { outline: 3px solid transparent; outline-offset: 2px; box-shadow: var(--focus-ring); }
 
-        /* ── Brand bar ──────────────────────────────────────────────── */
-        .edu-header {
-            position: sticky; top: 0; z-index: 50; width: 100%;
-            background: rgba(251, 247, 240, 0.85);
-            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--line);
-        }
-        .edu-header-inner {
-            max-width: 1100px; margin: 0 auto;
-            padding: 15px 30px; display: flex; align-items: center; gap: 12px;
-        }
-        .edu-logo { width: 32px; height: 32px; display: block; }
+        /* ─── Brand bar (no clickable control → static) ─── */
+        .edu-header { position: static; width: 100%; background: var(--paper); border-bottom: 1px solid var(--line-2); }
+        .edu-header-inner { padding: 8px var(--gutter); display: flex; align-items: center; gap: 12px; }
+        .edu-logo { width: 64px; height: 64px; display: block; margin-right: -6px; }
         .edu-wordmark { font-family: var(--font-display); font-weight: 700; font-size: 22px; letter-spacing: -.02em; color: var(--ink); }
-        .edu-tag {
-            font-family: var(--font-mono); font-weight: 500; font-size: 11px;
-            letter-spacing: .14em; text-transform: uppercase; color: var(--teal-ink);
-            background: var(--teal-soft); padding: 4px 9px; border-radius: var(--r-pill);
-        }
 
-        /* ── Shell ──────────────────────────────────────────────────── */
-        main { max-width: 1100px; margin: 0 auto; padding: 34px 30px 70px; }
+        /* ─── Page head ─── */
+        .page-head { padding: 44px var(--gutter) 52px; text-align: left; }
+        .app-title { font-family: var(--font-display); font-weight: 800; font-size: clamp(2.3rem, 5vw, 3.3rem); letter-spacing: -.025em; line-height: 1.05; color: var(--ink); margin: 0 0 14px; }
+        .edu-lead { font-size: 1.15rem; line-height: 1.6; color: var(--ink-2); margin: 0; }
 
-        .hero { text-align: center; padding: var(--sp-10) 0 var(--sp-12); }
-        .hero .edu-overline { margin-bottom: var(--sp-4); }
-        .app-title {
-            font-family: var(--font-display); font-weight: 800;
-            font-size: clamp(2rem, 4.5vw, 2.85rem); letter-spacing: -.025em;
-            line-height: 1.05; color: var(--ink); margin-bottom: var(--sp-4);
-        }
-        .edu-lead { font-size: 1.0625rem; color: var(--ink-2); max-width: 36rem; margin: 0 auto; }
+        /* ─── Section bands ─── */
+        .sec { padding: 52px 0 60px; border-top: 1px solid var(--line); }
+        .sec:nth-of-type(odd) { background: var(--paper-2); }
+        .sec > .wrap { padding: 0 var(--gutter); }
+        .sec-head { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+        .sec-head h2 { margin: 0; font-family: var(--font-display); font-weight: 600; font-size: clamp(1.5rem, 3vw, var(--h2)); line-height: 1.12; letter-spacing: -.015em; color: var(--ink); }
+        .sec-head::after { content: ""; flex: 1; height: 1px; background: var(--line-2); }
+        .sec-intro { color: var(--ink-2); font-size: 1.05rem; margin-bottom: 26px; }
 
-        section { margin-bottom: var(--sp-16); }
-        .section-head { margin-bottom: var(--sp-6); }
-        .section-head h2 {
-            font-family: var(--font-display); font-weight: 600; font-size: clamp(1.5rem, 3vw, var(--h2));
-            line-height: 1.12; letter-spacing: -.015em; color: var(--ink); margin: var(--sp-2) 0;
-        }
-        .section-head p { color: var(--ink-2); max-width: 44rem; }
+        /* ─── Icons & badges ─── */
+        .ic { width: 18px; height: 18px; flex: none; }
+        .badge { flex: none; width: 34px; height: 34px; border-radius: var(--r-sm); display: inline-grid; place-items: center; }
+        .badge-lg { width: 46px; height: 46px; border-radius: var(--r-md); }
+        .badge-lg .ic { width: 24px; height: 24px; }
+        .tone-grape  { background: var(--grape-soft);  color: var(--grape-ink); }
+        .tone-blue   { background: var(--blue-soft);   color: var(--blue-ink); }
+        .tone-yellow { background: var(--yellow-soft); color: var(--yellow-ink); }
+        .tone-green  { background: var(--green-soft);  color: var(--green-ink); }
+        .tone-red    { background: var(--red-soft);    color: var(--red-ink); }
+        .tone-ink    { background: var(--ink);         color: var(--paper); }
+        .badge.tone-ink { color: var(--yellow); }
+        .tile-h { display: flex; align-items: center; gap: 12px; min-width: 0; }
+        .tile-h h3 { margin: 0; font-family: var(--font-display); font-weight: 600; font-size: 18px; line-height: 1.3; color: var(--ink); }
 
-        .card {
-            background: var(--surface);
-            border: 1px solid var(--line);
-            border-radius: var(--r-lg);
-            padding: var(--sp-6);
-            box-shadow: var(--shadow-sm);
-        }
+        /* ─── Card anatomy ─── */
+        .card { background: var(--surface); border: 1px solid var(--line-2); border-radius: var(--r-lg); box-shadow: var(--shadow-sm); overflow: hidden; display: flex; flex-direction: column; min-width: 0; }
+        .card-head { padding: 14px 22px; background: var(--paper-2); border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+        .card-head .edu-overline { margin: 0; }
+        .card-body { padding: 20px 22px; flex: 1; }
+        .card-foot { padding: 12px 22px; border-top: 1px dashed var(--line-2); font-family: var(--font-mono); font-size: 12.5px; color: var(--ink-2); }
 
-        .chip {
-            display: inline-block;
-            font-family: var(--font-mono); font-size: 11px; text-transform: uppercase;
-            letter-spacing: .08em; padding: 4px 10px; border-radius: var(--r-pill);
-            background: var(--teal-soft); color: var(--teal-ink);
-        }
-        .chip.marigold { background: var(--marigold-soft); color: var(--marigold-ink); }
-        .chip.coral { background: var(--coral-soft); color: var(--coral-ink); }
-        .chip.sky { background: var(--sky-soft); color: var(--sky-ink); }
+        /* ─── Chips (solid pill) ─── */
+        .chip { display: inline-block; font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: .08em; padding: 4px 10px; border-radius: var(--r-pill); background: var(--green-soft); color: var(--green-ink); white-space: nowrap; }
+        .chip-green  { background: var(--green-soft);  color: var(--green-ink); }
+        .chip-yellow { background: var(--yellow-soft); color: var(--yellow-ink); }
+        .chip-red    { background: var(--red-soft);    color: var(--red-ink); }
 
-        /* ── Intro: analogy ─────────────────────────────────────────── */
-        .analogy { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
-        .analogy .card h3 {
-            font-family: var(--font-display); font-weight: 600; font-size: 19px;
-            line-height: 1.25; margin: var(--sp-3) 0 var(--sp-2);
-        }
-        .analogy .card p { font-size: 15px; color: var(--ink-2); }
-        .analogy .card p + p { margin-top: var(--sp-2); }
-        .analogy .plain {
-            font-family: var(--font-mono); font-size: 12px; color: var(--ink-3);
-            border-top: 1px solid var(--line); margin-top: var(--sp-4); padding-top: var(--sp-3);
-        }
-
-        .oneliner {
-            margin-top: 18px;
-            background: var(--teal-soft); color: var(--teal-ink);
-            border-radius: var(--r-xl); padding: 26px 28px;
-            font-size: 17px; line-height: 1.55;
-        }
+        /* ─── Callouts (full solid blocks) ─── */
+        .callout { border-radius: var(--r-md); padding: 14px 18px; font-size: 15px; line-height: 1.55; display: flex; gap: 12px; align-items: flex-start; }
+        .callout .ic { margin-top: 3px; }
+        .oneliner { margin-top: 18px; background: var(--blue-soft); color: var(--blue-ink); border-radius: var(--r-xl); padding: 26px 30px; font-size: 18px; line-height: 1.55; }
         .oneliner strong { font-family: var(--font-display); font-weight: 700; }
 
-        /* ── Benefits ───────────────────────────────────────────────── */
-        .benefits { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
-        .benefit { display: flex; gap: var(--sp-4); align-items: flex-start; }
-        .benefit-icon {
-            flex-shrink: 0; width: 44px; height: 44px; border-radius: var(--r-md);
-            display: grid; place-items: center;
-            background: var(--marigold-soft); color: var(--marigold-ink);
-        }
-        .benefit-icon.teal { background: var(--teal-soft); color: var(--teal-ink); }
-        .benefit-icon.sky { background: var(--sky-soft); color: var(--sky-ink); }
-        .benefit h3 { font-family: var(--font-display); font-weight: 600; font-size: 17px; line-height: 1.25; margin-bottom: 4px; }
-        .benefit p { font-size: 14px; line-height: 1.5; color: var(--ink-2); }
-        .benefit .num { font-family: var(--font-mono); font-size: 12px; color: var(--ink-3); margin-top: 6px; display: block; }
+        /* ─── Grids ─── */
+        .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+        .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; align-items: start; }
 
-        /* ── Tabs ───────────────────────────────────────────────────── */
-        .tabs {
-            display: inline-flex; gap: 4px;
-            background: var(--paper-2); border: 1px solid var(--line);
-            padding: 4px; border-radius: var(--r-pill); margin-bottom: var(--sp-5);
-        }
-        .tab {
-            padding: 9px 20px; background: transparent; border: none;
-            border-radius: var(--r-pill); color: var(--ink-2);
-            font-size: 14px; font-weight: 600; cursor: pointer;
-            transition: background-color .15s ease, color .15s ease; white-space: nowrap;
-        }
+        /* ─── Intro: analogy ─── */
+        .analogy .card-body .chip { margin-bottom: 10px; }
+        .analogy .card-body p { font-size: 15px; color: var(--ink-2); }
+        .analogy .card-body p + p { margin-top: var(--sp-2); }
+
+        /* ─── Benefits ─── */
+        .benefits .card-body p { font-size: 15px; line-height: 1.5; color: var(--ink-2); }
+
+        /* ─── Segmented toggle ─── */
+        .tabs { display: inline-flex; gap: 2px; padding: 4px; background: var(--paper-3); border-radius: var(--r-pill); margin-bottom: var(--sp-5); }
+        .tab { padding: 9px 20px; background: transparent; border: none; border-radius: var(--r-pill); color: var(--ink-2); font-size: 14px; font-weight: 600; cursor: pointer; transition: background-color .15s ease, color .15s ease; white-space: nowrap; }
         .tab:hover { color: var(--ink); }
-        .tab.active { background: var(--ink); color: var(--paper); }
+        .tab.active { background: var(--yellow); color: var(--yellow-ink); }
 
-        /* ── Simulation ─────────────────────────────────────────────── */
-        .main-grid { display: grid; grid-template-columns: 1fr 340px; gap: 18px; align-items: start; }
-
-        .viz-top { display: flex; justify-content: space-between; align-items: center; gap: var(--sp-4); margin-bottom: var(--sp-5); }
-        .viz-top h3 { font-family: var(--font-display); font-weight: 600; font-size: 19px; }
+        /* ─── Simulation ─── */
+        .main-grid { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 18px; align-items: start; }
+        .viz-title { margin: 0; font-family: var(--font-display); font-weight: 600; font-size: 18px; }
         .controls { display: flex; gap: var(--sp-2); }
 
-        .btn {
-            display: inline-flex; align-items: center; gap: 6px;
-            padding: 9px 18px; border: 1px solid var(--line-2);
-            border-radius: var(--r-pill); background: var(--surface); color: var(--ink-2);
-            font-family: var(--font-display); font-size: 14px; font-weight: 600; cursor: pointer;
-            transition: background-color .15s ease, color .15s ease, border-color .15s ease, transform .12s cubic-bezier(.32,.72,.32,1);
-        }
-        .btn:hover { color: var(--ink); border-color: var(--ink-3); }
+        .btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; border: 1px solid var(--line-strong); border-radius: var(--r-pill); background: var(--surface); color: var(--ink); font-family: var(--font-display); font-size: 14px; font-weight: 600; cursor: pointer; transition: background-color .15s ease, color .15s ease, border-color .15s ease, transform .12s cubic-bezier(.32,.72,.32,1); }
+        .btn:hover { background: var(--paper-2); }
         .btn:active { transform: scale(.96); }
-        .btn.primary { background: var(--marigold); border-color: var(--marigold); color: var(--on-primary); }
-        .btn.primary:hover { background: var(--marigold-600); border-color: var(--marigold-600); color: var(--on-primary); }
+        .btn.primary { background: var(--yellow); border-color: var(--yellow); color: var(--on-primary); box-shadow: var(--shadow-primary); }
+        .btn.primary:hover { background: var(--yellow-600); border-color: var(--yellow-600); }
 
         .network-label { text-align: center; margin-bottom: var(--sp-3); }
         .network-label h4 { font-family: var(--font-mono); font-weight: 500; font-size: 13px; letter-spacing: .04em; color: var(--ink); }
-        .network-label p { font-size: 13px; color: var(--ink-3); margin-top: 2px; }
+        .network-label p { font-size: 13px; color: var(--ink-2); margin-top: 2px; }
+        .network-svg { background: var(--paper); border: 1px solid var(--line-2); border-radius: var(--r-md); width: 100%; display: block; }
 
-        .network-svg {
-            background: var(--paper); border: 1px solid var(--line);
-            border-radius: var(--r-md); width: 100%; display: block;
-        }
+        .connection { stroke: var(--line-2); stroke-width: 1.5; opacity: .7; }
+        .connection.frozen { stroke: var(--line-2); stroke-width: 1; opacity: .45; }
+        .connection.highlight { stroke: var(--yellow-600); stroke-width: 3; opacity: 1; animation: pulse 1.5s ease-in-out infinite; }
+        .connection.adapter { stroke: var(--blue); stroke-width: 1.5; opacity: .4; }
+        .connection.adapter.highlight { stroke: var(--blue-600); stroke-width: 3; opacity: 1; animation: pulse 1.5s ease-in-out infinite; }
 
-        .connection { stroke: var(--line-2); stroke-width: 1.5; opacity: .6; }
-        .connection.frozen { stroke: var(--line-2); stroke-width: 1; opacity: .35; }
-        .connection.highlight { stroke: var(--marigold); stroke-width: 2.5; opacity: 1; animation: pulse 1.5s ease-in-out infinite; }
-        .connection.adapter { stroke: var(--teal); stroke-width: 1.5; opacity: .4; }
-        .connection.adapter.highlight { stroke: var(--teal); stroke-width: 2.75; opacity: 1; animation: pulse 1.5s ease-in-out infinite; }
-
-        .neuron { fill: var(--surface); stroke: var(--line-2); stroke-width: 1.5; }
+        .neuron { fill: var(--surface); stroke: var(--line-strong); stroke-width: 1.5; }
         .neuron.io-neuron { fill: var(--ink); stroke: var(--ink); stroke-width: 2; }
-        .neuron.frozen { fill: var(--paper-2); stroke: var(--line-2); opacity: .7; }
-        .neuron.adapter-neuron { fill: var(--teal-soft); stroke: var(--teal); stroke-width: 2; }
-        .neuron.adapter-neuron.highlight { fill: var(--teal); animation: pulse 1.5s ease-in-out infinite; }
+        .neuron.frozen { fill: var(--paper-3); stroke: var(--line-2); }
+        .neuron.adapter-neuron { fill: var(--surface); stroke: var(--blue-600); stroke-width: 2.5; }
+        .neuron.adapter-neuron.highlight { fill: var(--blue); animation: pulse 1.5s ease-in-out infinite; }
 
-        .layer-label { fill: var(--ink-3); font-family: var(--font-mono); font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: .08em; text-anchor: middle; }
-        .layer-label.adapter-label-text { fill: var(--teal-ink); }
+        .layer-label { fill: var(--ink-2); font-family: var(--font-mono); font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: .08em; text-anchor: middle; }
+        .layer-label.adapter-label-text { fill: var(--blue-600); }
         .frozen-label { fill: var(--ink-3); font-family: var(--font-mono); font-size: 8px; font-weight: 500; text-anchor: middle; letter-spacing: .08em; }
-        .dim-label { fill: var(--teal-ink); font-family: var(--font-mono); font-size: 9px; font-weight: 500; text-anchor: middle; }
+        .dim-label { fill: var(--blue-600); font-family: var(--font-mono); font-size: 9px; font-weight: 500; text-anchor: middle; }
 
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .4; } }
         @media (prefers-reduced-motion: reduce) { .connection.highlight, .neuron.highlight { animation: none !important; } }
 
         .legend { display: flex; gap: var(--sp-4); justify-content: center; margin-top: var(--sp-3); flex-wrap: wrap; }
-        .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--ink-2); }
-        .legend-swatch { width: 16px; height: 3px; border-radius: 2px; }
-        .legend-swatch.active { background: var(--marigold); }
+        .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--ink-2); }
+        .legend-swatch { width: 18px; height: 4px; border-radius: 2px; }
+        .legend-swatch.active { background: var(--yellow-600); }
         .legend-swatch.frozen { background: var(--line-2); }
-        .legend-swatch.adapter { background: var(--teal); }
-        .legend-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--teal-soft); border: 1.5px solid var(--teal); }
+        .legend-swatch.adapter { background: var(--blue-600); }
+        .legend-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--surface); border: 2px solid var(--blue-600); }
+        .viz-callout { margin-top: var(--sp-4); }
 
-        .info-badge {
-            display: flex; gap: var(--sp-3); padding: 14px 16px; border-radius: var(--r-md);
-            font-size: 14px; line-height: 1.5; margin-top: var(--sp-4);
-        }
-        .info-badge svg { flex-shrink: 0; margin-top: 2px; }
-        .info-badge.warning { background: var(--warning-soft); color: var(--warning-ink); }
-        .info-badge.success { background: var(--teal-soft); color: var(--teal-ink); }
+        .progress-bar { position: relative; height: 36px; background: var(--paper-3); border-radius: var(--r-pill); margin-top: var(--sp-4); overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--yellow); transition: width .2s ease; width: 0%; }
+        .progress-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-family: var(--font-mono); font-weight: 500; font-size: 12px; color: var(--ink); letter-spacing: .04em; white-space: nowrap; }
 
-        .progress-bar {
-            position: relative; height: 36px; background: var(--paper-2);
-            border-radius: var(--r-pill); border: 1px solid var(--line);
-            margin-top: var(--sp-4); overflow: hidden;
-        }
-        .progress-fill { height: 100%; background: var(--marigold); transition: width .2s ease; width: 0%; }
-        .progress-fill.lora { background: var(--teal); }
-        .progress-text {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            font-family: var(--font-mono); font-weight: 500; font-size: 12px;
-            color: var(--ink); letter-spacing: .04em; white-space: nowrap;
-        }
-
-        /* ── Stats ──────────────────────────────────────────────────── */
-        .panel-title {
-            font-family: var(--font-mono); font-weight: 500; font-size: 12px;
-            letter-spacing: .14em; text-transform: uppercase; color: var(--marigold-ink);
-            margin-bottom: var(--sp-3);
-        }
+        /* ─── Stats ─── */
+        .stats .card-body { padding-top: 6px; padding-bottom: 6px; }
         .stat-row { padding: 14px 0; border-bottom: 1px solid var(--line); }
-        .stat-row:last-child { border-bottom: none; padding-bottom: 0; }
-        .stat-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--sp-2); }
+        .stat-row:last-child { border-bottom: none; }
+        .stat-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--sp-2); flex-wrap: wrap; }
         .stat-name { font-size: 14px; font-weight: 600; color: var(--ink); }
         .stat-values-row { display: flex; align-items: baseline; gap: 8px; font-family: var(--font-mono); }
         .stat-val { font-size: 15px; font-weight: 500; white-space: nowrap; }
-        .stat-val.full { color: var(--coral-ink); }
-        .stat-val.lora { color: var(--teal-ink); }
+        .stat-val.full { color: var(--red-600); }
+        .stat-val.lora { color: var(--blue-600); }
         .stat-arrow { color: var(--ink-3); font-size: 12px; }
-        .stat-note { font-size: 13px; line-height: 1.45; color: var(--ink-3); margin-top: 4px; }
+        .stat-note { font-size: 13px; line-height: 1.45; color: var(--ink-2); margin-top: 6px; }
         .stat-note .chip { margin-right: 6px; }
 
-        /* ── Rank playground ────────────────────────────────────────── */
+        /* ─── Rank playground ─── */
         .rank-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 18px; align-items: stretch; }
-
-        .slider-row { display: flex; align-items: center; gap: var(--sp-4); margin: var(--sp-4) 0 var(--sp-2); }
-        .slider-value {
-            font-family: var(--font-display); font-weight: 700; font-size: 32px; line-height: 1;
-            min-width: 4.2ch; color: var(--ink);
-        }
-        input[type=range] {
-            -webkit-appearance: none; appearance: none; flex: 1; height: 8px;
-            background: rgba(33,30,26,.12); border-radius: var(--r-pill); cursor: pointer;
-        }
-        input[type=range]::-webkit-slider-thumb {
-            -webkit-appearance: none; appearance: none; width: 22px; height: 22px; border-radius: 50%;
-            background: var(--surface); border: 2px solid var(--ink); box-shadow: var(--shadow-sm);
-        }
-        input[type=range]::-moz-range-thumb {
-            width: 18px; height: 18px; border-radius: 50%;
-            background: var(--surface); border: 2px solid var(--ink); box-shadow: var(--shadow-sm);
-        }
-        .slider-scale { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 11px; color: var(--ink-3); }
+        .slider-row { display: flex; align-items: center; gap: var(--sp-4); margin: 0 0 var(--sp-2); }
+        .slider-value { font-family: var(--font-display); font-weight: 700; font-size: 32px; line-height: 1; min-width: 4.2ch; color: var(--ink); }
+        input[type=range] { -webkit-appearance: none; appearance: none; flex: 1; height: 8px; background: var(--track); border-radius: var(--r-pill); cursor: pointer; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 22px; height: 22px; border-radius: 50%; background: var(--surface); border: 2px solid var(--ink); box-shadow: var(--shadow-sm); }
+        input[type=range]::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; background: var(--surface); border: 2px solid var(--ink); box-shadow: var(--shadow-sm); }
+        .slider-scale { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 11px; color: var(--ink-2); }
         .rank-hint { margin-top: var(--sp-4); font-size: 15px; color: var(--ink-2); min-height: 3.2em; }
 
         .matrices { display: flex; align-items: center; justify-content: center; gap: var(--sp-4); margin-top: var(--sp-5); flex-wrap: wrap; }
         .mx { display: flex; flex-direction: column; align-items: center; gap: 8px; }
         .mx-box { border-radius: var(--r-xs); transition: width .2s ease, height .2s ease; }
-        .mx-box.w { width: 120px; height: 120px; background: var(--paper-3); border: 1.5px dashed var(--line-2); }
-        .mx-box.b { height: 120px; background: var(--teal); }
-        .mx-box.a { width: 120px; background: var(--teal); }
-        .mx-cap { font-family: var(--font-mono); font-size: 11px; color: var(--ink-3); text-align: center; line-height: 1.4; }
+        .mx-box.w { width: 120px; height: 120px; background: var(--paper-3); border: 1.5px dashed var(--line-strong); }
+        .mx-box.b { height: 120px; background: var(--blue); }
+        .mx-box.a { width: 120px; background: var(--blue); }
+        .mx-cap { font-family: var(--font-mono); font-size: 11px; color: var(--ink-2); text-align: center; line-height: 1.4; }
         .mx-op { font-family: var(--font-display); font-size: 22px; color: var(--ink-3); }
 
-        .dark-panel {
-            background: var(--ink); color: var(--paper);
-            border-radius: var(--r-xl); padding: 24px 28px;
-            display: flex; flex-direction: column; justify-content: center;
-        }
-        .dark-panel .eyebrow {
-            font-family: var(--font-mono); font-size: 12px; letter-spacing: .14em;
-            text-transform: uppercase; color: rgba(251,247,240,.5); margin-bottom: var(--sp-2);
-        }
-        .data-row { display: flex; justify-content: space-between; align-items: baseline; gap: var(--sp-4); padding: 13px 0; border-bottom: 1px solid rgba(251,247,240,.14); }
+        .dark-panel { background: var(--ink); color: var(--paper); border-radius: var(--r-xl); padding: 30px 32px; display: flex; flex-direction: column; justify-content: center; }
+        .dark-panel .panel-label { font-family: var(--font-mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,.62); margin-bottom: var(--sp-2); }
+        .data-row { display: flex; justify-content: space-between; align-items: baseline; gap: var(--sp-4); padding: 13px 0; border-bottom: 1px solid rgba(255,255,255,.14); }
         .data-row:last-child { border-bottom: none; }
-        .data-row span { font-size: 14px; color: rgba(251,247,240,.72); }
-        .data-row b { font-family: var(--font-mono); font-weight: 500; font-size: 19px; color: var(--paper); text-align: right; }
-        .data-row b.accent { color: var(--marigold); }
+        .data-row span { font-size: 15px; color: var(--paper); }
+        .data-row b { font-family: var(--font-display); font-weight: 600; font-size: 22px; color: var(--yellow); text-align: right; white-space: nowrap; }
 
-        /* ── Adapter switcher ───────────────────────────────────────── */
-        .adapter-chips { display: flex; gap: var(--sp-2); flex-wrap: wrap; margin-bottom: var(--sp-5); }
-        .adapter-chip {
-            padding: 9px 16px; border-radius: var(--r-pill); border: 1px solid var(--line-2);
-            background: var(--surface); color: var(--ink-2); font-size: 14px; font-weight: 600; cursor: pointer;
-            transition: background-color .15s ease, color .15s ease, border-color .15s ease;
-        }
-        .adapter-chip:hover { color: var(--ink); border-color: var(--ink-3); }
-        .adapter-chip.active { background: var(--teal); border-color: var(--teal); color: var(--on-primary); }
+        /* ─── Adapter switcher ─── */
+        .adapter-chips { display: flex; gap: var(--sp-2); flex-wrap: wrap; }
+        .adapter-chip { padding: 9px 16px; border-radius: var(--r-pill); border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink); font-size: 14px; font-weight: 600; cursor: pointer; transition: background-color .15s ease, color .15s ease, border-color .15s ease; }
+        .adapter-chip:hover { background: var(--paper-2); }
+        .adapter-chip.active { background: var(--yellow); border-color: var(--yellow); color: var(--yellow-ink); }
 
-        .swap-grid { display: grid; grid-template-columns: 300px 1fr; gap: var(--sp-6); align-items: center; }
+        .swap-grid { display: grid; grid-template-columns: 320px minmax(0, 1fr); gap: var(--sp-6); align-items: center; }
         .stack { display: flex; flex-direction: column; gap: var(--sp-2); }
         .block { border-radius: var(--r-md); padding: 14px 16px; }
         .block small { display: block; font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
         .block b { font-family: var(--font-display); font-weight: 600; font-size: 17px; }
-        .block.base { background: var(--paper-2); border: 1px solid var(--line); padding: 26px 16px; }
-        .block.base small { color: var(--ink-3); }
-        .block.slot { background: var(--teal-soft); color: var(--teal-ink); border: 1.5px solid var(--teal); }
-        .block.slot.empty { background: transparent; color: var(--ink-3); border: 1.5px dashed var(--line-2); }
-        .stack-total { font-family: var(--font-mono); font-size: 12px; color: var(--ink-3); margin-top: 4px; }
+        .block.base { background: var(--paper-3); border: 1px solid var(--line-2); padding: 26px 16px; }
+        .block.base small { color: var(--ink-2); }
+        .block.slot { background: var(--blue-soft); color: var(--blue-ink); border: 1.5px solid var(--blue-soft); }
+        .block.slot.empty { background: transparent; color: var(--ink-2); border: 1.5px dashed var(--line-strong); }
+        .stack-total { font-family: var(--font-mono); font-size: 12px; color: var(--ink-2); margin-top: 4px; }
 
-        .bubble-q { font-family: var(--font-mono); font-size: 12px; color: var(--ink-3); margin-bottom: var(--sp-2); }
-        .bubble {
-            background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-lg);
-            padding: var(--sp-5); font-size: 16px; line-height: 1.6; color: var(--ink); min-height: 7.5em;
-        }
-        .bubble-note { font-size: 13px; color: var(--ink-3); margin-top: var(--sp-3); }
+        .bubble-q { font-family: var(--font-mono); font-size: 12px; color: var(--ink-2); margin-bottom: var(--sp-2); }
+        .bubble { background: var(--paper-2); border: 1px solid var(--line-2); border-radius: var(--r-lg); padding: var(--sp-5); font-size: 16px; line-height: 1.6; color: var(--ink); min-height: 7.5em; }
+        .bubble-note { font-size: 13px; color: var(--ink-2); margin-top: var(--sp-3); }
 
-        /* ── Data section ───────────────────────────────────────────── */
+        /* ─── Data section ─── */
         .data-what { margin-top: var(--sp-4); font-size: 15px; color: var(--ink-2); min-height: 3.2em; }
         .data-what strong { color: var(--ink); }
         .verdicts { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-3); margin-top: var(--sp-4); }
-        .verdict { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-md); padding: var(--sp-4); }
-        .verdict-head { display: flex; justify-content: space-between; align-items: center; gap: var(--sp-2); flex-wrap: wrap; margin-bottom: var(--sp-2); }
+        .verdict { background: var(--surface); border: 1px solid var(--line-2); border-radius: var(--r-md); overflow: hidden; }
+        .verdict-head { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; padding: 10px 14px; background: var(--paper-2); border-bottom: 1px solid var(--line); }
         .verdict-head b { font-family: var(--font-display); font-weight: 600; font-size: 16px; }
-        .verdict p { font-size: 14px; line-height: 1.5; color: var(--ink-2); }
+        .verdict p { font-size: 14px; line-height: 1.5; color: var(--ink-2); padding: 12px 14px; }
         .takeaways { list-style: none; display: flex; flex-direction: column; }
-        .takeaways li { padding: 13px 0; border-bottom: 1px solid var(--line); font-size: 14.5px; line-height: 1.55; color: var(--ink-2); }
+        .takeaways li { display: flex; gap: 10px; padding: 13px 0; border-bottom: 1px solid var(--line); font-size: 14.5px; line-height: 1.55; color: var(--ink-2); }
+        .takeaways li .ic { color: var(--green-600); margin-top: 3px; }
+        .takeaways li:first-child { padding-top: 0; }
         .takeaways li:last-child { border-bottom: none; }
         .takeaways strong { display: block; color: var(--ink); font-weight: 600; }
-        .sources { font-size: 13px; line-height: 1.5; color: var(--ink-3); margin-top: var(--sp-3); }
-        .sources a { color: var(--teal-ink); }
+        .sources { font-size: 13px; line-height: 1.5; color: var(--ink-2); font-family: var(--font-sans); }
+        .sources a { color: var(--blue-600); }
 
-        /* ── Glossary / deep dive ───────────────────────────────────── */
-        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
-
+        /* ─── Glossary / hardware ─── */
         details { border-bottom: 1px solid var(--line); }
         details:last-child { border-bottom: none; }
-        summary {
-            list-style: none; cursor: pointer; padding: 14px 0; border-radius: var(--r-xs);
-            display: flex; justify-content: space-between; align-items: center; gap: var(--sp-3);
-            font-weight: 600; font-size: 15px; color: var(--ink);
-        }
+        summary { list-style: none; cursor: pointer; padding: 14px 0; border-radius: var(--r-xs); display: flex; justify-content: space-between; align-items: center; gap: var(--sp-3); font-weight: 600; font-size: 15px; color: var(--ink); }
         summary::-webkit-details-marker { display: none; }
-        summary::after { content: '+'; font-family: var(--font-mono); font-size: 18px; color: var(--ink-3); }
+        summary::after { content: '+'; font-family: var(--font-mono); font-size: 18px; color: var(--ink-2); }
         details[open] summary::after { content: '–'; }
         details p { font-size: 14.5px; line-height: 1.55; color: var(--ink-2); padding-bottom: 14px; }
+        .glossary .card-body { padding-top: 4px; padding-bottom: 4px; }
 
-        code {
-            font-family: var(--font-mono); font-size: .92em; color: var(--ink);
-            background: var(--paper-3); padding: .12em .4em; border-radius: var(--r-xs);
-        }
-
-        .hw-list { list-style: none; display: flex; flex-direction: column; }
-        .hw-list li { display: flex; justify-content: space-between; gap: var(--sp-4); padding: 13px 0; border-bottom: 1px solid var(--line); font-size: 14.5px; }
-        .hw-list li:last-child { border-bottom: none; }
-        .hw-list span { color: var(--ink-2); }
-        .hw-list b { font-family: var(--font-mono); font-weight: 500; font-size: 13px; color: var(--ink); text-align: right; }
-        .caveat { margin-top: var(--sp-4); background: var(--marigold-soft); color: var(--marigold-ink); border-radius: var(--r-md); padding: 14px 16px; font-size: 14px; line-height: 1.5; }
+        .hw-table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+        .hw-table th { text-align: left; padding: 11px 16px; background: var(--paper-3); border-bottom: 1px solid var(--line-2); font-family: var(--font-mono); font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: .08em; color: var(--ink); }
+        .hw-table td { padding: 12px 16px; border-bottom: 1px solid var(--line); color: var(--ink-2); }
+        .hw-table tbody tr:nth-child(even) td { background: var(--paper-2); }
+        .hw-table tbody tr:last-child td { border-bottom: none; }
+        .hw-table td:first-child { color: var(--ink); font-weight: 600; }
+        .hw-table td:last-child { font-family: var(--font-mono); font-size: 13px; text-align: right; }
+        .hw .card-body.flush { padding: 0; flex: none; }
+        .hw .caveat { margin: 18px 22px 22px; background: var(--yellow-soft); color: var(--yellow-ink); }
 
         .hidden { display: none; }
 
-        footer { text-align: center; font-family: var(--font-mono); font-size: 12px; color: var(--ink-3); padding-top: var(--sp-4); }
+        footer { padding: 28px var(--gutter) 40px; border-top: 1px solid var(--line-2); font-family: var(--font-mono); font-size: 12px; color: var(--ink-2); }
 
-        /* ── Responsive ─────────────────────────────────────────────── */
+        /* ─── Responsive ─── */
         @media (max-width: 960px) {
-            .main-grid, .rank-grid, .two-col, .swap-grid { grid-template-columns: 1fr; }
-            .verdicts { grid-template-columns: 1fr; }
-            .analogy, .benefits { grid-template-columns: 1fr; }
+            .main-grid, .rank-grid, .grid-2, .swap-grid, .grid-3 { grid-template-columns: minmax(0, 1fr); }
         }
-        @media (max-width: 640px) {
-            .edu-header-inner { padding: 12px 16px; }
-            main { padding: 20px 16px 56px; }
-            .hero { padding: var(--sp-6) 0 var(--sp-10); }
-            section { margin-bottom: var(--sp-12); }
-            .card { padding: var(--sp-5); }
+        @media (max-width: 768px) {
+            .page-head { padding: 28px var(--gutter) 36px; }
+            .sec { padding: 36px 0 44px; }
+            .sec-head { flex-wrap: wrap; }
+            .sec-head h2 { flex: 1; min-width: 0; }
+            .sec-head::after { flex: 1 0 100%; }
+            .verdicts { grid-template-columns: 1fr; }
+            .card-body { padding: 18px; }
             .tabs { display: flex; }
             .tab { flex: 1; padding: 9px 8px; font-size: 13px; }
-            .viz-top { flex-direction: column; align-items: flex-start; }
             .controls { width: 100%; }
             .btn { flex: 1; justify-content: center; }
-            .dark-panel { padding: 20px; }
-            .data-row b { font-size: 16px; }
+            .dark-panel { padding: 22px; }
+            .data-row b { font-size: 18px; }
             .mx-box.w { width: 90px; height: 90px; }
             .mx-box.b { height: 90px; }
             .mx-box.a { width: 90px; }
@@ -374,96 +274,88 @@
 <body class="edu">
 
     <header class="edu-header"><div class="edu-header-inner">
-        <img class="edu-logo" alt="edulab" src="edulab-mark-teal.png">
+        <img class="edu-logo" alt="edulab" src="edulab-mark-ink.png">
         <span class="edu-wordmark">edulab</span>
-        <span class="edu-tag">demo lab</span>
     </div></header>
+
+    <header class="page-head">
+        <h1 class="app-title">LoRA: jak tanio nauczyć AI czegoś nowego</h1>
+        <p class="edu-lead">Duże modele językowe umieją wiele, ale nie znają Twojej branży ani Twojego stylu. LoRA pozwala je douczyć bez superkomputera. Zobacz, na czym polega ten trik.</p>
+    </header>
 
     <main>
 
-        <header class="hero">
-            <p class="edu-overline">Interaktywne demo · 5 min</p>
-            <h1 class="app-title">LoRA: jak tanio nauczyć AI czegoś nowego</h1>
-            <p class="edu-lead">Duże modele językowe umieją wiele, ale nie znają Twojej branży ani Twojego stylu. LoRA pozwala je douczyć bez superkomputera. Zobacz, na czym polega ten trik.</p>
-        </header>
+        <!-- ─── Czym jest LoRA ─── -->
+        <section class="sec"><div class="wrap">
+            <div class="sec-head"><span class="badge badge-lg tone-ink"><i data-lucide="book-open" class="ic" aria-hidden="true"></i></span><h2>Czym jest LoRA?</h2></div>
+            <p class="sec-intro">Wyobraź sobie model AI jako ogromną encyklopedię. Zamiast słów zawiera miliardy liczb, w których zapisana jest cała jego wiedza.</p>
 
-        <!-- ── 1. Czym jest LoRA ──────────────────────────────────── -->
-        <section>
-            <div class="section-head">
-                <p class="edu-overline">01 · Wprowadzenie</p>
-                <h2>Czym jest LoRA?</h2>
-                <p>Wyobraź sobie model AI jako ogromną encyklopedię. Zamiast słów zawiera miliardy liczb, w których zapisana jest cała jego wiedza.</p>
-            </div>
-
-            <div class="analogy">
+            <div class="grid-3 analogy">
                 <div class="card">
-                    <span class="chip coral">Problem</span>
-                    <h3>Przepisywanie całej encyklopedii</h3>
-                    <p>Tradycyjne douczanie (pełny fine-tuning) poprawia każdą liczbę w modelu. To jak przepisanie wszystkich tomów od nowa, żeby dodać jeden rozdział.</p>
-                    <p class="plain">Skutek: drogi sprzęt i ogromne pliki.</p>
+                    <div class="card-head"><span class="tile-h"><span class="badge tone-red"><i data-lucide="triangle-alert" class="ic" aria-hidden="true"></i></span><h3>Przepisywanie całej encyklopedii</h3></span></div>
+                    <div class="card-body"><span class="chip chip-red">Problem</span><p>Tradycyjne douczanie (pełny fine-tuning) poprawia każdą liczbę w modelu. To jak przepisanie wszystkich tomów od nowa, żeby dodać jeden rozdział.</p></div>
+                    <div class="card-foot">Skutek: drogi sprzęt i ogromne pliki.</div>
                 </div>
                 <div class="card">
-                    <span class="chip marigold">Pomysł</span>
-                    <h3>Karteczki na marginesach</h3>
-                    <p>LoRA zostawia encyklopedię nietkniętą. Nową wiedzę zapisuje na małych karteczkach doklejonych do stron. Model czyta stronę razem z karteczką.</p>
-                    <p class="plain">Karteczki = „adapter”, czyli mały dodatek do modelu.</p>
+                    <div class="card-head"><span class="tile-h"><span class="badge tone-yellow"><i data-lucide="lightbulb" class="ic" aria-hidden="true"></i></span><h3>Karteczki na marginesach</h3></span></div>
+                    <div class="card-body"><span class="chip chip-yellow">Pomysł</span><p>LoRA zostawia encyklopedię nietkniętą. Nową wiedzę zapisuje na małych karteczkach doklejonych do stron. Model czyta stronę razem z karteczką.</p></div>
+                    <div class="card-foot">Karteczki = „adapter”, czyli mały dodatek do modelu.</div>
                 </div>
                 <div class="card">
-                    <span class="chip">Efekt</span>
-                    <h3>Ta sama wiedza, ułamek pracy</h3>
-                    <p>Uczysz tylko karteczki, a jest ich tysiące razy mniej niż stron. Model zachowuje się niemal tak, jakby przepisano go w całości.</p>
-                    <p class="plain">Zestaw karteczek można w każdej chwili wymienić.</p>
+                    <div class="card-head"><span class="tile-h"><span class="badge tone-green"><i data-lucide="circle-check" class="ic" aria-hidden="true"></i></span><h3>Ta sama wiedza, ułamek pracy</h3></span></div>
+                    <div class="card-body"><span class="chip chip-green">Efekt</span><p>Uczysz tylko karteczki, a jest ich tysiące razy mniej niż stron. Model zachowuje się niemal tak, jakby przepisano go w całości.</p></div>
+                    <div class="card-foot">Zestaw karteczek można w każdej chwili wymienić.</div>
                 </div>
             </div>
 
-            <div class="oneliner">
+            <div class="oneliner edu-block">
                 <strong>W jednym zdaniu:</strong> LoRA (Low-Rank Adaptation) to sposób douczania modelu AI, w którym oryginał pozostaje zamrożony, a uczy się tylko mały, dołączany dodatek.
             </div>
-        </section>
+        </div></section>
 
-        <!-- ── 2. Korzyści ────────────────────────────────────────── -->
-        <section>
-            <div class="section-head">
-                <p class="edu-overline">02 · Korzyści</p>
-                <h2>Co z tego masz?</h2>
-                <p>Liczby dotyczą przykładowego modelu Qwen3-8B (8,2 miliarda parametrów). Zużycie pamięci to szacunki, które zależą od ustawień treningu.</p>
-            </div>
+        <!-- ─── Korzyści ─── -->
+        <section class="sec"><div class="wrap">
+            <div class="sec-head"><span class="badge badge-lg tone-ink"><i data-lucide="sparkles" class="ic" aria-hidden="true"></i></span><h2>Co z tego masz?</h2></div>
+            <p class="sec-intro">Liczby dotyczą przykładowego modelu Qwen3-8B (8,2 miliarda parametrów). Zużycie pamięci to szacunki, które zależą od ustawień treningu.</p>
 
-            <div class="benefits">
-                <div class="card benefit">
-                    <div class="benefit-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15 9.5a3 3 0 0 0-3-1.5c-1.7 0-3 .9-3 2s1.3 2 3 2 3 .9 3 2-1.3 2-3 2a3 3 0 0 1-3-1.5M12 6v2m0 8v2"/></svg></div>
-                    <div><h3>Taniej</h3><p>Wystarcza jedna karta graficzna zamiast całej serwerowni.</p><span class="num">pamięć: &gt;130 GB → ~20 GB</span></div>
+            <div class="grid-3 benefits">
+                <div class="card">
+                    <div class="card-head"><span class="tile-h"><span class="badge tone-yellow"><i data-lucide="coins" class="ic" aria-hidden="true"></i></span><h3>Taniej</h3></span></div>
+                    <div class="card-body"><p>Wystarcza jedna karta graficzna zamiast całej serwerowni.</p></div>
+                    <div class="card-foot">pamięć: &gt;130 GB → ~20 GB</div>
                 </div>
-                <div class="card benefit">
-                    <div class="benefit-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></div>
-                    <div><h3>Trochę szybciej</h3><p>Komputer nie liczy poprawek dla zamrożonych wag, więc każdy krok treningu trwa krócej.</p><span class="num">ok. 1/3 mniej obliczeń na krok</span></div>
+                <div class="card">
+                    <div class="card-head"><span class="tile-h"><span class="badge tone-blue"><i data-lucide="zap" class="ic" aria-hidden="true"></i></span><h3>Trochę szybciej</h3></span></div>
+                    <div class="card-body"><p>Komputer nie liczy poprawek dla zamrożonych wag, więc każdy krok treningu trwa krócej.</p></div>
+                    <div class="card-foot">ok. 1/3 mniej obliczeń na krok</div>
                 </div>
-                <div class="card benefit">
-                    <div class="benefit-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg></div>
-                    <div><h3>Malutkie pliki</h3><p>Adapter waży tyle co kilka zdjęć. Łatwo go wysłać i przechować.</p><span class="num">~16 GB → ~15 MB</span></div>
+                <div class="card">
+                    <div class="card-head"><span class="tile-h"><span class="badge tone-green"><i data-lucide="file-archive" class="ic" aria-hidden="true"></i></span><h3>Malutkie pliki</h3></span></div>
+                    <div class="card-body"><p>Adapter waży tyle co kilka zdjęć. Łatwo go wysłać i przechować.</p></div>
+                    <div class="card-foot">~16 GB → ~15 MB</div>
                 </div>
-                <div class="card benefit">
-                    <div class="benefit-icon teal"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3l4 4-4 4"/><path d="M3 7h18"/><path d="M7 21l-4-4 4-4"/><path d="M21 17H3"/></svg></div>
-                    <div><h3>Wymienne specjalizacje</h3><p>Jeden model bazowy i wiele adapterów: prawnik, lekarz, obsługa klienta.</p><span class="num">przełączanie w sekundy</span></div>
+                <div class="card">
+                    <div class="card-head"><span class="tile-h"><span class="badge tone-grape"><i data-lucide="arrow-left-right" class="ic" aria-hidden="true"></i></span><h3>Wymienne specjalizacje</h3></span></div>
+                    <div class="card-body"><p>Jeden model bazowy i wiele adapterów: prawnik, lekarz, obsługa klienta.</p></div>
+                    <div class="card-foot">przełączanie w sekundy</div>
                 </div>
-                <div class="card benefit">
-                    <div class="benefit-icon teal"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.2 8-8 9-4.800-1-8-4.500-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg></div>
-                    <div><h3>Oryginał jest bezpieczny</h3><p>Model bazowy się nie zmienia. Odepnij adapter i wracasz do punktu wyjścia.</p><span class="num">0 zmienionych wag bazowych</span></div>
+                <div class="card">
+                    <div class="card-head"><span class="tile-h"><span class="badge tone-ink"><i data-lucide="shield-check" class="ic" aria-hidden="true"></i></span><h3>Oryginał jest bezpieczny</h3></span></div>
+                    <div class="card-body"><p>Model bazowy się nie zmienia. Odepnij adapter i wracasz do punktu wyjścia.</p></div>
+                    <div class="card-foot">0 zmienionych wag bazowych</div>
                 </div>
-                <div class="card benefit">
-                    <div class="benefit-icon sky"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg></div>
-                    <div><h3>Na domowym sprzęcie</h3><p>W wersji QLoRA trening mieści się na mocnej karcie do gier.</p><span class="num">ok. 8–12 GB pamięci karty</span></div>
+                <div class="card">
+                    <div class="card-head"><span class="tile-h"><span class="badge tone-blue"><i data-lucide="monitor" class="ic" aria-hidden="true"></i></span><h3>Na domowym sprzęcie</h3></span></div>
+                    <div class="card-body"><p>W wersji QLoRA trening mieści się na mocnej karcie do gier.</p></div>
+                    <div class="card-foot">ok. 8–12 GB pamięci karty</div>
                 </div>
             </div>
-        </section>
+        </div></section>
 
-        <!-- ── 3. Symulacja ───────────────────────────────────────── -->
-        <section>
-            <div class="section-head">
-                <p class="edu-overline">03 · Zobacz to</p>
-                <h2>Porównaj oba sposoby treningu</h2>
-                <p>Kółka to „neurony” modelu, linie to połączenia między nimi (wagi). Wybierz metodę, naciśnij Start i obserwuj, które połączenia się uczą.</p>
-            </div>
+        <!-- ─── Symulacja ─── -->
+        <section class="sec"><div class="wrap">
+            <div class="sec-head"><span class="badge badge-lg tone-ink"><i data-lucide="git-compare-arrows" class="ic" aria-hidden="true"></i></span><h2>Porównaj oba sposoby treningu</h2></div>
+            <p class="sec-intro">Kółka to „neurony” modelu, linie to połączenia między nimi (wagi). Wybierz metodę, naciśnij Start i obserwuj, które połączenia się uczą.</p>
 
             <div class="tabs" role="group" aria-label="Metoda treningu">
                 <button class="tab active" data-tab="full" aria-pressed="true">Pełny fine-tuning</button>
@@ -472,255 +364,258 @@
 
             <div class="main-grid">
                 <div class="card">
-                    <div class="viz-top">
-                        <h3 id="viz-title">Uczą się wszystkie połączenia</h3>
+                    <div class="card-head">
+                        <h3 class="viz-title" id="viz-title">Uczą się wszystkie połączenia</h3>
                         <div class="controls">
                             <button class="btn primary" id="playBtn"></button>
                             <button class="btn" id="resetBtn">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
                                 Reset
                             </button>
                         </div>
                     </div>
+                    <div class="card-body">
+                        <div id="full-view">
+                            <div class="network-label">
+                                <h4>Qwen3-8B</h4>
+                                <p>8,2 miliarda wag, każda poprawiana w każdym kroku</p>
+                            </div>
+                            <svg viewBox="0 0 640 380" preserveAspectRatio="xMidYMid meet" class="network-svg" id="fullSvg" role="img" aria-label="Sieć neuronowa, w której trenowane są wszystkie połączenia"></svg>
+                            <div class="legend">
+                                <div class="legend-item"><span class="legend-swatch active"></span> Trenowane wagi</div>
+                            </div>
+                            <div class="callout viz-callout tone-red edu-block">
+                                <i data-lucide="triangle-alert" class="ic" aria-hidden="true"></i>
+                                <div><strong>Problem:</strong> poprawiamy wszystkie 8,2 miliarda wag. Potrzeba kilku drogich kart graficznych i ponad 130 GB pamięci.</div>
+                            </div>
+                        </div>
 
-                    <div id="full-view">
-                        <div class="network-label">
-                            <h4>Qwen3-8B</h4>
-                            <p>8,2 miliarda wag, każda poprawiana w każdym kroku</p>
+                        <div id="lora-view" class="hidden">
+                            <div class="network-label">
+                                <h4>Qwen3-8B + LoRA</h4>
+                                <p>Szara sieć jest zamrożona. Uczy się tylko niebieski adapter</p>
+                            </div>
+                            <svg viewBox="0 0 640 380" preserveAspectRatio="xMidYMid meet" class="network-svg" id="loraSvg" role="img" aria-label="Sieć neuronowa z zamrożonymi wagami i małym trenowanym adapterem LoRA"></svg>
+                            <div class="legend">
+                                <div class="legend-item"><span class="legend-swatch frozen"></span> Zamrożone</div>
+                                <div class="legend-item"><span class="legend-dot"></span> Wąskie gardło LoRA</div>
+                                <div class="legend-item"><span class="legend-swatch adapter"></span> Trenowane</div>
+                            </div>
+                            <div class="callout viz-callout tone-green edu-block">
+                                <i data-lucide="circle-check" class="ic" aria-hidden="true"></i>
+                                <div><strong>LoRA:</strong> uczy się tylko wąski adapter (macierze A i B). Przy r = 8 to 99,95% mniej parametrów do trenowania.</div>
+                            </div>
                         </div>
-                        <svg viewBox="0 0 640 380" preserveAspectRatio="xMidYMid meet" class="network-svg" id="fullSvg" role="img" aria-label="Sieć neuronowa, w której trenowane są wszystkie połączenia"></svg>
-                        <div class="legend">
-                            <div class="legend-item"><span class="legend-swatch active"></span> Trenowane wagi</div>
-                        </div>
-                        <div class="info-badge warning">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 20h20z"/><path d="M12 10v4m0 3h.01"/></svg>
-                            <div><strong>Problem:</strong> poprawiamy wszystkie 8,2 miliarda wag. Potrzeba kilku drogich kart graficznych i ponad 130 GB pamięci.</div>
-                        </div>
-                    </div>
 
-                    <div id="lora-view" class="hidden">
-                        <div class="network-label">
-                            <h4>Qwen3-8B + LoRA</h4>
-                            <p>Szara sieć jest zamrożona. Uczy się tylko zielony adapter</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                            <span class="progress-text" id="progressText" aria-live="polite">Trening: 0%</span>
                         </div>
-                        <svg viewBox="0 0 640 380" preserveAspectRatio="xMidYMid meet" class="network-svg" id="loraSvg" role="img" aria-label="Sieć neuronowa z zamrożonymi wagami i małym trenowanym adapterem LoRA"></svg>
-                        <div class="legend">
-                            <div class="legend-item"><span class="legend-swatch frozen"></span> Zamrożone</div>
-                            <div class="legend-item"><span class="legend-dot"></span> Wąskie gardło LoRA</div>
-                            <div class="legend-item"><span class="legend-swatch adapter"></span> Trenowane</div>
-                        </div>
-                        <div class="info-badge success">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg>
-                            <div><strong>LoRA:</strong> uczy się tylko wąski adapter (macierze A i B). Przy r = 8 to 99,95% mniej parametrów do trenowania.</div>
-                        </div>
-                    </div>
-
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="progressFill"></div>
-                        <span class="progress-text" id="progressText" aria-live="polite">Trening: 0%</span>
                     </div>
                 </div>
 
-                <div class="card">
-                    <p class="panel-title">Pełny → LoRA</p>
-
-                    <div class="stat-row">
-                        <div class="stat-head">
-                            <span class="stat-name">Parametry</span>
-                            <div class="stat-values-row"><span class="stat-val full">8,2 mld</span><span class="stat-arrow">→</span><span class="stat-val lora">3,8 mln</span></div>
+                <div class="card stats">
+                    <div class="card-head"><span class="tile-h"><span class="badge tone-ink"><i data-lucide="gauge" class="ic" aria-hidden="true"></i></span><h3>Pełny → LoRA</h3></span></div>
+                    <div class="card-body">
+                        <div class="stat-row">
+                            <div class="stat-head">
+                                <span class="stat-name">Parametry</span>
+                                <div class="stat-values-row"><span class="stat-val full">8,2 mld</span><span class="stat-arrow">→</span><span class="stat-val lora">3,8 mln</span></div>
+                            </div>
+                            <p class="stat-note"><span class="chip">−99,95%</span>Liczby, które trzeba poprawiać (LoRA z r = 8).</p>
                         </div>
-                        <p class="stat-note"><span class="chip">−99,95%</span>Liczby, które trzeba poprawiać (LoRA z r = 8).</p>
-                    </div>
-
-                    <div class="stat-row">
-                        <div class="stat-head">
-                            <span class="stat-name">Pamięć karty (VRAM)</span>
-                            <div class="stat-values-row"><span class="stat-val full">&gt;130 GB</span><span class="stat-arrow">→</span><span class="stat-val lora">~20 GB</span></div>
+                        <div class="stat-row">
+                            <div class="stat-head">
+                                <span class="stat-name">Pamięć karty (VRAM)</span>
+                                <div class="stat-values-row"><span class="stat-val full">&gt;130 GB</span><span class="stat-arrow">→</span><span class="stat-val lora">~20 GB</span></div>
+                            </div>
+                            <p class="stat-note"><span class="chip">−85%</span>Szacunek: pełna precyzja z optymalizatorem AdamW kontra model 16-bitowy z adapterem.</p>
                         </div>
-                        <p class="stat-note"><span class="chip">−85%</span>Szacunek: pełna precyzja z optymalizatorem AdamW kontra model 16-bitowy z adapterem.</p>
-                    </div>
-
-                    <div class="stat-row">
-                        <div class="stat-head">
-                            <span class="stat-name">Plik po treningu</span>
-                            <div class="stat-values-row"><span class="stat-val full">~16 GB</span><span class="stat-arrow">→</span><span class="stat-val lora">~15 MB</span></div>
+                        <div class="stat-row">
+                            <div class="stat-head">
+                                <span class="stat-name">Plik po treningu</span>
+                                <div class="stat-values-row"><span class="stat-val full">~16 GB</span><span class="stat-arrow">→</span><span class="stat-val lora">~15 MB</span></div>
+                            </div>
+                            <p class="stat-note"><span class="chip">−99,9%</span>Cała kopia modelu kontra sam adapter.</p>
                         </div>
-                        <p class="stat-note"><span class="chip">−99,9%</span>Cała kopia modelu kontra sam adapter.</p>
-                    </div>
-
-                    <div class="stat-row">
-                        <div class="stat-head">
-                            <span class="stat-name">Obliczenia na krok</span>
-                            <div class="stat-values-row"><span class="stat-val full">100%</span><span class="stat-arrow">→</span><span class="stat-val lora">~67%</span></div>
+                        <div class="stat-row">
+                            <div class="stat-head">
+                                <span class="stat-name">Obliczenia na krok</span>
+                                <div class="stat-values-row"><span class="stat-val full">100%</span><span class="stat-arrow">→</span><span class="stat-val lora">~67%</span></div>
+                            </div>
+                            <p class="stat-note"><span class="chip">−33%</span>Analiza Thinking Machines Lab z 2025 r. Główna oszczędność to pamięć, nie czas.</p>
                         </div>
-                        <p class="stat-note"><span class="chip">−33%</span>Analiza Thinking Machines Lab z 2025 r. Główna oszczędność to pamięć, nie czas.</p>
                     </div>
                 </div>
             </div>
-        </section>
+        </div></section>
 
-        <!-- ── 4. Ranga ───────────────────────────────────────────── -->
-        <section>
-            <div class="section-head">
-                <p class="edu-overline">04 · Pobaw się</p>
-                <h2>Jak duży ma być adapter?</h2>
-                <p>Rozmiar adaptera ustawia jedna liczba: ranga <code>r</code>. To jak grubość bloczka karteczek. Przesuń suwak i zobacz, co się zmienia.</p>
-            </div>
+        <!-- ─── Ranga ─── -->
+        <section class="sec"><div class="wrap">
+            <div class="sec-head"><span class="badge badge-lg tone-ink"><i data-lucide="sliders-horizontal" class="ic" aria-hidden="true"></i></span><h2>Jak duży ma być adapter?</h2></div>
+            <p class="sec-intro">Rozmiar adaptera ustawia jedna liczba: ranga <code>r</code>. To jak grubość bloczka karteczek. Przesuń suwak i zobacz, co się zmienia.</p>
 
             <div class="rank-grid">
                 <div class="card">
-                    <p class="panel-title">Ranga adaptera</p>
-                    <div class="slider-row">
-                        <span class="slider-value" id="rankValue">r = 8</span>
-                        <input type="range" id="rankSlider" min="0" max="7" step="1" value="3" aria-label="Ranga adaptera">
-                    </div>
-                    <div class="slider-scale"><span>1</span><span>mały</span><span>typowy</span><span>duży</span><span>128</span></div>
-                    <p class="rank-hint" id="rankHint"></p>
+                    <div class="card-head"><p class="edu-overline">Ranga adaptera</p></div>
+                    <div class="card-body">
+                        <div class="slider-row">
+                            <span class="slider-value" id="rankValue">r = 8</span>
+                            <input type="range" id="rankSlider" min="0" max="7" step="1" value="3" aria-label="Ranga adaptera">
+                        </div>
+                        <div class="slider-scale"><span>1</span><span>mały</span><span>typowy</span><span>duży</span><span>128</span></div>
+                        <p class="rank-hint" id="rankHint"></p>
 
-                    <div class="matrices" aria-hidden="true">
-                        <div class="mx"><div class="mx-box w"></div><div class="mx-cap">Wq: zamrożona<br>4096 × 4096</div></div>
-                        <span class="mx-op">+</span>
-                        <div class="mx"><div class="mx-box b" id="mxB"></div><div class="mx-cap">B</div></div>
-                        <span class="mx-op">×</span>
-                        <div class="mx"><div class="mx-box a" id="mxA"></div><div class="mx-cap">A</div></div>
+                        <div class="matrices" aria-hidden="true">
+                            <div class="mx"><div class="mx-box w"></div><div class="mx-cap">Wq: zamrożona<br>4096 × 4096</div></div>
+                            <span class="mx-op">+</span>
+                            <div class="mx"><div class="mx-box b" id="mxB"></div><div class="mx-cap">B</div></div>
+                            <span class="mx-op">×</span>
+                            <div class="mx"><div class="mx-box a" id="mxA"></div><div class="mx-cap">A</div></div>
+                        </div>
                     </div>
-                    <p class="mx-cap" style="margin-top: var(--sp-4)" id="mxCaption"></p>
+                    <div class="card-foot" id="mxCaption"></div>
                 </div>
 
                 <div class="dark-panel">
-                    <p class="eyebrow">Cały adapter dla Qwen3-8B</p>
-                    <div class="data-row"><span>Trenowane parametry</span><b class="accent" id="outParams"></b></div>
+                    <p class="panel-label">Cały adapter dla Qwen3-8B</p>
+                    <div class="data-row"><span>Trenowane parametry</span><b id="outParams"></b></div>
                     <div class="data-row"><span>Część całego modelu</span><b id="outPct"></b></div>
                     <div class="data-row"><span>Rozmiar pliku adaptera</span><b id="outSize"></b></div>
                     <div class="data-row"><span>Mniej niż pełny trening</span><b id="outTimes"></b></div>
                 </div>
             </div>
-        </section>
+        </div></section>
 
-        <!-- ── 5. Wymiana adapterów ───────────────────────────────── -->
-        <section>
-            <div class="section-head">
-                <p class="edu-overline">05 · Wypróbuj</p>
-                <h2>Jeden model, wiele specjalizacji</h2>
-                <p>Adapter działa jak wymienna nakładka. Wybierz specjalizację i zobacz, jak ten sam model odpowiada na to samo pytanie.</p>
-            </div>
+        <!-- ─── Wymiana adapterów ─── -->
+        <section class="sec"><div class="wrap">
+            <div class="sec-head"><span class="badge badge-lg tone-ink"><i data-lucide="layers" class="ic" aria-hidden="true"></i></span><h2>Jeden model, wiele specjalizacji</h2></div>
+            <p class="sec-intro">Adapter działa jak wymienna nakładka. Wybierz specjalizację i zobacz, jak ten sam model odpowiada na to samo pytanie.</p>
 
             <div class="card">
-                <div class="adapter-chips" id="adapterChips" role="group" aria-label="Wybór adaptera"></div>
-                <div class="swap-grid">
-                    <div class="stack">
-                        <div class="block slot empty" id="slot"><small>Adapter LoRA</small><b id="slotName"></b></div>
-                        <div class="block base"><small>Model bazowy · zamrożony</small><b>Qwen3-8B · ~16 GB</b></div>
-                        <p class="stack-total" id="stackTotal"></p>
-                    </div>
-                    <div>
-                        <p class="bubble-q">Pytanie: „Opisz kawę w dwóch zdaniach.”</p>
-                        <div class="bubble" id="bubble" aria-live="polite"></div>
-                        <p class="bubble-note">Odpowiedzi są przykładowe i pokazują ideę. Bez LoRA każda specjalizacja oznaczałaby osobną kopię modelu o wadze ~16 GB.</p>
+                <div class="card-head"><div class="adapter-chips" id="adapterChips" role="group" aria-label="Wybór adaptera"></div></div>
+                <div class="card-body">
+                    <div class="swap-grid">
+                        <div class="stack">
+                            <div class="block slot empty" id="slot"><small>Adapter LoRA</small><b id="slotName"></b></div>
+                            <div class="block base"><small>Model bazowy · zamrożony</small><b>Qwen3-8B · ~16 GB</b></div>
+                            <p class="stack-total" id="stackTotal"></p>
+                        </div>
+                        <div>
+                            <p class="bubble-q">Pytanie: „Opisz kawę w dwóch zdaniach.”</p>
+                            <div class="bubble" id="bubble" aria-live="polite"></div>
+                            <p class="bubble-note">Odpowiedzi są przykładowe i pokazują ideę. Bez LoRA każda specjalizacja oznaczałaby osobną kopię modelu o wadze ~16 GB.</p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </section>
+        </div></section>
 
-        <!-- ── 6. Dane ────────────────────────────────────────────── -->
-        <section>
-            <div class="section-head">
-                <p class="edu-overline">06 · Dane</p>
-                <h2>Ile przykładów potrzeba?</h2>
-                <p>Model uczy się na przykładach: parach „pytanie i wzorcowa odpowiedź”. Nie ma jednej magicznej liczby, ale badania pokazują, kiedy która metoda radzi sobie lepiej. Przesuń suwak.</p>
-            </div>
+        <!-- ─── Dane ─── -->
+        <section class="sec"><div class="wrap">
+            <div class="sec-head"><span class="badge badge-lg tone-ink"><i data-lucide="database" class="ic" aria-hidden="true"></i></span><h2>Ile przykładów potrzeba?</h2></div>
+            <p class="sec-intro">Model uczy się na przykładach: parach „pytanie i wzorcowa odpowiedź”. Nie ma jednej magicznej liczby, ale badania pokazują, kiedy która metoda radzi sobie lepiej. Przesuń suwak.</p>
 
             <div class="rank-grid">
                 <div class="card">
-                    <p class="panel-title">Wielkość zbioru danych</p>
-                    <div class="slider-row">
-                        <span class="slider-value" id="dataValue"></span>
-                        <input type="range" id="dataSlider" min="0" max="3" step="1" value="1" aria-label="Liczba przykładów treningowych">
-                    </div>
-                    <div class="slider-scale"><span>100</span><span>1 tys.</span><span>10 tys.</span><span>100 tys.+</span></div>
-                    <p class="data-what" id="dataWhat" aria-live="polite"></p>
-
-                    <div class="verdicts">
-                        <div class="verdict">
-                            <div class="verdict-head"><b>LoRA</b><span class="chip" id="loraChip"></span></div>
-                            <p id="loraVerdict"></p>
+                    <div class="card-head"><p class="edu-overline">Wielkość zbioru danych</p></div>
+                    <div class="card-body">
+                        <div class="slider-row">
+                            <span class="slider-value" id="dataValue"></span>
+                            <input type="range" id="dataSlider" min="0" max="3" step="1" value="1" aria-label="Liczba przykładów treningowych">
                         </div>
-                        <div class="verdict">
-                            <div class="verdict-head"><b>Pełny fine-tuning</b><span class="chip" id="fullChip"></span></div>
-                            <p id="fullVerdict"></p>
+                        <div class="slider-scale"><span>100</span><span>1 tys.</span><span>10 tys.</span><span>100 tys.+</span></div>
+                        <p class="data-what" id="dataWhat" aria-live="polite"></p>
+
+                        <div class="verdicts">
+                            <div class="verdict">
+                                <div class="verdict-head"><b>LoRA</b><span class="chip" id="loraChip"></span></div>
+                                <p id="loraVerdict"></p>
+                            </div>
+                            <div class="verdict">
+                                <div class="verdict-head"><b>Pełny fine-tuning</b><span class="chip" id="fullChip"></span></div>
+                                <p id="fullVerdict"></p>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="card">
-                    <p class="panel-title">Najważniejsze</p>
-                    <ul class="takeaways">
-                        <li><strong>LoRA nie potrzebuje więcej danych.</strong>W badaniu z 2026 r. na dziewięciu modelach Qwen3 i Llama LoRA zachowała typowo 98% poprawy, jaką daje pełny trening.</li>
-                        <li><strong>Liczy się zadanie, nie metoda.</strong>Zmiana stylu wymaga setek przykładów, nowa wiedza tysięcy. To praktyczne reguły, nie twarde progi.</li>
-                        <li><strong>Jakość ważniejsza niż ilość.</strong>Kilkaset starannych przykładów zwykle uczy lepiej niż tysiące byle jakich.</li>
-                        <li><strong>Granicą jest pojemność adaptera.</strong>Gdy danych jest więcej, niż adapter pomieści, LoRA zaczyna odstawać. Mówi się, że „uczy się mniej, ale mniej zapomina”.</li>
-                    </ul>
-                    <p class="sources">Źródła: <a href="https://thinkingmachines.ai/blog/lora/" target="_blank" rel="noopener">Thinking Machines Lab 2025</a> (pojemność adaptera), <a href="https://arxiv.org/abs/2609.01244" target="_blank" rel="noopener">O’Neill i in. 2026</a> (Qwen3 i Llama), <a href="https://arxiv.org/abs/2405.09673" target="_blank" rel="noopener">Biderman i in. 2024</a> (duże zbiory), <a href="https://developers.openai.com/api/docs/guides/supervised-fine-tuning" target="_blank" rel="noopener">wytyczne OpenAI</a> (minimum 10, efekty zwykle od 50–100 przykładów).</p>
+                    <div class="card-head"><span class="tile-h"><span class="badge tone-ink"><i data-lucide="lightbulb" class="ic" aria-hidden="true"></i></span><h3>Najważniejsze</h3></span></div>
+                    <div class="card-body">
+                        <ul class="takeaways">
+                            <li><i data-lucide="circle-check" class="ic" aria-hidden="true"></i><div><strong>LoRA nie potrzebuje więcej danych.</strong>W badaniu z 2026 r. na dziewięciu modelach Qwen3 i Llama LoRA zachowała typowo 98% poprawy, jaką daje pełny trening.</div></li>
+                            <li><i data-lucide="circle-check" class="ic" aria-hidden="true"></i><div><strong>Liczy się zadanie, nie metoda.</strong>Zmiana stylu wymaga setek przykładów, nowa wiedza tysięcy. To praktyczne reguły, nie twarde progi.</div></li>
+                            <li><i data-lucide="circle-check" class="ic" aria-hidden="true"></i><div><strong>Jakość ważniejsza niż ilość.</strong>Kilkaset starannych przykładów zwykle uczy lepiej niż tysiące byle jakich.</div></li>
+                            <li><i data-lucide="circle-check" class="ic" aria-hidden="true"></i><div><strong>Granicą jest pojemność adaptera.</strong>Gdy danych jest więcej, niż adapter pomieści, LoRA zaczyna odstawać. Mówi się, że „uczy się mniej, ale mniej zapomina”.</div></li>
+                        </ul>
+                    </div>
+                    <div class="card-foot sources">Źródła: <a href="https://thinkingmachines.ai/blog/lora/" target="_blank" rel="noopener">Thinking Machines Lab 2025</a> (pojemność adaptera), <a href="https://arxiv.org/abs/2609.01244" target="_blank" rel="noopener">O’Neill i in. 2026</a> (Qwen3 i Llama), <a href="https://arxiv.org/abs/2405.09673" target="_blank" rel="noopener">Biderman i in. 2024</a> (duże zbiory), <a href="https://developers.openai.com/api/docs/guides/supervised-fine-tuning" target="_blank" rel="noopener">wytyczne OpenAI</a> (minimum 10, efekty zwykle od 50–100 przykładów).</div>
                 </div>
             </div>
-        </section>
+        </div></section>
 
-        <!-- ── 7. Dla dociekliwych ────────────────────────────────── -->
-        <section>
-            <div class="section-head">
-                <p class="edu-overline">07 · Dla dociekliwych</p>
-                <h2>Słowniczek i praktyka</h2>
-                <p>Kliknij pojęcie, żeby zobaczyć proste wyjaśnienie.</p>
-            </div>
+        <!-- ─── Dla dociekliwych ─── -->
+        <section class="sec"><div class="wrap">
+            <div class="sec-head"><span class="badge badge-lg tone-ink"><i data-lucide="library" class="ic" aria-hidden="true"></i></span><h2>Słowniczek i praktyka</h2></div>
+            <p class="sec-intro">Kliknij pojęcie, żeby zobaczyć proste wyjaśnienie.</p>
 
-            <div class="two-col">
-                <div class="card">
-                    <p class="panel-title">Słowniczek</p>
-                    <details open>
-                        <summary>Wagi (parametry)</summary>
-                        <p>Liczby zapisane w modelu. To w nich „mieszka” jego wiedza. Qwen3-8B ma ich około 8,2 miliarda.</p>
-                    </details>
-                    <details>
-                        <summary>Fine-tuning (douczanie)</summary>
-                        <p>Dodatkowy trening gotowego modelu na własnych danych, żeby lepiej radził sobie z konkretnym zadaniem.</p>
-                    </details>
-                    <details>
-                        <summary>Zamrożony model</summary>
-                        <p>Model, którego wag nie zmieniamy podczas treningu. Komputer nie musi liczyć dla nich poprawek, co oszczędza pamięć i czas.</p>
-                    </details>
-                    <details>
-                        <summary>Adapter i macierze A, B</summary>
-                        <p>Adapter to para małych tabel liczb: A i B. Po przemnożeniu dają poprawkę dla dużej tabeli wag W. Wzór: <code>W' = W + (α/r) · B · A</code>. Najprostszy wariant dokleja je w warstwach uwagi (<code>Wq</code>, <code>Wv</code>) i taki liczymy na tej stronie. Nowsze badania zalecają adaptery we wszystkich warstwach: jakość rośnie, ale adapter jest większy.</p>
-                    </details>
-                    <details>
-                        <summary>Ranga (r)</summary>
-                        <p>Szerokość adaptera. Im większa, tym więcej nowej wiedzy się zmieści, ale adapter jest większy. Typowe wartości: 8, 16, 32, 64.</p>
-                    </details>
-                    <details>
-                        <summary>VRAM</summary>
-                        <p>Pamięć karty graficznej. To ona zwykle ogranicza, jak duży model da się trenować na danym komputerze.</p>
-                    </details>
-                    <details>
-                        <summary>QLoRA</summary>
-                        <p>LoRA połączona z kwantyzacją, czyli zapisem wag modelu bazowego w oszczędnym, 4-bitowym formacie. Dzięki temu trening modelu tej wielkości mieści się w około 8–12 GB VRAM.</p>
-                    </details>
+            <div class="grid-2">
+                <div class="card glossary">
+                    <div class="card-head"><span class="tile-h"><span class="badge tone-blue"><i data-lucide="book-open" class="ic" aria-hidden="true"></i></span><h3>Słowniczek</h3></span></div>
+                    <div class="card-body">
+                        <details open>
+                            <summary>Wagi (parametry)</summary>
+                            <p>Liczby zapisane w modelu. To w nich „mieszka” jego wiedza. Qwen3-8B ma ich około 8,2 miliarda.</p>
+                        </details>
+                        <details>
+                            <summary>Fine-tuning (douczanie)</summary>
+                            <p>Dodatkowy trening gotowego modelu na własnych danych, żeby lepiej radził sobie z konkretnym zadaniem.</p>
+                        </details>
+                        <details>
+                            <summary>Zamrożony model</summary>
+                            <p>Model, którego wag nie zmieniamy podczas treningu. Komputer nie musi liczyć dla nich poprawek, co oszczędza pamięć i czas.</p>
+                        </details>
+                        <details>
+                            <summary>Adapter i macierze A, B</summary>
+                            <p>Adapter to para małych tabel liczb: A i B. Po przemnożeniu dają poprawkę dla dużej tabeli wag W. Wzór: <code>W' = W + (α/r) · B · A</code>. Najprostszy wariant dokleja je w warstwach uwagi (<code>Wq</code>, <code>Wv</code>) i taki liczymy na tej stronie. Nowsze badania zalecają adaptery we wszystkich warstwach: jakość rośnie, ale adapter jest większy.</p>
+                        </details>
+                        <details>
+                            <summary>Ranga (r)</summary>
+                            <p>Szerokość adaptera. Im większa, tym więcej nowej wiedzy się zmieści, ale adapter jest większy. Typowe wartości: 8, 16, 32, 64.</p>
+                        </details>
+                        <details>
+                            <summary>VRAM</summary>
+                            <p>Pamięć karty graficznej. To ona zwykle ogranicza, jak duży model da się trenować na danym komputerze.</p>
+                        </details>
+                        <details>
+                            <summary>QLoRA</summary>
+                            <p>LoRA połączona z kwantyzacją, czyli zapisem wag modelu bazowego w oszczędnym, 4-bitowym formacie. Dzięki temu trening modelu tej wielkości mieści się w około 8–12 GB VRAM.</p>
+                        </details>
+                    </div>
                 </div>
 
-                <div class="card">
-                    <p class="panel-title">Jaki sprzęt wystarczy?</p>
-                    <ul class="hw-list">
-                        <li><span>Pełny fine-tuning</span><b>co najmniej 2 karty 80 GB</b></li>
-                        <li><span>LoRA (16-bit)</span><b>jedna karta 24–48 GB</b></li>
-                        <li><span>QLoRA (4-bit)</span><b>karta do gier 12–16 GB</b></li>
-                        <li><span>Plik adaptera (r = 8)</span><b>~15 MB</b></li>
-                    </ul>
-                    <div class="caveat"><strong>Uczciwie:</strong> LoRA to kompromis. Przy zadaniach bardzo odległych od tego, co model już umie, pełny fine-tuning może dać lepszą jakość.</div>
+                <div class="card hw">
+                    <div class="card-head"><span class="tile-h"><span class="badge tone-green"><i data-lucide="hard-drive" class="ic" aria-hidden="true"></i></span><h3>Jaki sprzęt wystarczy?</h3></span></div>
+                    <div class="card-body flush">
+                        <table class="hw-table">
+                            <thead><tr><th scope="col">Metoda</th><th scope="col" style="text-align:right">Sprzęt</th></tr></thead>
+                            <tbody>
+                                <tr><td>Pełny fine-tuning</td><td>co najmniej 2 karty 80 GB</td></tr>
+                                <tr><td>LoRA (16-bit)</td><td>jedna karta 24–48 GB</td></tr>
+                                <tr><td>QLoRA (4-bit)</td><td>karta do gier 12–16 GB</td></tr>
+                                <tr><td>Plik adaptera (r = 8)</td><td>~15 MB</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="callout caveat edu-block"><i data-lucide="scale" class="ic" aria-hidden="true"></i><div><strong>Uczciwie:</strong> LoRA to kompromis. Przy zadaniach bardzo odległych od tego, co model już umie, pełny fine-tuning może dać lepszą jakość.</div></div>
                 </div>
             </div>
-        </section>
+        </div></section>
 
-        <footer>edulab · demo lab · LoRA</footer>
     </main>
+
+    <footer>edulab · LoRA</footer>
 
     <script>
         const $ = id => document.getElementById(id);
@@ -817,7 +712,6 @@
             const lora = activeTab === 'lora';
             fullView.classList.toggle('hidden', lora);
             loraView.classList.toggle('hidden', !lora);
-            progressFill.classList.toggle('lora', lora);
             vizTitle.textContent = lora ? 'Uczy się tylko adapter LoRA' : 'Uczą się wszystkie połączenia';
             lora ? renderLora(loraSvg) : renderFull(fullSvg);
         }
@@ -939,7 +833,7 @@
 
         // ══ Ile danych ═════════════════════════════════════════════════
         // Oceny: Thinking Machines Lab 2025 (LoRA Without Regret), O'Neill i in. 2026, Biderman i in. 2024.
-        const VERDICT = { good: ['Dobry wybór', ''], noedge: ['Bez przewagi', 'marigold'], ok: ['Do rozważenia', 'marigold'], weak: ['Słabsza', 'coral'], best: ['Najlepsza jakość', ''] };
+        const VERDICT = { good: ['Dobry wybór', 'green'], noedge: ['Bez przewagi', 'yellow'], ok: ['Do rozważenia', 'yellow'], weak: ['Słabsza', 'red'], best: ['Najlepsza jakość', 'green'] };
         const DATA = [
             { n: '~100', what: 'zmiana tonu lub formatu odpowiedzi.',
               lora: ['good', 'Tak mały zbiór z zapasem mieści się w pojemności adaptera. W takich warunkach LoRA dorównuje pełnemu treningowi.'],
@@ -958,7 +852,7 @@
         function setVerdict(chipId, textId, [kind, text]) {
             const [label, tone] = VERDICT[kind];
             $(chipId).textContent = label;
-            $(chipId).className = 'chip' + (tone ? ' ' + tone : '');
+            $(chipId).className = 'chip chip-' + tone;
             $(textId).textContent = text;
         }
 
@@ -971,6 +865,11 @@
         }
         $('dataSlider').addEventListener('input', updateData);
         updateData();
+
+        // ─── Icons (Lucide is async; the page stays usable without it) ───
+        function icons(root = document) { if (window.lucide) window.lucide.createIcons({ root }); }
+        addEventListener('load', () => icons());
+        icons();
     </script>
 </body>
 </html>
