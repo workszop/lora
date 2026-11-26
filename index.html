@@ -27,12 +27,15 @@
         /* ─── Brand bar (no clickable control → static) ─── */
         .edu-header { position: static; width: 100%; background: var(--paper); border-bottom: 1px solid var(--line-2); }
         .edu-header-inner { padding: 8px var(--gutter); display: flex; align-items: center; gap: 12px; }
-        .edu-logo { width: 64px; height: 64px; display: block; margin-right: -6px; }
-        .edu-wordmark { font-family: var(--font-display); font-weight: 700; font-size: 22px; letter-spacing: -.02em; color: var(--ink); }
+        .edu-logo { width: 64px; height: 64px; display: block; margin-right: -6px; flex-shrink: 0; }
+        .edu-wordmark { font-family: var(--font-display); font-weight: 700; font-size: 22px; letter-spacing: -.02em; color: var(--ink); flex-shrink: 0; }
+        .edu-app-title { margin: 0 0 0 14px; padding-left: 14px; border-left: 1px solid var(--line-2, #d9d3c7);
+            font-family: var(--font-display); font-weight: 600; font-size: 19px; letter-spacing: -.01em; line-height: 1.2;
+            color: var(--ink-2, #4a4540); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; flex: 0 1 auto; }
+        @media (max-width: 640px) { .edu-app-title { font-size: 15px; margin-left: 10px; padding-left: 10px; } }
 
         /* ─── Page head ─── */
-        .page-head { padding: 44px var(--gutter) 52px; text-align: left; }
-        .app-title { font-family: var(--font-display); font-weight: 800; font-size: clamp(2.3rem, 5vw, 3.3rem); letter-spacing: -.025em; line-height: 1.05; color: var(--ink); margin: 0 0 14px; }
+        .page-head { padding: 32px var(--gutter) 44px; text-align: left; }
         .edu-lead { font-size: 1.15rem; line-height: 1.6; color: var(--ink-2); margin: 0; }
 
         /* ─── Section bands ─── */
@@ -252,7 +255,7 @@
             .main-grid, .rank-grid, .grid-2, .swap-grid, .grid-3 { grid-template-columns: minmax(0, 1fr); }
         }
         @media (max-width: 768px) {
-            .page-head { padding: 28px var(--gutter) 36px; }
+            .page-head { padding: 22px var(--gutter) 30px; }
             .sec { padding: 36px 0 44px; }
             .sec-head { flex-wrap: wrap; }
             .sec-head h2 { flex: 1; min-width: 0; }
@@ -276,10 +279,10 @@
     <header class="edu-header"><div class="edu-header-inner">
         <img class="edu-logo" alt="edulab" src="edulab-mark-ink.png">
         <span class="edu-wordmark">edulab</span>
+        <h1 class="edu-app-title">LoRA: jak tanio nauczyć AI czegoś nowego</h1>
     </div></header>
 
     <header class="page-head">
-        <h1 class="app-title">LoRA: jak tanio nauczyć AI czegoś nowego</h1>
         <p class="edu-lead">Duże modele językowe umieją wiele, ale nie znają Twojej branży ani Twojego stylu. LoRA pozwala je douczyć bez superkomputera. Zobacz, na czym polega ten trik.</p>
     </header>
 
